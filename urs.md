@@ -76,6 +76,13 @@ C| c_post | szálláshirdetés feladása cégként
 C| c_modify | meglévő saját céges szálláshirdetés módosítása
 C| c_delete | meglévő saját céges szálláshirdetés törlése
 
+### Nem-funkcionális követelmények
+Követelmény azonosító | Leírás
+----------------------|-------
+passw_enc | jelszavak titkosítása
+user_data_scope | bármely user csak a saját adataihoz fér hozzá
+anonym_rating | a szállások értékelése anonim
+
 ## **Fogalom szótár**
 - jóváhagyott magánszemély: 
   - olyan személy, melynek van a szoftveren belül érvényes telefon- és személyigazolvány száma
