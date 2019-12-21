@@ -1,0 +1,1 @@
+# Hotel5000 követelményspecifikáció
