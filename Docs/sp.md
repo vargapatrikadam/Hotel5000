@@ -52,6 +52,7 @@ diagram ide
 Tábla_01
 Mező neve | Típus, hossz | Kötelező | Érték/validáció | Kulcs mező | Megjegyzés
 --------- | ------------ | -------- | --------------- | ---------- | ----------
+mező 1 | típus 1 | igen | érték validáció | PK | megjegyzés
 
 Tábla_01 megszorítások
 Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus
