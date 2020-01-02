@@ -18,10 +18,12 @@ részletes architektúra diagram ide
 backend részletes diagram ide
 #### Komponensek
 a fenti diagramból a komponensek leírása
+
 Komponens neve | Magyarázat |
 -------------- | ---------- |
 #### Interfacek
 az itt definiált interfaceket a külön interface specifikációban részletezzük
+
 Azonosító | Név | Magyarázat |
 --------- | --- | ---------- |
 
@@ -29,10 +31,12 @@ Azonosító | Név | Magyarázat |
 frontend részletes diagram ide
 #### Komponensek
 a fenti diagramból a komponensek leírása
+
 Komponens neve | Magyarázat |
 -------------- | ---------- |
 #### Interfacek
 az itt definiált interfaceket a külön interface specifikációban részletezzük
+
 Azonosító | Név | Magyarázat |
 --------- | --- | ---------- |
 
@@ -41,7 +45,7 @@ szöveg ide
 #### Adatbázis(ok)
 ##### Adatbázis_01
 Tulajdonságok | Konfiguráció swssdsasda |
-------------- | ------------ 
+------------- | ------------ |
 Név |
 Technológia |
 Collation |
@@ -50,13 +54,15 @@ Egyéb |
 diagram ide
 ##### Adatbázis objektumok
 Tábla_01
+
 Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
--------- | ----------- | -------- | ----- | ----- | ----  |
-mező 1 | típus 1 | igen | érték validáció | PK | megjegyzés
+-------- | ----------- | -------- | --------------- | ----- | ----- |
+mező 1 | típus 1 | igen | érték validáció | PK | megjegyzés |
 
 Tábla_01 megszorítások
+
 Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
---------- | ------- | ------ | ------- | ------ | -----
+--------- | ------- | ------ | ------- | ------ | ----- |
 
 ## Követelmények megvalósítása
 
