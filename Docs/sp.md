@@ -4,9 +4,9 @@
 
 ### Szójegyzék és rövidítések
 
-Rövidítés | Magyarázat
+Rövidítés | Magyarázat | 
 --------- | ----------
-interface | nem konkrét programozási értelemben vett interface, hanem az applikáció egy végpontja, elérési módja
+interface | nem konkrét programozási értelemben vett interface, hanem az applikáció egy végpontja, elérési módja |
 
 ### Architektúra áttekintése
 ![Magas szintű architektúra diagram](../Docs/imgs/sp/high_level_architecture.png)
@@ -18,30 +18,30 @@ részletes architektúra diagram ide
 backend részletes diagram ide
 #### Komponensek
 a fenti diagramból a komponensek leírása
-Komponens neve | Magyarázat
--------------- | ----------
+Komponens neve | Magyarázat |
+-------------- | ---------- |
 #### Interfacek
 az itt definiált interfaceket a külön interface specifikációban részletezzük
-Azonosító | Név | Magyarázat
---------- | --- | ----------
+Azonosító | Név | Magyarázat |
+--------- | --- | ---------- |
 
 ### Frontend szoftver architektúra
 frontend részletes diagram ide
 #### Komponensek
 a fenti diagramból a komponensek leírása
-Komponens neve | Magyarázat
--------------- | ----------
+Komponens neve | Magyarázat |
+-------------- | ---------- |
 #### Interfacek
 az itt definiált interfaceket a külön interface specifikációban részletezzük
-Azonosító | Név | Magyarázat
---------- | --- | ----------
+Azonosító | Név | Magyarázat |
+--------- | --- | ---------- |
 
 ### Adatbázisréteg felépítése
 szöveg ide
 #### Adatbázis(ok)
 ##### Adatbázis_01
-Tulajdonságok | Konfiguráció
-------------- | ------------
+Tulajdonságok | Konfiguráció swssdsasda |
+------------- | ------------ 
 Név |
 Technológia |
 Collation |
@@ -50,18 +50,18 @@ Egyéb |
 diagram ide
 ##### Adatbázis objektumok
 Tábla_01
-Mező neve | Típus, hossz | Kötelező | Érték/validáció | Kulcs mező | Megjegyzés
---------- | ------------ | -------- | --------------- | ---------- | ----------
+Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
+-------- | ----------- | -------- | ----- | ----- | ----  |
 mező 1 | típus 1 | igen | érték validáció | PK | megjegyzés
 
 Tábla_01 megszorítások
-Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus
+Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
 --------- | ------- | ------ | ------- | ------ | -----
 
 ## Követelmények megvalósítása
 
-URS azonosító | Kapcsolódó komponensek azonosítói | Egyéb
-------------- | --------------------------------- | -----
+URS azonosító | Kapcsolódó komponensek azonosítói | Egyéb |
+------------- | --------------------------------- | ----- |
 
 ## Biztonság
 leírni a titkosítási módszereket, hibakezelési módszereket stb.
@@ -70,5 +70,5 @@ leírni a titkosítási módszereket, hibakezelési módszereket stb.
 kifejteni a naplózás módját és szintjeit (pl rendszerinformáció, figyelmeztetés, hibaüzenet stb)
 
 ## Környezet-függő paraméterek
-Paraméter neve | Érték DEV környezetben
--------------- | ----------------------
+Paraméter neve | Érték DEV környezetben |
+-------------- | ---------------------- |
