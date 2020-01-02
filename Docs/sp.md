@@ -9,7 +9,7 @@ Rövidítés | Magyarázat
 interface | nem konkrét programozási értelemben vett interface, hanem az applikáció egy végpontja, elérési módja
 
 ### Architektúra áttekintése
-magas szintű architektúra diagram ide
+![Magas szintű architektúra diagram](/imgs/sp/high_level_architecture.png)
 
 ## Rendszer architektúra
 részletes architektúra diagram ide
