@@ -68,6 +68,24 @@ Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
 
 URS azonosító | Kapcsolódó komponensek azonosítói | Egyéb |
 ------------- | --------------------------------- | ----- |
+admin_login | Admin supervisement | |
+admin_moderate | Supervise lodgings | |
+admin_supervise | Supervise users | |
+bu_browse | Browse lodgings | |
+bu_search | Browse lodgings | |
+bu_reserve | Reserve lodgings | |
+bu_cancel | Cancel lodgings | |
+bu_rate | Rate lodgings | |
+au_register	| Register basic user | |
+au_login | Private individual lodging management | |
+au_post | Private individual lodging management | |
+au_modify | Private individual lodging management | |
+au_delete | Private individual lodging management | |
+c_register | Register company | |
+c_login | Company lodging management | |
+c_post | Company lodging management | |
+c_modify | Company lodging management | |
+c_delete | Company lodging management | |
 
 ## Biztonság
 leírni a titkosítási módszereket, hibakezelési módszereket stb.
