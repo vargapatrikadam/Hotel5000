@@ -12,7 +12,7 @@ interface | nem konkrét programozási értelemben vett interface, hanem az appl
 ![Magas szintű architektúra diagram](../Docs/imgs/sp/high_level_architecture.png)
 
 ## Rendszer architektúra
-részletes architektúra diagram ide
+![Részletes architektúra diagram](../Docs/imgs/sp/detailed_architecture_diagram.png)
 
 ### Backend szoftver architektúra
 backend részletes diagram ide
