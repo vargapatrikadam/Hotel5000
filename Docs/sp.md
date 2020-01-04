@@ -15,7 +15,7 @@ interface | nem konkrét programozási értelemben vett interface, hanem az appl
 ![Részletes architektúra diagram](../Docs/imgs/sp/detailed_architecture_diagram.png)
 
 ### Backend szoftver architektúra
-backend részletes diagram ide
+![Backend architektúre diagram](../Docs/imgs/sp/backend_architecture.png)
 #### Komponensek
 a fenti diagramból a komponensek leírása
 
