@@ -6,7 +6,7 @@
 
 Rövidítés | Magyarázat | 
 --------- | ----------
-interface | nem konkrét programozási értelemben vett interface, hanem az applikáció egy végpontja, elérési módja |
+interface | nem konkrét programozási értelemben vett interface, hanem az applikáció  vagy komponens egy végpontja, elérési módja |
 
 ### Architektúra áttekintése
 ![Magas szintű architektúra diagram](../Docs/imgs/sp/high_level_architecture.png)
