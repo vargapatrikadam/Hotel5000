@@ -14,28 +14,14 @@ interface | nem konkrét programozási értelemben vett interface, hanem az appl
 ## Rendszer architektúra
 ![Részletes architektúra diagram](../Docs/imgs/sp/detailed_architecture_diagram.png)
 
-### Backend szoftver architektúra
-![Backend architektúre diagram](../Docs/imgs/sp/backend_architecture.png)
+### Szoftver architektúra
+![Szoftver architektúra diagram](../Docs/imgs/sp/software_architecture_diagram.png)
 #### Komponensek
 a fenti diagramból a komponensek leírása
 
 Komponens neve | Magyarázat |
 -------------- | ---------- |
 #### Interfacek
-az itt definiált interfaceket a külön interface specifikációban részletezzük
-
-Azonosító | Név | Magyarázat |
---------- | --- | ---------- |
-
-### Frontend szoftver architektúra
-frontend részletes diagram ide
-#### Komponensek
-a fenti diagramból a komponensek leírása
-
-Komponens neve | Magyarázat |
--------------- | ---------- |
-#### Interfacek
-az itt definiált interfaceket a külön interface specifikációban részletezzük
 
 Azonosító | Név | Magyarázat |
 --------- | --- | ---------- |
