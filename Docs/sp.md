@@ -16,6 +16,13 @@ interface | nem konkrét programozási értelemben vett interface, hanem az appl
 
 ### Szoftver architektúra
 ![Szoftver architektúra diagram](../Docs/imgs/sp/software_architecture_diagram.png)
+
+### Képernyőtervek
+#### Kezdőképernyő
+![Kezdőképernyő terv](../Docs/imgs/designs/home_page.png)
+
+#### Saját profil
+![Saját profil terv](../Docs/imgs/designs/own_profile.png)
 #### Komponensek
 a fenti diagramból a komponensek leírása
 
