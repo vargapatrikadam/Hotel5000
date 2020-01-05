@@ -23,6 +23,12 @@ interface | nem konkrét programozási értelemben vett interface, hanem az appl
 
 #### Saját profil
 ![Saját profil terv](../Docs/imgs/designs/own_profile.png)
+
+#### Menü
+![Menü terv](../Docs/imgs/designs/menu.png)
+
+#### Saját, meglévő hirdetések menedzselése
+![Menedzselés terv](../Docs/imgs/designs/manage_lodgings.png)
 #### Komponensek
 a fenti diagramból a komponensek leírása
 
