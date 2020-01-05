@@ -3,6 +3,7 @@ using Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,9 +34,9 @@ namespace Infrastructure.Data
             return await context.Set<T>().AsNoTracking().ToListAsync();
         }
 
-        public Task<IReadOnlyList<T>> GetAsync(ISpecification<T> specification)
+        public async Task<IReadOnlyList<T>> GetAsync(ISpecification<T> specification)
         {
-            throw new NotImplementedException();
+            return await ApplySpecification(specification).AsNoTracking().ToListAsync();
         }
 
         public async Task<T> UpdateAsync(T entity)
@@ -44,6 +45,10 @@ namespace Infrastructure.Data
             context.Entry(data).State = EntityState.Modified;
             await context.SaveChangesAsync();
             return data;
+        }
+        private IQueryable<T> ApplySpecification(ISpecification<T> specification)
+        {
+            return SpecificationEvaluator<T>.GetQuery(context.Set<T>().AsQueryable(), specification);
         }
     }
 }
