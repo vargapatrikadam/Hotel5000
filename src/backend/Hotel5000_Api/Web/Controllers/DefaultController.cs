@@ -21,7 +21,7 @@ namespace Web.Controllers
         [HttpGet("test")]
         public async Task<IActionResult> Test()
         {
-            loggingService.Log("test", LogLevel.Information);
+            await loggingService.Log("test", LogLevel.Information);
             return Ok();
         }
     }

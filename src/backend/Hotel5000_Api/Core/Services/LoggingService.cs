@@ -5,6 +5,7 @@ using Core.Interfaces.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Core.Services
 {
@@ -15,12 +16,12 @@ namespace Core.Services
         {
             logRepository = LogRepository;
         }
-        public async void Log(LogEntity log)
+        public async Task Log(LogEntity log)
         {
             await logRepository.AddAsync(log);
         }
 
-        public async void Log(string message, LogLevel type)
+        public async Task Log(string message, LogLevel type)
         {
             await logRepository.AddAsync(new LogEntity() { Message = message, Timestamp = DateTime.Now, Type = type });
         }
