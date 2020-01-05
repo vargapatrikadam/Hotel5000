@@ -50,7 +50,7 @@ namespace Web.Middlewares
 
             LogLevel level = LogLevel.Warning;
             if ((int)code == 500) level = LogLevel.Critical;
-            await loggingService.Log(ex.Message, level);
+            loggingService.Log(ex.Message, level);
 
             await context.Response.WriteAsync(result);
         }
