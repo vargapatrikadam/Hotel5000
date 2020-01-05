@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -58,6 +59,16 @@ namespace Web
             {
                 endpoints.MapControllers();
             });
+        }
+
+        //This method is only called when the project's enviroment variable 'ASPNETCORE_ENVIRONMENT' is set to 'Development'
+        public void ConfigureDevelopmentServices(IServiceCollection services)
+        {
+            //If you want to use in-memory database during a development enviroment, use this
+            services.AddDbContext<LoggingDBContext>(options =>
+                options.UseInMemoryDatabase("LoggingDatabase"));
+
+            ConfigureServices(services);
         }
     }
 }
