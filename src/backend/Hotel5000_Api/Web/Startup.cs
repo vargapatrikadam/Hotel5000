@@ -37,9 +37,12 @@ namespace Web
 
             services.AddCors();
 
-            services.AddScoped(typeof(IAsyncRepository<>), typeof(ApplicationRepository<>));
+            //services.AddScoped(typeof(IAsyncRepository<>), typeof(ApplicationRepository<,>));
 
-            services.AddSingleton<ILoggingService, LoggingService>();
+            services.AddScoped<IAsyncRepository<LogEntity>, ApplicationRepository<LogEntity, LoggingDBContext>>();
+
+            services.AddScoped<ILoggingService, LoggingService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

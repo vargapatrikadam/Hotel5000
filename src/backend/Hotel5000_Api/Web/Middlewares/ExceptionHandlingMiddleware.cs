@@ -13,16 +13,16 @@ namespace Web.Middlewares
     public class ExceptionHandlingMiddleware
     {
         private readonly RequestDelegate next;
-        private readonly ILoggingService loggingService;
+        private ILoggingService loggingService;
 
-        public ExceptionHandlingMiddleware(RequestDelegate next, ILoggingService LoggingService)
+        public ExceptionHandlingMiddleware(RequestDelegate next)
         {
             this.next = next;
-            this.loggingService = LoggingService;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext context, ILoggingService LoggingService)
         {
+            loggingService = LoggingService;
             try
             {
                 await next(context);

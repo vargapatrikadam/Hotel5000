@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data
 {
-    public class ApplicationRepository<T> : IAsyncRepository<T> where T : BaseEntity
+    public class ApplicationRepository<T, ContextType> : IAsyncRepository<T> where T : BaseEntity
+                                                                             where ContextType : DbContext
     {
-        protected readonly DbContext context;
-        public ApplicationRepository(DbContext Context)
+        protected readonly ContextType context;
+        public ApplicationRepository(ContextType Context)
         {
             context = Context;
         }
