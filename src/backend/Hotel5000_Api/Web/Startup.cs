@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Web.Middlewares;
 
 namespace Web
 {
@@ -54,6 +55,8 @@ namespace Web
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
 
             app.UseEndpoints(endpoints =>
             {
