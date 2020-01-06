@@ -16,6 +16,12 @@ namespace Core.Services
         {
             logRepository = LogRepository;
         }
+
+        public async Task<IReadOnlyList<LogEntity>> GetAllLogs()
+        {
+            return await logRepository.GetAllAsync();
+        }
+
         public async Task Log(LogEntity log)
         {
             await logRepository.AddAsync(log);

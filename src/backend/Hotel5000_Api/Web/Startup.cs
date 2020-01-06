@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Entities.Logging;
 using Core.Interfaces;
 using Core.Interfaces.Logging;
 using Core.Services;
-using Infrastructure.Data;
+using Infrastructure.Data.Contexts;
+using Infrastructure.Data.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -37,12 +37,9 @@ namespace Web
 
             services.AddCors();
 
-            //services.AddScoped(typeof(IAsyncRepository<>), typeof(ApplicationRepository<,>));
-
-            services.AddScoped<IAsyncRepository<LogEntity>, ApplicationRepository<LogEntity, LoggingDBContext>>();
+            services.AddScoped(typeof(IAsyncRepository<>), typeof(LoggingDBRepository<>));
 
             services.AddScoped<ILoggingService, LoggingService>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -11,5 +11,6 @@ namespace Core.Interfaces.Logging
     {
         Task Log(LogEntity log);
         Task Log(string message, LogLevel type);
+        Task<IReadOnlyList<LogEntity>> GetAllLogs();
     }
 }

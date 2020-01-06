@@ -6,6 +6,9 @@ using Core.Interfaces.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Core.Enums.Logging;
+using Infrastructure.Data;
+using Core.Entities;
+using Core.Interfaces;
 
 namespace Web.Controllers
 {

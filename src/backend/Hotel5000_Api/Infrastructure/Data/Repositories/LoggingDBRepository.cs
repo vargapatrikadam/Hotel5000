@@ -1,5 +1,6 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
+using Infrastructure.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,13 +8,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Data
+namespace Infrastructure.Data.Repositories
 {
-    public class ApplicationRepository<T, ContextType> : IAsyncRepository<T> where T : BaseEntity
-                                                                             where ContextType : DbContext
+    public class LoggingDBRepository<T> : IAsyncRepository<T> where T : BaseEntity
     {
-        protected readonly ContextType context;
-        public ApplicationRepository(ContextType Context)
+        protected readonly LoggingDBContext context;
+        public LoggingDBRepository(LoggingDBContext Context)
         {
             context = Context;
         }

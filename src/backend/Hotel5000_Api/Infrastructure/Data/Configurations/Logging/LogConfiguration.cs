@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Infrastructure.Data.Configurations.Logging
 {
-    public class LogConfiguration : IEntityTypeConfiguration<LogEntity>
+    public class LogConfiguration : IEntityTypeConfiguration<LogEntity>, ILoggingConfigurationAggregate
     {
         public void Configure(EntityTypeBuilder<LogEntity> builder)
         {
