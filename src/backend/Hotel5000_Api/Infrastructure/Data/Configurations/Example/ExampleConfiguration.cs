@@ -22,13 +22,11 @@ namespace Infrastructure.Data.Configurations.Example
             builder.Property(p => p.Added)
                 .IsRequired();
 
-            builder.Property<bool>("IsDeleted");
-
-            builder.HasQueryFilter(f => EF.Property<bool>(f, "IsDeleted") == false);
+            builder.EnableSoftDeletion();
 
             builder.HasIndex(i => i.Sum)
                 .IsUnique()
-                .HasFilter("IsDeleted = 0");
+                .IsSoftDeleteable();
         }
     }
 }

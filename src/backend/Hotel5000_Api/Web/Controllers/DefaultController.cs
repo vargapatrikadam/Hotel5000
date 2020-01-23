@@ -38,6 +38,10 @@ namespace Web.Controllers
             await repository.AddAsync(exampleEntity2);
             IReadOnlyList<ExampleEntity> exampleEntities = await repository.GetAllAsync();
             await repository.DeleteAsync(exampleEntity);
+            ExampleEntity deletedentity = new ExampleEntity();
+            deletedentity.Sum = 20;
+            deletedentity.Added = DateTime.Now;
+            await repository.AddAsync(deletedentity);
             IReadOnlyCollection<ExampleEntity> exampleEntities1 = await repository.GetAllAsync();
             return Ok();
         }
