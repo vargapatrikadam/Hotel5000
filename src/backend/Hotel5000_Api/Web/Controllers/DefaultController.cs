@@ -9,6 +9,7 @@ using Core.Enums.Logging;
 using Infrastructure.Data;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Entities.Example;
 
 namespace Web.Controllers
 {
@@ -17,14 +18,27 @@ namespace Web.Controllers
     public class DefaultController : ControllerBase
     {
         private readonly ILoggingService loggingService;
-        public DefaultController(ILoggingService LoggingService)
+        private readonly IAsyncRepository<ExampleEntity> repository;
+        public DefaultController(ILoggingService LoggingService, IAsyncRepository<ExampleEntity> repository)
         {
             loggingService = LoggingService;
+            this.repository = repository;
         }
         [HttpGet("test")]
         public async Task<IActionResult> Test()
         {
             await loggingService.Log("test", LogLevel.Information);
+            ExampleEntity exampleEntity = new ExampleEntity();
+            exampleEntity.Added = DateTime.Now;
+            exampleEntity.Sum = 20;
+            ExampleEntity exampleEntity2 = new ExampleEntity();
+            exampleEntity2.Added = DateTime.Now;
+            exampleEntity2.Sum = 40;
+            await repository.AddAsync(exampleEntity);
+            await repository.AddAsync(exampleEntity2);
+            IReadOnlyList<ExampleEntity> exampleEntities = await repository.GetAllAsync();
+            await repository.DeleteAsync(exampleEntity);
+            IReadOnlyCollection<ExampleEntity> exampleEntities1 = await repository.GetAllAsync();
             return Ok();
         }
     }
