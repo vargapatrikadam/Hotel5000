@@ -1,21 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Core.Interfaces;
 using Core.Interfaces.Logging;
 using Core.Services;
 using Infrastructure.Data.Contexts;
-using Infrastructure.Data.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Web.Middlewares;
 
@@ -43,9 +33,10 @@ namespace Web
 
             services.AddCors();
 
-            services.AddScoped(typeof(IAsyncRepository<>), typeof(LoggingDBRepository<>));
+            services.AddScopedRepositories();
 
             services.AddScoped<ILoggingService, LoggingService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,6 +70,9 @@ namespace Web
             //If you want to use in-memory database during a development enviroment, use this
             services.AddDbContext<LoggingDBContext>(options =>
                 options.UseInMemoryDatabase("LoggingDatabase"));
+
+            services.AddDbContext<ExampleDBContext>(options =>
+                options.UseInMemoryDatabase("ExampleDatabase"));
 
             ConfigureServices(services);
         }
