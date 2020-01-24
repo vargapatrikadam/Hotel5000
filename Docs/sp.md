@@ -55,16 +55,78 @@ Egyéb |
 ##### Adatmodell
 ![Domain adatbázis terv](../Docs/imgs/sp/lodging_database_diagram.png)
 ##### Adatbázis objektumok
-Tábla_01
+Role
 
 Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
 -------- | ----------- | -------- | --------------- | ----- | ----- |
-mező 1 | típus 1 | igen | érték validáció | PK | megjegyzés |
+Id | int | igen | auto-increment | PK | |
+Name | varchar(45) | igen | | | ADMIN, APPROVED_USER, COMPANY |
 
-Tábla_01 megszorítások
+Role megszorítások
 
 Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
 --------- | ------- | ------ | ------- | ------ | ----- |
+Role_PK | Role | Id | | | PK |
+
+User
+
+Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
+-------- | ----------- | -------- | --------------- | ----- | ----- |
+Id | int | igen | auto-increment | PK | |
+Username | varchar(100) | igen | hossz > 4 | | |
+Password | varchar(500) | igen | hossz > 8, tartalmaz 1 számot és nagybetűt | | |
+Email | varchar(255) | igen | valid email cím | | |
+FirstName | varchar(100) | igen | | | |
+LastName | varchar(100) | igen | | | |
+Role_Id | int | igen | | FK | |
+AddedAt | datetime | igen | | | |
+ModifiedAt | datetime | igen | | | |
+IsDeleted | int | igen | 0 vagy 1 | | |
+
+User megszorítások
+
+Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
+--------- | ------- | ------ | ------- | ------ | ----- |
+User_PK | User | Id | | | PK |
+User_Role_FK | Role | Id | User | Role_Id | FK 1-N |
+
+ApprovingData
+
+Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
+-------- | ----------- | -------- | --------------- | ----- | ----- |
+Id | int | igen | auto-increment | PK | |
+IdentityNumber | char(8) | nem | | | személyi azonosító szám |
+TaxNumber | char(13) | nem | | | adószám |
+RegistrationNumber | char(12) | nem | | | cégjegyzék szám |
+User_Id | int | igen | | FK | |
+AddedAt | datetime | igen | | | |
+ModifiedAt | datetime | igen | | | |
+IsDeleted | int | igen | 0 vagy 1 | | |
+
+ApprovingData megszorítások
+
+Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
+--------- | ------- | ------ | ------- | ------ | ----- |
+ApprovingData_PK | ApprovingData | Id | | | PK |
+ApprovingData_User_FK | User | Id | ApprovingData | User_Id | FK 1-1|
+
+Contact
+
+Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
+-------- | ----------- | -------- | --------------- | ----- | ----- |
+Id | int | igen | auto-increment | PK | |
+MobileNumber | varchar(13) | igen | | | |
+User_Id | int | igen | | FK | |
+AddedAt | datetime | igen | | | |
+ModifiedAt | datetime | igen | | | |
+IsDeleted | int | igen | 0 vagy 1 | | |
+
+Contact megszorítások
+
+Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
+--------- | ------- | ------ | ------- | ------ | ----- |
+Contact_PK | Contact | Id | | | PK |
+Contact_User_FK | User | Id | Contact | User_Id | FK 1-N |
 
 ## Követelmények megvalósítása
 
