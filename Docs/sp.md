@@ -22,16 +22,16 @@ interface | nem konkrét programozási értelemben vett interface, hanem az appl
 
 ### Képernyőtervek
 #### Kezdőképernyő
-![Kezdőképernyő terv](../Docs/imgs/designs/home_page.png)
+![Kezdőképernyő terv](../Docs/imgs/designs/home_page.PNG)
 
 #### Saját profil
-![Saját profil terv](../Docs/imgs/designs/own_profile.png)
+![Saját profil terv](../Docs/imgs/designs/own_profile.PNG)
 
 #### Menü
-![Menü terv](../Docs/imgs/designs/menu.png)
+![Menü terv](../Docs/imgs/designs/menu.PNG)
 
 #### Saját, meglévő hirdetések menedzselése
-![Menedzselés terv](../Docs/imgs/designs/manage_lodgings.png)
+![Menedzselés terv](../Docs/imgs/designs/manage_lodgings.PNG)
 #### Komponensek
 a fenti diagramból a komponensek leírása
 
