@@ -10,6 +10,7 @@ using Infrastructure.Data;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Entities.Example;
+using Web.DTOs;
 
 namespace Web.Controllers
 {
@@ -25,7 +26,7 @@ namespace Web.Controllers
             this.repository = repository;
         }
         [HttpGet("test")]
-        public async Task<IActionResult> Test()
+        public async Task<IActionResult> Test(UserDTO user)
         {
             await loggingService.Log("test", LogLevel.Information);
             ExampleEntity exampleEntity = new ExampleEntity();

@@ -17,6 +17,9 @@ interface | nem konkrét programozási értelemben vett interface, hanem az appl
 ### Szoftver architektúra
 ![Szoftver architektúra diagram](../Docs/imgs/sp/software_architecture_diagram.png)
 
+### Entitás reláció diagram
+![Entitás reláció diagram](../Docs/imgs/sp/entity_relation_diagram.png)
+
 ### Képernyőtervek
 #### Kezdőképernyő
 ![Kezdőképernyő terv](../Docs/imgs/designs/home_page.png)
