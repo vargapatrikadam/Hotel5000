@@ -45,15 +45,15 @@ Azonosító | Név | Magyarázat |
 ### Adatbázisréteg felépítése
 szöveg ide
 #### Adatbázis(ok)
-##### Adatbázis_01
-Tulajdonságok | Konfiguráció swssdsasda |
+##### Domain adatbázis
+Tulajdonságok | Konfiguráció |
 ------------- | ------------ |
-Név |
-Technológia |
-Collation |
+Név | LodgingDatabase
+Technológia | MSSQL via Code-First EF Core
+Collation | Latin1_General_CI_AS
 Egyéb |
 ##### Adatmodell
-diagram ide
+![Domain adatbázis terv](../Docs/imgs/sp/lodging_database_diagram.png)
 ##### Adatbázis objektumok
 Tábla_01
 
