@@ -125,6 +125,159 @@ Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
 Contact_PK | Contact | Id | | | PK |
 Contact_User_FK | User | Id | Contact | User_Id | FK 1-N |
 
+Lodging
+
+Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
+-------- | ----------- | -------- | --------------- | ----- | ----- |
+Id | int | igen | auto-increment | PK | |
+Name | varchar(255) | igen | | | | |
+User_id | int | igen | | FK | |
+AddedAt | datetime | igen | | | |
+ModifiedAt | datetime | igen | | | |
+IsDeleted | int | igen | 0 vagy 1 | | |
+
+Lodging megszorítások
+
+Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
+--------- | ------- | ------ | ------- | ------ | ----- |
+Lodging_PK | Lodging | Id | | | PK |
+Lodgind_User_FK | User | Id | Lodging | User_Id | FK 1-N |
+
+Country
+
+Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
+-------- | ----------- | -------- | --------------- | ----- | ----- |
+Id | int | igen | auto-increment | PK | |
+CountryCode | char(2) | igen | | | az ország ISO 3166-1 alpha-2 kódja |
+CountryName | varchar(100) | igen | | | az ország teljes neve |
+AddedAt | datetime | igen | | | |
+ModifiedAt | datetime | igen | | | |
+IsDeleted | int | igen | 0 vagy 1 | | |
+
+Country megszorítások
+
+Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
+--------- | ------- | ------ | ------- | ------ | ----- |
+Country_PK | Country | Id | | | PK |
+
+LodgingAddress
+
+Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
+-------- | ----------- | -------- | --------------- | ----- | ----- |
+Id | int | igen | auto-increment | PK | |
+Country_Id | int | igen | | FK | |
+County | varchar(100) | igen | | | |
+City | varchar(100) | igen | | | |
+PostalCode | varchar(10) | igen | | | irányítószám |
+Street | varchar(100) | igen | | | |
+HouseNumber | varchar(10) | igen | | | házszám |
+Floor | varchar(10) | nem | | | tömbház esetén emelet |
+DoorNumber | varchar(10) | nem | | | tömbház/apartman esetén ajtó száma |
+Lodgind_Id | int | igen | | FK | |
+AddedAt | datetime | igen | | | |
+ModifiedAt | datetime | igen | | | |
+IsDeleted | int | igen | 0 vagy 1 | | |
+
+LodgingAddress megszorítások
+
+Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
+--------- | ------- | ------ | ------- | ------ | ----- |
+LodgingAddress_PK | LodgingAddress | Id | | | PK |
+LodgingAddress_Country_FK | Country | Id | LodgingAddress | Country_Id | FK 1-N |
+LodgingAddress_Lodging_FK | Lodging | Id | LodgingAddress | Lodging_Id | FK 1-N |
+
+ReservationWindow
+
+Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
+-------- | ----------- | -------- | --------------- | ----- | ----- |
+Id | int | igen | auto-increment | PK | |
+From | datetime | igen | | | mikortól szabad a szállás |
+To | datetime | igen | | | meddig szabad a szállás |
+Lodging_Id | int | igen | | FK | |
+AddedAt | datetime | igen | | | |
+ModifiedAt | datetime | igen | | | |
+IsDeleted | int | igen | 0 vagy 1 | | |
+
+ReservationWindow megszorítások
+
+Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
+--------- | ------- | ------ | ------- | ------ | ----- |
+ReservationWindow_PK | ReservationWindow | Id | | | PK |
+ReservationWindow_Lodging_FK | Lodging | Id | ReservationWindow | Logding_Id | FK 1-N |
+
+Room
+
+Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
+-------- | ----------- | -------- | --------------- | ----- | ----- |
+Id | int | igen | auto-increment | PK | |
+AdultCapacity | int | igen | | | felnőtt férőhely |
+ChildrenCapacity | int | igen | | | gyerek férőhely |
+ReservationWindow_Id | int | igen | | FK | |
+AddedAt | datetime | igen | | | |
+ModifiedAt | datetime | igen | | | |
+IsDeleted | int | igen | 0 vagy 1 | | |
+
+Room megszorítások
+
+Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
+--------- | ------- | ------ | ------- | ------ | ----- |
+Room_PK | Room | Id | | | PK |
+Room_ReservationWindow_FK | ReservationWindow | Id | Room | ReservationWindow_Id | FK 1-N |
+
+PaymentType
+
+Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
+-------- | ----------- | -------- | --------------- | ----- | ----- |
+Id | int | igen | auto-increment | PK | |
+Name | varchar(100) | igen | | | fizetési mód megnevezése |
+
+PaymentType megszorítások
+
+Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
+--------- | ------- | ------ | ------- | ------ | ----- |
+PaymentType_PK | PaymentType | Id | | | PK |
+
+UserReservation
+
+Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
+-------- | ----------- | -------- | --------------- | ----- | ----- |
+Id | int | igen | auto-increment | PK | |
+Email | varchar(255) | igen | | | |
+ReservedFrom | datetime | igen | | | foglalás kezdete |
+ReservedTo | datetime | igen | | | foglalás vége |
+ReservationWindow_Id | int | igen | | FK | |
+PaymentType_Id | int | igen | | FK | |
+AddedAt | datetime | igen | | | |
+ModifiedAt | datetime | igen | | | |
+IsDeleted | int | igen | 0 vagy 1 | | |
+
+UserReservation megszorítások
+
+Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
+--------- | ------- | ------ | ------- | ------ | ----- |
+UserReservation_PK | UserReservation | Id | | | PK |
+UserReservation_ReservationWindow_FK | ReservationWindow | Id | UserReservation | ReservationWindow_Id | FK 1-N |
+UserReservation_PaymentType_FK | PaymentType | Id | UserReservation | PaymentType_Id | FK 1-N |
+
+ReservedRoom
+
+Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
+-------- | ----------- | -------- | --------------- | ----- | ----- |
+Id | int | igen | auto-increment | PK | |
+UserReservation_Id | int | igen | | FK | |
+Room_Id | int | igen | | FK | |
+AddedAt | datetime | igen | | | |
+ModifiedAt | datetime | igen | | | |
+IsDeleted | int | igen | 0 vagy 1 | | |
+
+ReservedRoom megszorítások
+
+Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
+--------- | ------- | ------ | ------- | ------ | ----- |
+ReservedRoom_PK | ReservedRoom | Id | | | PK |
+ReservedRoom_UserReservation_FK | UserReservation | Id | ReservedRoom | UserReservation_Id | FK 1-N |
+ReservedRoom_Room_FK | Room | Id | ReservedRoom | Room_Id | FK 1-N |
+
 ## Követelmények megvalósítása
 
 URS azonosító | Kapcsolódó komponensek azonosítói | Egyéb |
