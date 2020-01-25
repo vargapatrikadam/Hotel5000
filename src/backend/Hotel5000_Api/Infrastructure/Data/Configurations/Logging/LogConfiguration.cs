@@ -7,9 +7,9 @@ using System.Text;
 
 namespace Infrastructure.Data.Configurations.Logging
 {
-    public class LogConfiguration : IEntityTypeConfiguration<LogEntity>, ILoggingConfigurationAggregate
+    public class LogConfiguration : IEntityTypeConfiguration<Log>, ILoggingConfigurationAggregate
     {
-        public void Configure(EntityTypeBuilder<LogEntity> builder)
+        public void Configure(EntityTypeBuilder<Log> builder)
         {
             builder.HasKey(k => k.Id);
 

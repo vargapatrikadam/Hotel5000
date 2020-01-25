@@ -22,7 +22,7 @@ namespace Web
             //We cannot use this way because of the repository pattern.
             //services.AddScoped(typeof(IAsyncRepository<>), typeof(LoggingDBRepository<>));
             //services.AddScoped(typeof(IAsyncRepository<>), typeof(ExampleDBRepository<>));
-            services.AddScoped<IAsyncRepository<LogEntity>, LoggingDBRepository<LogEntity>>();
+            services.AddScoped<IAsyncRepository<Log>, LoggingDBRepository<Log>>();
             services.AddScoped<IAsyncRepository<ExampleEntity>, ExampleDBRepository<ExampleEntity>>();
         }
     }

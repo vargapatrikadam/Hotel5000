@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Core.Entities.Logging
 {
-    public class LogEntity : BaseEntity
+    public class Log : BaseEntity
     {
         public DateTime Timestamp { get; set; }
         public string Message { get; set; }

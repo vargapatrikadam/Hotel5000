@@ -12,7 +12,7 @@ namespace Infrastructure.Data.Contexts
     public class LoggingDBContext : DbContext
     {
         public LoggingDBContext(DbContextOptions<LoggingDBContext> options) : base(options) { }
-        public DbSet<LogEntity> Logs { get; set; }
+        public DbSet<Log> Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -9,8 +9,8 @@ namespace Core.Interfaces.Logging
 {
     public interface ILoggingService
     {
-        Task Log(LogEntity log);
+        Task Log(Log log);
         Task Log(string message, LogLevel type);
-        Task<IReadOnlyList<LogEntity>> GetAllLogs();
+        Task<IReadOnlyList<Log>> GetAllLogs();
     }
 }
