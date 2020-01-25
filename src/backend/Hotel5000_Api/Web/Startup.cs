@@ -1,5 +1,5 @@
 using Core.Interfaces.Logging;
-using Core.Services;
+using Core.Services.Logging;
 using Infrastructure.Data.Contexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

@@ -2,12 +2,13 @@
 using Core.Enums.Logging;
 using Core.Interfaces;
 using Core.Interfaces.Logging;
+using Core.Specifications.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Services
+namespace Core.Services.Logging
 {
     public class LoggingService : ILoggingService
     {
@@ -20,6 +21,11 @@ namespace Core.Services
         public async Task<IReadOnlyList<Log>> GetAllLogs()
         {
             return await logRepository.GetAllAsync();
+        }
+
+        public async Task<IReadOnlyList<Log>> GetLogsByLevel(LogLevel type)
+        {
+            return await logRepository.GetAsync(new GetLogsByLevelSpecification(type));
         }
 
         public async Task Log(Log log)

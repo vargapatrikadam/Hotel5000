@@ -12,5 +12,6 @@ namespace Core.Interfaces.Logging
         Task Log(Log log);
         Task Log(string message, LogLevel type);
         Task<IReadOnlyList<Log>> GetAllLogs();
+        Task<IReadOnlyList<Log>> GetLogsByLevel(LogLevel type);
     }
 }
