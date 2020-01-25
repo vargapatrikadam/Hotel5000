@@ -212,6 +212,7 @@ Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
 Id | int | igen | auto-increment | PK | |
 From | datetime | igen | érték >= jelenlegi dátum | | |
 To | datetime | igen | érték > From | | |
+Price | int | igen | érték > 0 | | |
 AddedAt | datetime | igen | | | |
 ModifiedAt | datetime | igen | | | |
 IsDeleted | int | igen | 0 vagy 1 | | |
