@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Core.Interfaces
 {
-    public interface ISpecification<T> where T : BaseEntity
+    public interface ISpecification<T> where T : class
     {
         Expression<Func<T, bool>> Criteria { get; }
         List<Expression<Func<T, object>>> Includes { get; }
