@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Core.Entities;
 
 namespace Infrastructure.Data
 {
@@ -13,15 +14,18 @@ namespace Infrastructure.Data
         {
             foreach (var entry in context.ChangeTracker.Entries())
             {
-                switch (entry.State)
+                if (entry.Entity is BaseEntity)
                 {
-                    case EntityState.Added:
-                        entry.CurrentValues["IsDeleted"] = false;
-                        break;
-                    case EntityState.Deleted:
-                        entry.State = EntityState.Modified;
-                        entry.CurrentValues["IsDeleted"] = true;
-                        break;
+                    switch (entry.State)
+                    {
+                        case EntityState.Added:
+                            entry.CurrentValues["IsDeleted"] = false;
+                            break;
+                        case EntityState.Deleted:
+                            entry.State = EntityState.Modified;
+                            entry.CurrentValues["IsDeleted"] = true;
+                            break;
+                    }
                 }
             }
         }
@@ -29,17 +33,20 @@ namespace Infrastructure.Data
         {
             foreach (var entry in context.ChangeTracker.Entries())
             {
-                switch (entry.State)
+                if (entry.Entity is BaseEntity)
                 {
-                    case EntityState.Added:
-                        entry.CurrentValues["AddedAt"] = DateTime.Now;
-                        break;
-                    case EntityState.Deleted:
-                        entry.CurrentValues["ModifiedAt"] = DateTime.Now;
-                        break;
-                    case EntityState.Modified:
-                        entry.CurrentValues["ModifiedAt"] = DateTime.Now;
-                        break;
+                    switch (entry.State)
+                    {
+                        case EntityState.Added:
+                            entry.CurrentValues["AddedAt"] = DateTime.Now;
+                            break;
+                        case EntityState.Deleted:
+                            entry.CurrentValues["ModifiedAt"] = DateTime.Now;
+                            break;
+                        case EntityState.Modified:
+                            entry.CurrentValues["ModifiedAt"] = DateTime.Now;
+                            break;
+                    }
                 }
             }
         }
