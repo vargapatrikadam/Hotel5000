@@ -1,4 +1,5 @@
 ﻿using Core.Entities.Lodging;
+using Core.Helpers;
 using Core.Interfaces;
 using Core.Interfaces.Lodging;
 using Core.Specifications.Lodging;
@@ -19,11 +20,18 @@ namespace Core.Services.Lodging
         }
         public async Task<User> AuthenticateAsync(string username, string password, string email)
         {
-            return (await UserRepository.GetAsync(new AuthenticateSpecification(username, password, email))).FirstOrDefault();
+            User user = (await UserRepository.GetAsync(new AuthenticateSpecification(username, password, email))).FirstOrDefault();
+            return user.WithoutPassword();
         }
 
         public async void Register(User user)
         {
+            string errorMessage = null;
+            user.Email.ValidateEmail(out errorMessage);
+            user.Password.ValidatePassword(out errorMessage);
+            if (errorMessage != null)
+                throw new ArgumentException(errorMessage);
+
             await UserRepository.AddAsync(user);
         }
     }
