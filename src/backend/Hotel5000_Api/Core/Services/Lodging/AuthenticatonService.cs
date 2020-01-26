@@ -20,12 +20,16 @@ namespace Core.Services.Lodging
         }
         public async Task<User> AuthenticateAsync(string username, string password, string email)
         {
-            var spec = new Specification<User>().Include(p => p.Lodgings);
-
             User user = (await UserRepository.GetAsync(
                 new Specification<User>()
                 .ApplyFilter(p => (p.Email == email || p.Username == username) && p.Password == password)))
                 .FirstOrDefault();
+
+            //This way we don't need to implement a replica of ThenInclude from EF Core, because we cause eager loading on entities from the context.
+            //Specification<User> spec = new Specification<User>()
+            //    .Include(p => p.Lodgings
+            //        .Select(s => s.Rooms
+            //            .Select(s => s.ReservationWindows)));
             return user.WithoutPassword();
         }
 

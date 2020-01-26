@@ -1,5 +1,7 @@
 using Core.Interfaces.Logging;
+using Core.Interfaces.PasswordHasher;
 using Core.Services.Logging;
+using Core.Services.PasswordHasher;
 using Infrastructure.Data.Contexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,6 +34,9 @@ namespace Web
             });
 
             services.AddCors();
+
+            HashingOptions hashingOptions = Configuration.GetSection("HashingOptions").Get<HashingOptions>();
+            services.AddSingleton<IPasswordHasher>(new PasswordHasher(hashingOptions));
 
             services.AddScopedRepositories();
 
