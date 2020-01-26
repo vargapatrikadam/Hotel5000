@@ -1,11 +1,11 @@
-﻿using Core.Entities.Logging;
+﻿using Core.Entities.LoggingEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Infrastructure.Data.Configurations.Logging
+namespace Infrastructure.Data.Configurations.LoggingConfigurations
 {
     public class LogConfiguration : IEntityTypeConfiguration<Log>, ILoggingConfigurationAggregate
     {

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Infrastructure.Data.Configurations
 {
-    public interface IExampleConfigurationAggregate
+    public interface ILodgingConfigurationAggregate
     {
     }
 }
