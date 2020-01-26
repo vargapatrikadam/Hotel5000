@@ -125,6 +125,24 @@ Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
 Contact_PK | Contact | Id | | | PK |
 Contact_User_FK | User | Id | Contact | User_Id | FK 1-N |
 
+Token
+
+Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
+-------- | ----------- | -------- | --------------- | ----- | ----- |
+Id | int | igen | auto-increment | PK | |
+RefreshToken | varchar(100) | igen | | | |
+User_Id | int | igen | | FK | |
+AddedAt | datetime | igen | | | |
+ModifiedAt | datetime | igen | | | |
+IsDeleted | int | igen | 0 vagy 1 | | |
+
+Token megszorítások
+
+Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
+--------- | ------- | ------ | ------- | ------ | ----- |
+Token_PK | Token | Id | | | PK |
+Token_User_Id_FK | User | Id | Token | User_Id | FK 1-N |
+
 Lodging
 
 Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
