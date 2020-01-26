@@ -9,8 +9,7 @@ using Core.Enums.Logging;
 using Infrastructure.Data;
 using Core.Entities;
 using Core.Interfaces;
-using Core.Entities.Example;
-using Web.DTOs;
+using Core.Entities.LodgingEntities;
 
 namespace Web.Controllers
 {
@@ -19,31 +18,19 @@ namespace Web.Controllers
     public class DefaultController : ControllerBase
     {
         private readonly ILoggingService loggingService;
-        private readonly IAsyncRepository<ExampleEntity> repository;
-        public DefaultController(ILoggingService LoggingService, IAsyncRepository<ExampleEntity> repository)
+        private readonly IAsyncRepository<Role> repository;
+        public DefaultController(ILoggingService LoggingService, IAsyncRepository<Role> repository)
         {
             loggingService = LoggingService;
             this.repository = repository;
         }
         [HttpGet("test")]
-        public async Task<IActionResult> Test(UserDTO user)
+        public async Task<IActionResult> Test()
         {
             await loggingService.Log("test", LogLevel.Information);
-            ExampleEntity exampleEntity = new ExampleEntity();
-            exampleEntity.Added = DateTime.Now;
-            exampleEntity.Sum = 20;
-            ExampleEntity exampleEntity2 = new ExampleEntity();
-            exampleEntity2.Added = DateTime.Now;
-            exampleEntity2.Sum = 40;
-            await repository.AddAsync(exampleEntity);
-            await repository.AddAsync(exampleEntity2);
-            IReadOnlyList<ExampleEntity> exampleEntities = await repository.GetAllAsync();
-            await repository.DeleteAsync(exampleEntity);
-            ExampleEntity deletedentity = new ExampleEntity();
-            deletedentity.Sum = 20;
-            deletedentity.Added = DateTime.Now;
-            await repository.AddAsync(deletedentity);
-            IReadOnlyCollection<ExampleEntity> exampleEntities1 = await repository.GetAllAsync();
+
+            IReadOnlyList<Role> roles = await repository.GetAllAsync();
+            
             return Ok();
         }
     }

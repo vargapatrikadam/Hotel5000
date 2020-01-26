@@ -1,9 +1,8 @@
-﻿using Core.Enums.Lodging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Entities.Lodging
+namespace Core.Entities.LodgingEntities
 {
     public class User : BaseEntity
     {
@@ -13,7 +12,7 @@ namespace Core.Entities.Lodging
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        public RoleId RoleId { get; set; }
+        public int RoleId { get; set; }
         public virtual Role Role { get; set; }
 
         public virtual ApprovingData ApprovingData { get; set; }

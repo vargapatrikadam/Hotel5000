@@ -59,7 +59,7 @@ namespace Infrastructure.Data.Configurations.LodgingConfigurations
 
             builder.HasAlternateKey(k => new
             {
-                k.Country,
+                k.CountryId,
                 k.County,
                 k.City,
                 k.PostalCode,

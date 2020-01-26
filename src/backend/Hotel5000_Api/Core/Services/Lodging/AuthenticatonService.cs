@@ -1,4 +1,4 @@
-﻿using Core.Entities.Lodging;
+﻿using Core.Entities.LodgingEntities;
 using Core.Helpers;
 using Core.Interfaces;
 using Core.Interfaces.Lodging;

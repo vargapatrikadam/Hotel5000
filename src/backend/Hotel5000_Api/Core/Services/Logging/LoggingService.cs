@@ -1,4 +1,4 @@
-﻿using Core.Entities.Logging;
+﻿using Core.Entities.LoggingEntities;
 using Core.Enums.Logging;
 using Core.Interfaces;
 using Core.Interfaces.Logging;

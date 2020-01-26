@@ -1,8 +1,12 @@
+using Core.Entities.LodgingEntities;
+using Core.Entities.LoggingEntities;
+using Core.Interfaces;
 using Core.Interfaces.Logging;
 using Core.Interfaces.PasswordHasher;
 using Core.Services.Logging;
 using Core.Services.PasswordHasher;
 using Infrastructure.Data.Contexts;
+using Infrastructure.Data.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -35,10 +39,25 @@ namespace Web
 
             services.AddCors();
 
+            services.AddScoped<IAsyncRepository<Log>, LoggingDBRepository<Log>>();
+
+            services.AddScoped<IAsyncRepository<Role>, LodgingDBRepository<Role>>();
+            services.AddScoped<IAsyncRepository<User>, LodgingDBRepository<User>>();
+            services.AddScoped<IAsyncRepository<Token>, LodgingDBRepository<Token>>();
+            services.AddScoped<IAsyncRepository<ApprovingData>, LodgingDBRepository<ApprovingData>>();
+            services.AddScoped<IAsyncRepository<Contact>, LodgingDBRepository<Contact>>();
+            services.AddScoped<IAsyncRepository<Lodging>, LodgingDBRepository<Lodging>>();
+            services.AddScoped<IAsyncRepository<Country>, LodgingDBRepository<Country>>();
+            services.AddScoped<IAsyncRepository<LodgingAddress>, LodgingDBRepository<LodgingAddress>>();
+            services.AddScoped<IAsyncRepository<Room>, LodgingDBRepository<Room>>();
+            services.AddScoped<IAsyncRepository<ReservationWindow>, LodgingDBRepository<ReservationWindow>>();
+            services.AddScoped<IAsyncRepository<PaymentType>, LodgingDBRepository<PaymentType>>();
+            services.AddScoped<IAsyncRepository<UserReservation>, LodgingDBRepository<UserReservation>>();
+            services.AddScoped<IAsyncRepository<Reservation>, LodgingDBRepository<Reservation>>();
+            
+
             HashingOptions hashingOptions = Configuration.GetSection("HashingOptions").Get<HashingOptions>();
             services.AddSingleton<IPasswordHasher>(new PasswordHasher(hashingOptions));
-
-            services.AddScopedRepositories();
 
             services.AddScoped<ILoggingService, LoggingService>();
 
@@ -76,8 +95,8 @@ namespace Web
             services.AddDbContext<LoggingDBContext>(options =>
                 options.UseInMemoryDatabase("LoggingDatabase"));
 
-            services.AddDbContext<ExampleDBContext>(options =>
-                options.UseInMemoryDatabase("ExampleDatabase"));
+            services.AddDbContext<LodgingDBContext>(options =>
+                options.UseInMemoryDatabase("LodgingDatabase"));
 
             ConfigureServices(services);
         }

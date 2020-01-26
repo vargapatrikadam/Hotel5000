@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Entities.Logging
+namespace Core.Entities.LoggingEntities
 {
     public class Log : BaseEntity
     {

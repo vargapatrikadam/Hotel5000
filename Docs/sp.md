@@ -86,6 +86,8 @@ Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
 --------- | ------- | ------ | ------- | ------ | ----- |
 User_PK | User | Id | | | PK |
 User_Role_FK | Role | Id | User | Role_Id | FK 1-N |
+User_Username_UQ | User | Username | | | UQ |
+User_Email_UQ | User | Email | | | UQ |
 
 ApprovingData
 
@@ -105,7 +107,10 @@ ApprovingData megszorítások
 Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
 --------- | ------- | ------ | ------- | ------ | ----- |
 ApprovingData_PK | ApprovingData | Id | | | PK |
-ApprovingData_User_FK | User | Id | ApprovingData | User_Id | FK 1-1|
+ApprovingData_User_FK | User | Id | ApprovingData | User_Id | FK 1-1 |
+ApprovingData_IdentityNumber_UQ | ApprovingData | IdentityNumber | | | UQ |
+ApprovingData_TaxNumber_UQ | ApprovingData | TaxNumber | | | UQ |
+ApprovingData_RegistrationNumber_UQ | ApprovingData | RegistrationNumber | | | UQ |
 
 Contact
 
@@ -124,6 +129,7 @@ Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
 --------- | ------- | ------ | ------- | ------ | ----- |
 Contact_PK | Contact | Id | | | PK |
 Contact_User_FK | User | Id | Contact | User_Id | FK 1-N |
+Contact_MobileNumber_UQ | Contact | MobileNumber | | | UQ |
 
 Token
 
@@ -177,6 +183,8 @@ Country megszorítások
 Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
 --------- | ------- | ------ | ------- | ------ | ----- |
 Country_PK | Country | Id | | | PK |
+Country_CountyCode_UQ | Country | CountryCode | | | UQ |
+Country_CountryName_UQ | Country | CountryName | | | UQ |
 
 LodgingAddress
 
@@ -203,6 +211,14 @@ Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
 LodgingAddress_PK | LodgingAddress | Id | | | PK |
 LodgingAddress_Country_FK | Country | Id | LodgingAddress | Country_Id | FK 1-N |
 LodgingAddress_Lodging_FK | Lodging | Id | LodgingAddress | Lodging_Id | FK 1-N |
+LodgingAddress_Country_CK | LodgingAddress | Country_Id | | | CK |
+LodgingAddress_County_CK | LodgingAddress | County | | | CK |
+LodgingAddress_City_CK | LodgingAddress | City | | | CK |
+LodgingAddress_PostalCode_CK | LodgingAddress | PostalCode | | | CK |
+LodgingAddress_Street_CK | LodgingAddress | Street | | | CK |
+LodgingAddress_HouseNumber_CK | LodgingAddress | HouseNumber | | | CK |
+LodgingAddress_Floor_CK | LodgingAddress | Floor | | | CK |
+LodgingAddress_DoorNumber_CK | LodgingAddress | DoorNumber | | | CK |
 
 Room
 

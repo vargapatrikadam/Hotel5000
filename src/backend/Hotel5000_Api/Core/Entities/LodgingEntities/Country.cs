@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Entities.Lodging
+namespace Core.Entities.LodgingEntities
 {
     public class Country : BaseEntity
     {

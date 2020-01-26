@@ -1,5 +1,4 @@
 ﻿using Core.Entities.LodgingEntities;
-using Core.Enums.Lodging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -13,21 +12,14 @@ namespace Infrastructure.Data.Configurations.LodgingConfigurations
     {
         public void Configure(EntityTypeBuilder<Role> builder)
         {
+            builder.HasKey(k => k.Id)
+                .HasName("Role_PK");
+
             builder.Property(p => p.Id)
-                .HasConversion<int>();
+                .ValueGeneratedOnAdd();
 
             builder.Property(p => p.Name)
                 .IsRequired();
-
-            builder.HasData(
-                Enum.GetValues(typeof(RoleId))
-                    .Cast<RoleId>()
-                    .Select(s => new Role()
-                    {
-                        Id = s,
-                        Name = s.ToString()
-                    })
-                );
         }
     }
 }
