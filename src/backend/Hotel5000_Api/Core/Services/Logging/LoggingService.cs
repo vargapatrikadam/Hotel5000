@@ -2,7 +2,7 @@
 using Core.Enums.Logging;
 using Core.Interfaces;
 using Core.Interfaces.Logging;
-using Core.Specifications.Logging;
+using Core.Specifications;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,7 +25,7 @@ namespace Core.Services.Logging
 
         public async Task<IReadOnlyList<Log>> GetLogsByLevel(LogLevel type)
         {
-            return await logRepository.GetAsync(new GetLogsByLevelSpecification(type));
+            return await logRepository.GetAsync(new Specification<Log>().ApplyFilter(p => p.Type == type));
         }
 
         public async Task Log(Log log)

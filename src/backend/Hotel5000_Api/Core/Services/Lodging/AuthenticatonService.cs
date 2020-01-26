@@ -2,7 +2,7 @@
 using Core.Helpers;
 using Core.Interfaces;
 using Core.Interfaces.Lodging;
-using Core.Specifications.Lodging;
+using Core.Specifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,12 @@ namespace Core.Services.Lodging
         }
         public async Task<User> AuthenticateAsync(string username, string password, string email)
         {
-            User user = (await UserRepository.GetAsync(new AuthenticateSpecification(username, password, email))).FirstOrDefault();
+            var spec = new Specification<User>().Include(p => p.Lodgings);
+
+            User user = (await UserRepository.GetAsync(
+                new Specification<User>()
+                .ApplyFilter(p => (p.Email == email || p.Username == username) && p.Password == password)))
+                .FirstOrDefault();
             return user.WithoutPassword();
         }
 

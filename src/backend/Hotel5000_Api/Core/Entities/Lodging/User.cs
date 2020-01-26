@@ -18,5 +18,6 @@ namespace Core.Entities.Lodging
 
         public virtual ApprovingData ApprovingData { get; set; }
         public virtual ICollection<Contact> Contacts { get; set; }
+        public virtual ICollection<Lodging> Lodgings { get; set; }
     }
 }
