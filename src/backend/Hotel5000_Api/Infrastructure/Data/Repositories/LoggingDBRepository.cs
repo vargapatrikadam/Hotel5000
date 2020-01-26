@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Infrastructure.Data.Repositories
 {
     public class LoggingDBRepository<TEntity> : ARepository<TEntity, LoggingDBContext> 
-        where TEntity : BaseEntity
+        where TEntity : class
     {
         public LoggingDBRepository(LoggingDBContext context) : base(context)
         {

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data.Repositories
 {
-    public abstract class ARepository<TEntity, TContext> : IAsyncRepository<TEntity> where TEntity : BaseEntity
+    public abstract class ARepository<TEntity, TContext> : IAsyncRepository<TEntity> where TEntity : class
                                                                                      where TContext : DbContext
     {
         protected readonly TContext context;
