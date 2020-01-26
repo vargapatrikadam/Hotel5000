@@ -1,4 +1,4 @@
-﻿using Core.Entities.Logging;
+﻿using Core.Entities.LoggingEntities;
 using Infrastructure.Data.Configurations;
 using Microsoft.EntityFrameworkCore;
 using System;
