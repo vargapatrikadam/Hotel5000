@@ -7,6 +7,7 @@ using Core.Specifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,38 +16,86 @@ namespace Core.Services.Lodging
     public class AuthenticatonService : IAuthenticaton
     {
         private readonly IAsyncRepository<User> UserRepository;
+        private readonly IAsyncRepository<Token> TokenRepository;
         private readonly IPasswordHasher PasswordHasher;
-        public AuthenticatonService(IAsyncRepository<User> userRepository, IPasswordHasher passwordHasher)
+        public AuthenticatonService(IAsyncRepository<User> userRepository, IAsyncRepository<Token> tokenRepository, IPasswordHasher passwordHasher)
         {
             UserRepository = userRepository;
+            TokenRepository = tokenRepository;
             PasswordHasher = passwordHasher;
         }
-        public async Task<User> AuthenticateAsync(string username, string password, string email)
+        public async Task<Token> AuthenticateAsync(string username, string password, string email)
         {
-            User user = (await UserRepository.GetAsync(
-                new Specification<User>()
-                .ApplyFilter(p => (p.Email == email || p.Username == username) && PasswordHasher.Check(p.Password, password))))
-                .FirstOrDefault();
-
             //This way we don't need to implement a replica of ThenInclude from EF Core, because we cause eager loading on entities from the context.
             //Specification<User> spec = new Specification<User>()
             //    .Include(p => p.Lodgings
             //        .Select(s => s.Rooms
             //            .Select(s => s.ReservationWindows)));
-            return user.WithoutPassword();
+            //return user.WithoutPassword();
+
+            User user = (await UserRepository.GetAsync(
+                new Specification<User>()
+                    .ApplyFilter(p => p.Email == email || p.Username == username)))
+                    .FirstOrDefault();
+
+            if (user == null)
+                return null;
+            if (!PasswordHasher.Check(user.Password, password))
+                return null;
+
+            Token newToken = new Token();
+            newToken.RefreshToken = GenerateRefreshToken();
+            newToken.UserId = user.Id;
+
+            await TokenRepository.AddAsync(newToken);
+
+            return newToken;
+        }
+        private string GenerateRefreshToken()
+        {
+            byte[] random = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(random);
+                return Convert.ToBase64String(random);
+            }
+        }
+        public async Task<Token> RefreshAsync(string refreshToken)
+        {
+            Token oldToken
+                = (await TokenRepository.GetAsync(
+                new Specification<Token>()
+                .ApplyFilter(p => p.RefreshToken == refreshToken)
+                .Include(p => p.User.Role)))
+                .FirstOrDefault();
+
+            if (oldToken == null)
+                return null;
+
+            Token newToken = new Token();
+            newToken.RefreshToken = GenerateRefreshToken();
+            newToken.UserId = oldToken.UserId;
+
+            await TokenRepository.AddAsync(newToken);
+
+            await TokenRepository.DeleteAsync(oldToken);
+
+            return newToken;
         }
 
-        public async void Register(User user)
+        public async Task<bool> RegisterAsync(User user)
         {
             string errorMessage = null;
             user.Email.ValidateEmail(out errorMessage);
             user.Password.ValidatePassword(out errorMessage);
-            if (errorMessage != null)
+            if (errorMessage != string.Empty)
                 throw new ArgumentException(errorMessage);
 
             user.Password = PasswordHasher.Hash(user.Password);
 
             await UserRepository.AddAsync(user);
+
+            return true;
         }
     }
 }

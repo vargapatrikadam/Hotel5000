@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data.Repositories
 {
-    public abstract class ARepository<TEntity, TContext> : IAsyncRepository<TEntity> where TEntity : class
+    public abstract class ARepository<TEntity, TContext> : IAsyncRepository<TEntity> where TEntity : BaseEntity
                                                                                      where TContext : DbContext
     {
         protected readonly TContext context;
@@ -23,10 +23,10 @@ namespace Infrastructure.Data.Repositories
             await context.SaveChangesAsync();
             return newEntity.Entity;
         }
-
         public async Task DeleteAsync(TEntity entity)
         {
-            context.Set<TEntity>().Remove(entity);
+            TEntity deleteThis = await context.Set<TEntity>().FindAsync(entity.Id);
+            context.Set<TEntity>().Remove(deleteThis);
             await context.SaveChangesAsync();
         }
 

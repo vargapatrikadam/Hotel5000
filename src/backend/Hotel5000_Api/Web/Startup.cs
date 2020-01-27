@@ -1,8 +1,10 @@
 using Core.Entities.LodgingEntities;
 using Core.Entities.LoggingEntities;
 using Core.Interfaces;
+using Core.Interfaces.Lodging;
 using Core.Interfaces.Logging;
 using Core.Interfaces.PasswordHasher;
+using Core.Services.Lodging;
 using Core.Services.Logging;
 using Core.Services.PasswordHasher;
 using Infrastructure.Data.Contexts;
@@ -60,7 +62,7 @@ namespace Web
             services.AddSingleton<IPasswordHasher>(new PasswordHasher(hashingOptions));
 
             services.AddScoped<ILoggingService, LoggingService>();
-
+            services.AddScoped<IAuthenticaton, AuthenticatonService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

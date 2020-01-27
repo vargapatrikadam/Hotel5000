@@ -34,13 +34,11 @@ namespace Infrastructure.Data.Contexts
         }
         public override int SaveChanges()
         {
-            this.UpdateBaseEntityDateFields();
             this.UpdateSoftDeleteStatuses();
             return base.SaveChanges();
         }
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
-            this.UpdateBaseEntityDateFields();
             this.UpdateSoftDeleteStatuses();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }

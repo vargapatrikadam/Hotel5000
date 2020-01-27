@@ -29,27 +29,6 @@ namespace Infrastructure.Data
                 }
             }
         }
-        public static void UpdateBaseEntityDateFields(this DbContext context)
-        {
-            foreach (var entry in context.ChangeTracker.Entries())
-            {
-                if (entry.Entity is BaseEntity)
-                {
-                    switch (entry.State)
-                    {
-                        case EntityState.Added:
-                            entry.CurrentValues["AddedAt"] = DateTime.Now;
-                            break;
-                        case EntityState.Deleted:
-                            entry.CurrentValues["ModifiedAt"] = DateTime.Now;
-                            break;
-                        case EntityState.Modified:
-                            entry.CurrentValues["ModifiedAt"] = DateTime.Now;
-                            break;
-                    }
-                }
-            }
-        }
         /// <summary>
         /// Adds new property & query filter to a configuration which enables soft deletion on it.
         /// </summary>
@@ -89,7 +68,7 @@ namespace Infrastructure.Data
                 .HasComputedColumnSql("getdate()");
 
             builder.Property(p => p.ModifiedAt)
-                .ValueGeneratedOnAddOrUpdate()
+                .ValueGeneratedOnUpdate()
                 .HasComputedColumnSql("getdate()");
 
             return builder;

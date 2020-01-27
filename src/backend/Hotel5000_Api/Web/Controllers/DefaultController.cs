@@ -10,6 +10,7 @@ using Infrastructure.Data;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Entities.LodgingEntities;
+using Core.Interfaces.Lodging;
 
 namespace Web.Controllers
 {
@@ -18,18 +19,30 @@ namespace Web.Controllers
     public class DefaultController : ControllerBase
     {
         private readonly ILoggingService loggingService;
-        private readonly IAsyncRepository<Role> repository;
-        public DefaultController(ILoggingService LoggingService, IAsyncRepository<Role> repository)
+        private readonly IAuthenticaton authenticatonService;
+        public DefaultController(ILoggingService LoggingService, IAuthenticaton authenticaton)
         {
             loggingService = LoggingService;
-            this.repository = repository;
+            authenticatonService = authenticaton;
         }
         [HttpGet("test")]
         public async Task<IActionResult> Test()
         {
             await loggingService.Log("test", LogLevel.Information);
 
-            IReadOnlyList<Role> roles = await repository.GetAllAsync();
+            User newUser = new User();
+            newUser.RoleId = 3;
+            newUser.Username = "test";
+            newUser.Password = "Testpw111";
+            newUser.LastName = "testlast";
+            newUser.FirstName = "testfirst";
+            newUser.Email = "asd@asd.com";
+
+            await authenticatonService.RegisterAsync(newUser);
+
+            Token token = await authenticatonService.AuthenticateAsync("test", "Testpw111", null);
+
+            Token newToken = await authenticatonService.RefreshAsync(token.RefreshToken);
             
             return Ok();
         }
