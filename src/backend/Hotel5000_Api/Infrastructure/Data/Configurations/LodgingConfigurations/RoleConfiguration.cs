@@ -17,7 +17,8 @@ namespace Infrastructure.Data.Configurations.LodgingConfigurations
             builder.EnableSoftDeletion();
 
             builder.Property(p => p.Name)
-                .IsRequired();
+                .IsRequired()
+                .HasConversion<string>();
 
             builder.HasIndex(i => i.Name)
                 .IsUnique()

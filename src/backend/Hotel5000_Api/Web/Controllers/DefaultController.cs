@@ -19,8 +19,8 @@ namespace Web.Controllers
     public class DefaultController : ControllerBase
     {
         private readonly ILoggingService loggingService;
-        private readonly IAuthenticaton authenticatonService;
-        public DefaultController(ILoggingService LoggingService, IAuthenticaton authenticaton)
+        private readonly IAuthenticatonService authenticatonService;
+        public DefaultController(ILoggingService LoggingService, IAuthenticatonService authenticaton)
         {
             loggingService = LoggingService;
             authenticatonService = authenticaton;
@@ -40,9 +40,11 @@ namespace Web.Controllers
 
             await authenticatonService.RegisterAsync(newUser);
 
-            Token token = await authenticatonService.AuthenticateAsync("test", "Testpw111", null);
+            Token token = await authenticatonService.AuthenticateAsync(null, "Testpw111", "asd@asd.com");
 
             Token newToken = await authenticatonService.RefreshAsync(token.RefreshToken);
+
+            //Role role = newToken.User.Role;
             
             return Ok();
         }

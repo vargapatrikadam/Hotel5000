@@ -28,6 +28,7 @@ namespace Infrastructure.Data
             {
                 query = query.OrderBy(specification.OrderBy);
             }
+
             else if (specification.OrderByDescending != null)
             {
                 query = query.OrderByDescending(specification.OrderByDescending);

@@ -62,7 +62,7 @@ namespace Web
             services.AddSingleton<IPasswordHasher>(new PasswordHasher(hashingOptions));
 
             services.AddScoped<ILoggingService, LoggingService>();
-            services.AddScoped<IAuthenticaton, AuthenticatonService>();
+            services.AddScoped<IAuthenticatonService, AuthenticatonService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

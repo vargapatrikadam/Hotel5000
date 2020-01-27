@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,11 +18,11 @@ namespace Infrastructure.Data.Repositories
         {
             context = Context;
         }
-        public async Task<TEntity> AddAsync(TEntity entity)
+        public async Task AddAsync(TEntity entity)
         {
             var newEntity = await context.Set<TEntity>().AddAsync(entity);
             await context.SaveChangesAsync();
-            return newEntity.Entity;
+            context.DetachAllEntries();
         }
         public async Task DeleteAsync(TEntity entity)
         {
@@ -39,13 +40,11 @@ namespace Infrastructure.Data.Repositories
         {
             return await ApplySpecification(specification).AsNoTracking().ToListAsync();
         }
-
-        public async Task<TEntity> UpdateAsync(TEntity entity)
+        public async Task UpdateAsync(TEntity entity)
         {
             var data = context.Set<TEntity>().Update(entity).Entity;
             context.Entry(data).State = EntityState.Modified;
             await context.SaveChangesAsync();
-            return data;
         }
         private IQueryable<TEntity> ApplySpecification(ISpecification<TEntity> specification)
         {

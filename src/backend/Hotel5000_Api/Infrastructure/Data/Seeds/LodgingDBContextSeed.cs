@@ -1,4 +1,5 @@
 ﻿using Core.Entities.LodgingEntities;
+using Core.Enums.Lodging;
 using Infrastructure.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -37,19 +38,19 @@ namespace Infrastructure.Data.Seeds
         {
             return new List<Role>()
             {
-                new Role() { Name = "APPROVED_USER"},
-                new Role() { Name = "COMPANY"},
-                new Role() { Name = "ADMIN"}
+                new Role() { Name = Roles.APPROVED_USER},
+                new Role() { Name = Roles.COMPANY},
+                new Role() { Name = Roles.ADMIN}
             };
         }
         private static IEnumerable<PaymentType> GetPreconfiguredPaymentTypes()
         {
             return new List<PaymentType>()
             {
-                new PaymentType() { Name = "CASH"},
-                new PaymentType() { Name = "BANKCARD"},
-                new PaymentType() { Name = "CASH_PART"},
-                new PaymentType() { Name = "BANKCARD_PART"}
+                new PaymentType() { Name = PaymentTypes.CASH},
+                new PaymentType() { Name = PaymentTypes.BANKCARD},
+                new PaymentType() { Name = PaymentTypes.CASH_PART},
+                new PaymentType() { Name = PaymentTypes.BANKCARD_PART}
             };
         }
     }

@@ -13,29 +13,35 @@ using System.Threading.Tasks;
 
 namespace Core.Services.Lodging
 {
-    public class AuthenticatonService : IAuthenticaton
+    public class AuthenticatonService : IAuthenticatonService
     {
         private readonly IAsyncRepository<User> UserRepository;
         private readonly IAsyncRepository<Token> TokenRepository;
+        private readonly IAsyncRepository<Role> RoleRepository;
         private readonly IPasswordHasher PasswordHasher;
-        public AuthenticatonService(IAsyncRepository<User> userRepository, IAsyncRepository<Token> tokenRepository, IPasswordHasher passwordHasher)
+        public AuthenticatonService(IAsyncRepository<User> userRepository, 
+                                    IAsyncRepository<Token> tokenRepository, 
+                                    IAsyncRepository<Role> roleRepository,
+                                    IPasswordHasher passwordHasher)
         {
             UserRepository = userRepository;
             TokenRepository = tokenRepository;
+            RoleRepository = roleRepository;
             PasswordHasher = passwordHasher;
         }
         public async Task<Token> AuthenticateAsync(string username, string password, string email)
         {
             //This way we don't need to implement a replica of ThenInclude from EF Core, because we cause eager loading on entities from the context.
             //Specification<User> spec = new Specification<User>()
-            //    .Include(p => p.Lodgings
+            //    .AddInclude(p => p.Lodgings
             //        .Select(s => s.Rooms
             //            .Select(s => s.ReservationWindows)));
             //return user.WithoutPassword();
 
             User user = (await UserRepository.GetAsync(
                 new Specification<User>()
-                    .ApplyFilter(p => p.Email == email || p.Username == username)))
+                    .ApplyFilter(p => p.Email == email || p.Username == username)
+                    .AddInclude(p => p.Role)))
                     .FirstOrDefault();
 
             if (user == null)
@@ -48,6 +54,8 @@ namespace Core.Services.Lodging
             newToken.UserId = user.Id;
 
             await TokenRepository.AddAsync(newToken);
+
+            newToken.User = user;
 
             return newToken;
         }
@@ -66,7 +74,7 @@ namespace Core.Services.Lodging
                 = (await TokenRepository.GetAsync(
                 new Specification<Token>()
                 .ApplyFilter(p => p.RefreshToken == refreshToken)
-                .Include(p => p.User.Role)))
+                .AddInclude(p => p.User.Role)))
                 .FirstOrDefault();
 
             if (oldToken == null)

@@ -7,44 +7,44 @@ using System.Text;
 
 namespace Core.Specifications
 {
-    public class Specification<T> : ISpecification<T> where T : class
+    public class Specification<TEntity> : ISpecification<TEntity> where TEntity : class
     {
         public Specification()
         {
-            Includes = new List<Expression<Func<T, object>>>();
+            Includes = new List<Expression<Func<TEntity, object>>>();
             IsPagingEnabled = false;
         }
-        public Expression<Func<T, bool>> Criteria { get; private set;  }
-        public List<Expression<Func<T, object>>> Includes { get; private set;  }
-        public Expression<Func<T, object>> OrderBy { get; private set; }
-        public Expression<Func<T, object>> OrderByDescending { get; private set; }
+        public Expression<Func<TEntity, bool>> Criteria { get; private set;  }
+        public List<Expression<Func<TEntity, object>>> Includes { get; private set; }
+        public Expression<Func<TEntity, object>> OrderBy { get; private set; }
+        public Expression<Func<TEntity, object>> OrderByDescending { get; private set; }
         public int Take { get; private set; }
         public int Skip { get; private set; }
         public bool IsPagingEnabled { get; private set; }
 
-        public Specification<T> ApplyFilter(Expression<Func<T, bool>> filter)
+        public Specification<TEntity> ApplyFilter(Expression<Func<TEntity, bool>> filter)
         {
             Criteria = filter;
             return this;
         }
-        public Specification<T> Include(Expression<Func<T, object>> includeExpression)
+        public Specification<TEntity> AddInclude(Expression<Func<TEntity, object>> includeExpression)
         {
             Includes.Add(includeExpression);
             return this;
         }
-        public Specification<T> ApplyPaging(int skip, int take)
+        public Specification<TEntity> ApplyPaging(int skip, int take)
         {
             Skip = skip;
             Take = take;
             IsPagingEnabled = true;
             return this;
         }
-        public Specification<T> ApplyOrderBy(Expression<Func<T, object>> orderByExpression)
+        public Specification<TEntity> ApplyOrderBy(Expression<Func<TEntity, object>> orderByExpression)
         {
             OrderBy = orderByExpression;
             return this;
         }
-        public Specification<T> ApplyOrderByDescending(Expression<Func<T, object>> orderByDescendingExpression)
+        public Specification<TEntity> ApplyOrderByDescending(Expression<Func<TEntity, object>> orderByDescendingExpression)
         {
             OrderByDescending = orderByDescendingExpression;
             return this;

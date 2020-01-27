@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Core.Entities;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Infrastructure.Data
 {
@@ -72,6 +73,20 @@ namespace Infrastructure.Data
                 .HasComputedColumnSql("getdate()");
 
             return builder;
+        }
+        public static void DetachAllEntries(this DbContext context)
+        {
+            var entries = context.ChangeTracker.Entries()
+                .Where(e => e.State != EntityState.Detached)
+                .ToList();
+
+            foreach (var entry in entries)
+            {
+                if (entry.Entity != null)
+                {
+                    entry.State = EntityState.Detached;
+                }
+            }
         }
     }
 }
