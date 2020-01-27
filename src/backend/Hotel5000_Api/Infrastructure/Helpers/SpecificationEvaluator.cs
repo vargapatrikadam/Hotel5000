@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Infrastructure.Data
+namespace Infrastructure.Helpers
 {
     public class SpecificationEvaluator<T> where T : class
     {

@@ -1,6 +1,5 @@
 ﻿using Core.Entities.LodgingEntities;
 using Core.Enums.Lodging;
-using Infrastructure.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Data.Seeds
+namespace Infrastructure.Data
 {
     public static class LodgingDBContextSeed
     {

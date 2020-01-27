@@ -1,5 +1,6 @@
 ﻿using Core.Entities.LodgingEntities;
 using Infrastructure.Data.Configurations;
+using Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Data.Contexts
+namespace Infrastructure.Data
 {
     public class LodgingDBContext : DbContext
     {

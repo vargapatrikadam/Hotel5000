@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Infrastructure.Data.Configurations.LoggingConfigurations
+namespace Infrastructure.Logging
 {
     public class LogConfiguration : IEntityTypeConfiguration<Log>, ILoggingConfigurationAggregate
     {

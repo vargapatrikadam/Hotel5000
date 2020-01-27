@@ -5,9 +5,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Core.Entities;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Infrastructure.Data
+namespace Infrastructure.Helpers
 {
     public static class ExtensionMethods
     {

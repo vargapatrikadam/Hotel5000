@@ -1,11 +1,12 @@
 ﻿using Core.Entities.LodgingEntities;
+using Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Infrastructure.Data.Configurations.LodgingConfigurations
+namespace Infrastructure.Data.Configurations
 {
     public class LodgingAddressConfiguration : IEntityTypeConfiguration<LodgingAddress>, ILodgingConfigurationAggregate
     {

@@ -4,8 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Infrastructure.Helpers;
 
-namespace Infrastructure.Data.Configurations.LodgingConfigurations
+namespace Infrastructure.Data.Configurations
 {
     public class LodgingConfiguration : IEntityTypeConfiguration<Lodging>, ILodgingConfigurationAggregate
     {
