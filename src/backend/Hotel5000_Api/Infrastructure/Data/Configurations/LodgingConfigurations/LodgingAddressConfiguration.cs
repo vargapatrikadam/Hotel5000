@@ -11,11 +11,7 @@ namespace Infrastructure.Data.Configurations.LodgingConfigurations
     {
         public void Configure(EntityTypeBuilder<LodgingAddress> builder)
         {
-            builder.HasKey(k => k.Id)
-                .HasName("LodgingAddress_PK");
-
-            builder.Property(p => p.Id)
-                .ValueGeneratedOnAdd();
+            builder.ConfigureBaseEntityColumns();
 
             builder.Property(p => p.County)
                 .IsRequired()

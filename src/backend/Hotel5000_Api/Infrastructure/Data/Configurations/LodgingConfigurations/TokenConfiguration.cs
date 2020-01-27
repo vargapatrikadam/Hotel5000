@@ -11,11 +11,7 @@ namespace Infrastructure.Data.Configurations.LodgingConfigurations
     {
         public void Configure(EntityTypeBuilder<Token> builder)
         {
-            builder.HasKey(k => k.Id)
-                .HasName("Token_PK");
-
-            builder.Property(p => p.Id)
-                .ValueGeneratedOnAdd();
+            builder.ConfigureBaseEntityColumns();
 
             builder.Property(p => p.RefreshToken)
                 .HasMaxLength(45);

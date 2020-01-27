@@ -12,17 +12,17 @@ namespace Infrastructure.Data.Configurations.LodgingConfigurations
     {
         public void Configure(EntityTypeBuilder<PaymentType> builder)
         {
-            builder.HasKey(k => k.Id)
-                .HasName("PaymentType_PK");
+            builder.ConfigureBaseEntityColumns();
 
-            builder.Property(p => p.Id)
-                .ValueGeneratedOnAdd();
+            builder.EnableSoftDeletion();
 
             builder.Property(p => p.Name)
                 .IsRequired();
 
-            //builder.HasData(
-            //    );
+            builder.HasIndex(i => i.Name)
+                .IsUnique()
+                .IsSoftDeleteable()
+                .HasName("PaymentType_Name_UQ");
         }
     }
 }

@@ -12,14 +12,17 @@ namespace Infrastructure.Data.Configurations.LodgingConfigurations
     {
         public void Configure(EntityTypeBuilder<Role> builder)
         {
-            builder.HasKey(k => k.Id)
-                .HasName("Role_PK");
+            builder.ConfigureBaseEntityColumns();
 
-            builder.Property(p => p.Id)
-                .ValueGeneratedOnAdd();
+            builder.EnableSoftDeletion();
 
             builder.Property(p => p.Name)
                 .IsRequired();
+
+            builder.HasIndex(i => i.Name)
+                .IsUnique()
+                .IsSoftDeleteable()
+                .HasName("Role_Name_UQ");
         }
     }
 }

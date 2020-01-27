@@ -11,11 +11,7 @@ namespace Infrastructure.Data.Configurations.LodgingConfigurations
     {
         public void Configure(EntityTypeBuilder<Country> builder)
         {
-            builder.HasKey(k => k.Id)
-                .HasName("Country_PK");
-
-            builder.Property(p => p.Id)
-                .ValueGeneratedOnAdd();
+            builder.ConfigureBaseEntityColumns();
 
             builder.Property(p => p.Code)
                 .HasMaxLength(2)

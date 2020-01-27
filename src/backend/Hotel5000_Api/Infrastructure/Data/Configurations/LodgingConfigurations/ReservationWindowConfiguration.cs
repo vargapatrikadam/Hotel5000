@@ -11,11 +11,7 @@ namespace Infrastructure.Data.Configurations.LodgingConfigurations
     {
         public void Configure(EntityTypeBuilder<ReservationWindow> builder)
         {
-            builder.HasKey(k => k.Id)
-                .HasName("ReservationWindow_PK");
-
-            builder.Property(p => p.Id)
-                .ValueGeneratedOnAdd();
+            builder.ConfigureBaseEntityColumns();
 
             builder.Property(p => p.From)
                 .IsRequired();

@@ -11,11 +11,7 @@ namespace Infrastructure.Data.Configurations.LodgingConfigurations
     {
         public void Configure(EntityTypeBuilder<ApprovingData> builder)
         {
-            builder.HasKey(k => k.Id)
-                .HasName("ApprovingData_PK");
-
-            builder.Property(p => p.Id)
-                .ValueGeneratedOnAdd();
+            builder.ConfigureBaseEntityColumns();
 
             builder.Property(p => p.IdentityNumber)
                 .HasMaxLength(8);
