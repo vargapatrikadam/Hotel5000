@@ -54,17 +54,31 @@ namespace Web.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] User loginData)
         {
-            Token refreshToken = await AuthenticationService.AuthenticateAsync(loginData.Username, loginData.Password, loginData.Email);
-            if (refreshToken == null)
-                return BadRequest();
-            User user = refreshToken.User;
-            string accessToken = GenerateToken(options.Secret, options.AccessTokenDuration, user);
+            User authenticatedUser = await AuthenticationService.AuthenticateAsync(loginData.Username, loginData.Password, loginData.Email);
+            if (authenticatedUser == null)
+                return BadRequest(new { Error = "Invalid login data" });
+            string accessToken = GenerateToken(options.Secret, options.AccessTokenDuration, authenticatedUser);
+            string refreshToken = authenticatedUser.Tokens.FirstOrDefault().RefreshToken;
             return Ok(new
             {
                 AccessToken = accessToken,
-                RefreshToken = refreshToken.RefreshToken
+                RefreshToken = refreshToken
             });
         }
-
+        [AllowAnonymous]
+        [HttpPost("Refresh")]
+        public async Task<IActionResult> Refresh([FromBody] string refreshToken)
+        {
+            User authenticatedUser = await AuthenticationService.RefreshAsync(refreshToken);
+            if (authenticatedUser == null)
+                return BadRequest(new { Error = "Invalid refresh token" });
+            string accessToken = GenerateToken(options.Secret, options.AccessTokenDuration, authenticatedUser);
+            string newRefreshToken = authenticatedUser.Tokens.FirstOrDefault().RefreshToken;
+            return Ok(new
+            {
+                AccessToken = accessToken,
+                RefreshToken = newRefreshToken
+            });
+        }
     }
 }

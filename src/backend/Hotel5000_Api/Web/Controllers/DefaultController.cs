@@ -30,9 +30,9 @@ namespace Web.Controllers
         {
             await loggingService.Log("test", LogLevel.Information);
 
-            Token token = await authenticatonService.AuthenticateAsync("preuser1", "Preuser1password", null);
+            //Token token = await authenticatonService.AuthenticateAsync("preuser1", "Preuser1password", null);
 
-            Token newToken = await authenticatonService.RefreshAsync(token.RefreshToken);
+            //Token newToken = await authenticatonService.RefreshAsync(token.RefreshToken);
 
             return Ok();
         }

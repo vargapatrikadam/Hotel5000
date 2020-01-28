@@ -8,8 +8,8 @@ namespace Core.Interfaces.Lodging
 {
     public interface IAuthenticationService
     {
-        Task<Token> AuthenticateAsync(string username, string password, string email);
-        Task<Token> RefreshAsync(string refreshToken);
+        Task<User> AuthenticateAsync(string username, string password, string email);
+        Task<User> RefreshAsync(string refreshToken);
         Task<bool> RegisterAsync(User user);
     }
 }

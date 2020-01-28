@@ -29,7 +29,7 @@ namespace Core.Services.Lodging
             PasswordHasher = passwordHasher;
             Options = options.option;
         }
-        public async Task<Token> AuthenticateAsync(string username, string password, string email)
+        public async Task<User> AuthenticateAsync(string username, string password, string email)
         {
             //This way we don't need to implement a replica of ThenInclude from EF Core, because we cause eager loading on entities from the context.
             //Specification<User> spec = new Specification<User>()
@@ -57,9 +57,14 @@ namespace Core.Services.Lodging
 
             await TokenRepository.AddAsync(newToken);
 
-            newToken.User = user;
+            User userWithToken = (await UserRepository.GetAsync(
+                new Specification<User>()
+                    .ApplyFilter(p => p.Email == email || p.Username == username)
+                    .AddInclude(p => p.Role)
+                    .AddInclude(p => p.Tokens)))
+                    .FirstOrDefault();
 
-            return newToken;
+            return userWithToken;
         }
         private string GenerateRefreshToken()
         {
@@ -70,7 +75,7 @@ namespace Core.Services.Lodging
                 return Convert.ToBase64String(random);
             }
         }
-        public async Task<Token> RefreshAsync(string refreshToken)
+        public async Task<User> RefreshAsync(string refreshToken)
         {
             Token oldToken
                 = (await TokenRepository.GetAsync(
@@ -97,7 +102,14 @@ namespace Core.Services.Lodging
 
             await TokenRepository.DeleteAsync(oldToken);
 
-            return newToken;
+            User userWithToken = (await UserRepository.GetAsync(
+                new Specification<User>()
+                    .ApplyFilter(p => p.Id == newToken.UserId)
+                    .AddInclude(p => p.Role)
+                    .AddInclude(p => p.Tokens)))
+                    .FirstOrDefault();
+
+            return userWithToken;
         }
 
         public async Task<bool> RegisterAsync(User user)
