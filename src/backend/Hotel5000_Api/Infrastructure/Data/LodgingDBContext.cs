@@ -36,13 +36,13 @@ namespace Infrastructure.Data
         public override int SaveChanges()
         {
             this.UpdateSoftDeleteStatuses();
-            this.DetachAllEntries();
+            //this.DetachAllEntries();
             return base.SaveChanges();
         }
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             this.UpdateSoftDeleteStatuses();
-            this.DetachAllEntries();
+            //this.DetachAllEntries();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
     }

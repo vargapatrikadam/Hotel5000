@@ -30,22 +30,10 @@ namespace Web.Controllers
         {
             await loggingService.Log("test", LogLevel.Information);
 
-            User newUser = new User();
-            newUser.RoleId = 3;
-            newUser.Username = "test";
-            newUser.Password = "Testpw111";
-            newUser.LastName = "testlast";
-            newUser.FirstName = "testfirst";
-            newUser.Email = "asd@asd.com";
-
-            await authenticatonService.RegisterAsync(newUser);
-
-            Token token = await authenticatonService.AuthenticateAsync(null, "Testpw111", "asd@asd.com");
+            Token token = await authenticatonService.AuthenticateAsync("preuser1", "Preuser1password", null);
 
             Token newToken = await authenticatonService.RefreshAsync(token.RefreshToken);
 
-            //Role role = newToken.User.Role;
-            
             return Ok();
         }
     }

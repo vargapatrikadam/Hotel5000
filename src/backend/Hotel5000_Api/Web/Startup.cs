@@ -10,12 +10,15 @@ using Core.Services.Logging;
 using Core.Services.PasswordHasher;
 using Infrastructure.Data;
 using Infrastructure.Logging;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 using Web.Middlewares;
 
 namespace Web
@@ -42,6 +45,29 @@ namespace Web
 
             services.AddCors();
 
+            AuthenticationOptions authenticationOptions = Configuration.GetSection("AuthenticationOptions").Get<AuthenticationOptions>();
+            #region jwt settings
+            var key = Encoding.ASCII.GetBytes(authenticationOptions.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                // restful?
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+            #endregion
+
             services.AddScoped<IAsyncRepository<Log>, LoggingDBRepository<Log>>();
 
             services.AddScoped<IAsyncRepository<Role>, LodgingDBRepository<Role>>();
@@ -66,7 +92,7 @@ namespace Web
             services.AddScoped<ILoggingService, LoggingService>();
 
             services.AddSingleton<IOption<AuthenticationOptions>>(new Option<AuthenticationOptions>
-                (Configuration.GetSection("AuthenticationOptions").Get<AuthenticationOptions>()));
+                (authenticationOptions));
             services.AddScoped<IAuthenticationService, AuthenticationService>();
         }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.Interfaces.PasswordHasher;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,8 +28,9 @@ namespace Web
                 var services = scope.ServiceProvider;
                 var enviroment = services.GetRequiredService<Microsoft.AspNetCore.Hosting.IHostingEnvironment>();
                 var context = services.GetRequiredService<LodgingDBContext>();
+                var hasher = services.GetRequiredService<IPasswordHasher>();
 
-                await LodgingDBContextSeed.SeedAsync(context, enviroment.IsProduction());
+                await LodgingDBContextSeed.SeedAsync(context, hasher, enviroment.IsProduction());
             }
 
             host.Run();

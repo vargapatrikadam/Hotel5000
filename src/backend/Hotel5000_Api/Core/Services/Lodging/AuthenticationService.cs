@@ -17,18 +17,15 @@ namespace Core.Services.Lodging
     {
         private readonly IAsyncRepository<User> UserRepository;
         private readonly IAsyncRepository<Token> TokenRepository;
-        private readonly IAsyncRepository<Role> RoleRepository;
         private readonly IPasswordHasher PasswordHasher;
         private readonly AuthenticationOptions Options;
         public AuthenticationService(IAsyncRepository<User> userRepository, 
-                                    IAsyncRepository<Token> tokenRepository, 
-                                    IAsyncRepository<Role> roleRepository,
+                                    IAsyncRepository<Token> tokenRepository,
                                     IPasswordHasher passwordHasher,
                                     IOption<AuthenticationOptions> options)
         {
             UserRepository = userRepository;
             TokenRepository = tokenRepository;
-            RoleRepository = roleRepository;
             PasswordHasher = passwordHasher;
             Options = options.option;
         }
