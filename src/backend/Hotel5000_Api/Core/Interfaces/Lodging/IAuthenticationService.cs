@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.Interfaces.Lodging
 {
-    public interface IAuthenticatonService
+    public interface IAuthenticationService
     {
         Task<Token> AuthenticateAsync(string username, string password, string email);
         Task<Token> RefreshAsync(string refreshToken);

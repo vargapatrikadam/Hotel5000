@@ -19,8 +19,8 @@ namespace Web.Controllers
     public class DefaultController : ControllerBase
     {
         private readonly ILoggingService loggingService;
-        private readonly IAuthenticatonService authenticatonService;
-        public DefaultController(ILoggingService LoggingService, IAuthenticatonService authenticaton)
+        private readonly IAuthenticationService authenticatonService;
+        public DefaultController(ILoggingService LoggingService, IAuthenticationService authenticaton)
         {
             loggingService = LoggingService;
             authenticatonService = authenticaton;

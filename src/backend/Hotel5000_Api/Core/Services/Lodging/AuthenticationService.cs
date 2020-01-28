@@ -13,21 +13,24 @@ using System.Threading.Tasks;
 
 namespace Core.Services.Lodging
 {
-    public class AuthenticatonService : IAuthenticatonService
+    public class AuthenticationService : IAuthenticationService
     {
         private readonly IAsyncRepository<User> UserRepository;
         private readonly IAsyncRepository<Token> TokenRepository;
         private readonly IAsyncRepository<Role> RoleRepository;
         private readonly IPasswordHasher PasswordHasher;
-        public AuthenticatonService(IAsyncRepository<User> userRepository, 
+        private readonly AuthenticationOptions Options;
+        public AuthenticationService(IAsyncRepository<User> userRepository, 
                                     IAsyncRepository<Token> tokenRepository, 
                                     IAsyncRepository<Role> roleRepository,
-                                    IPasswordHasher passwordHasher)
+                                    IPasswordHasher passwordHasher,
+                                    IOption<AuthenticationOptions> options)
         {
             UserRepository = userRepository;
             TokenRepository = tokenRepository;
             RoleRepository = roleRepository;
             PasswordHasher = passwordHasher;
+            Options = options.option;
         }
         public async Task<Token> AuthenticateAsync(string username, string password, string email)
         {
@@ -52,6 +55,8 @@ namespace Core.Services.Lodging
             Token newToken = new Token();
             newToken.RefreshToken = GenerateRefreshToken();
             newToken.UserId = user.Id;
+            newToken.UsableFrom = DateTime.Now.AddSeconds(Options.AccessTokenDuration);
+            newToken.ExpiresAt = newToken.UsableFrom.AddSeconds(Options.RefreshTokenDuration);
 
             await TokenRepository.AddAsync(newToken);
 
@@ -80,9 +85,16 @@ namespace Core.Services.Lodging
             if (oldToken == null)
                 return null;
 
+            if (oldToken.UsableFrom > DateTime.Now)
+                return null;
+            else if (oldToken.ExpiresAt < DateTime.Now)
+                return null;
+
             Token newToken = new Token();
             newToken.RefreshToken = GenerateRefreshToken();
             newToken.UserId = oldToken.UserId;
+            newToken.UsableFrom = DateTime.Now.AddSeconds(Options.AccessTokenDuration);
+            newToken.ExpiresAt = newToken.UsableFrom.AddSeconds(Options.RefreshTokenDuration);
 
             await TokenRepository.AddAsync(newToken);
 

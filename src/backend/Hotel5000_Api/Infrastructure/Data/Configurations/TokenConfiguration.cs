@@ -17,6 +17,12 @@ namespace Infrastructure.Data.Configurations
             builder.Property(p => p.RefreshToken)
                 .HasMaxLength(45);
 
+            builder.Property(p => p.ExpiresAt)
+                .IsRequired();
+
+            builder.Property(p => p.UsableFrom)
+                .IsRequired();
+
             builder.EnableSoftDeletion();
 
             builder.HasOne(p => p.User)

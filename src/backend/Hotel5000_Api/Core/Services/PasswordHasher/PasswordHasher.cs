@@ -1,4 +1,5 @@
-﻿using Core.Interfaces.PasswordHasher;
+﻿using Core.Interfaces;
+using Core.Interfaces.PasswordHasher;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,9 @@ namespace Core.Services.PasswordHasher
     public class PasswordHasher : IPasswordHasher
     {
         private readonly HashingOptions options;
-        public PasswordHasher(HashingOptions options)
+        public PasswordHasher(IOption<HashingOptions> options)
         {
-            this.options = options;
+            this.options = options.option;
         }
         public bool Check(string hash, string password)
         {

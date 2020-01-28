@@ -1,5 +1,6 @@
 using Core.Entities.LodgingEntities;
 using Core.Entities.LoggingEntities;
+using Core.Helpers;
 using Core.Interfaces;
 using Core.Interfaces.Lodging;
 using Core.Interfaces.Logging;
@@ -58,11 +59,15 @@ namespace Web
             services.AddScoped<IAsyncRepository<Reservation>, LodgingDBRepository<Reservation>>();
             
 
-            HashingOptions hashingOptions = Configuration.GetSection("HashingOptions").Get<HashingOptions>();
-            services.AddSingleton<IPasswordHasher>(new PasswordHasher(hashingOptions));
+            services.AddSingleton<IOption<HashingOptions>>(new Option<HashingOptions>
+                (Configuration.GetSection("HashingOptions").Get<HashingOptions>()));
+            services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
             services.AddScoped<ILoggingService, LoggingService>();
-            services.AddScoped<IAuthenticatonService, AuthenticatonService>();
+
+            services.AddSingleton<IOption<AuthenticationOptions>>(new Option<AuthenticationOptions>
+                (Configuration.GetSection("AuthenticationOptions").Get<AuthenticationOptions>()));
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
