@@ -38,7 +38,7 @@ namespace Web.Controllers
                 "test2",
                 "test3"
             };
-            return Ok();
+            return Ok(data);
         }
 
         [AuthorizeRoles(Roles.ADMIN, Roles.APPROVED_USER, Roles.COMPANY)]

@@ -89,7 +89,9 @@ namespace Web
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
                 };
                 options.Events = new JwtBearerEvents
                 {
@@ -99,6 +101,7 @@ namespace Web
                         {
                             context.Response.Headers.Add("Token-Expired", "true");
                         }
+                        context.Response.StatusCode = 401;
                         return Task.CompletedTask;
                     }
                     
