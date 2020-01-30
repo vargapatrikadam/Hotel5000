@@ -40,6 +40,10 @@ namespace Web
             services.AddControllers()
                 .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
+            services.AddCors();
+
+            services.AddRouting(options => options.LowercaseUrls = true);
+
             #region swagger settings
             services.AddSwaggerGen(s =>
             {
@@ -68,8 +72,6 @@ namespace Web
                 });
             });
             #endregion
-
-            services.AddCors();
 
             AuthenticationOptions authenticationOptions = Configuration.GetSection("AuthenticationOptions").Get<AuthenticationOptions>();
             #region jwt settings
@@ -135,6 +137,7 @@ namespace Web
             services.AddSingleton<IOption<AuthenticationOptions>>(new Option<AuthenticationOptions>
                 (authenticationOptions));
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
