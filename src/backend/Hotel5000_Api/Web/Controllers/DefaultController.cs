@@ -11,6 +11,8 @@ using Core.Entities;
 using Core.Interfaces;
 using Core.Entities.LodgingEntities;
 using Core.Interfaces.Lodging;
+using Web.Attributes;
+using Core.Enums.Lodging;
 
 namespace Web.Controllers
 {
@@ -30,10 +32,19 @@ namespace Web.Controllers
         {
             await loggingService.Log("test", LogLevel.Information);
 
-            //Token token = await authenticatonService.AuthenticateAsync("preuser1", "Preuser1password", null);
+            List<string> data = new List<string>()
+            {
+                "test1",
+                "test2",
+                "test3"
+            };
+            return Ok();
+        }
 
-            //Token newToken = await authenticatonService.RefreshAsync(token.RefreshToken);
-
+        [AuthorizeRoles(Roles.ADMIN, Roles.APPROVED_USER, Roles.COMPANY)]
+        [HttpGet("testAuthenticate")]
+        public async Task<IActionResult> TestAuthenticate()
+        {
             return Ok();
         }
     }

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Web.DTOs;
 
 namespace Web.Controllers
 {
@@ -52,14 +53,16 @@ namespace Web.Controllers
         }
         [AllowAnonymous]
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] User loginData)
+        [ProducesResponseType(typeof(AuthenticationDto), 200)]
+        [ProducesErrorResponseType(typeof(ErrorDto))]
+        public async Task<IActionResult> Login([FromBody] LoginDto loginData)
         {
             User authenticatedUser = await AuthenticationService.AuthenticateAsync(loginData.Username, loginData.Password, loginData.Email);
             if (authenticatedUser == null)
-                return BadRequest(new { Error = "Invalid login data" });
+                return BadRequest(new ErrorDto { Message = "Invalid login data" });
             string accessToken = GenerateToken(options.Secret, options.AccessTokenDuration, authenticatedUser);
             string refreshToken = authenticatedUser.Tokens.FirstOrDefault().RefreshToken;
-            return Ok(new
+            return Ok(new AuthenticationDto
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken
@@ -67,14 +70,16 @@ namespace Web.Controllers
         }
         [AllowAnonymous]
         [HttpPost("Refresh")]
+        [ProducesResponseType(typeof(AuthenticationDto), 200)]
+        [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> Refresh([FromBody] string refreshToken)
         {
             User authenticatedUser = await AuthenticationService.RefreshAsync(refreshToken);
             if (authenticatedUser == null)
-                return BadRequest(new { Error = "Invalid refresh token" });
+                return BadRequest(new ErrorDto { Message = "Invalid refresh token" });
             string accessToken = GenerateToken(options.Secret, options.AccessTokenDuration, authenticatedUser);
             string newRefreshToken = authenticatedUser.Tokens.FirstOrDefault().RefreshToken;
-            return Ok(new
+            return Ok(new AuthenticationDto
             {
                 AccessToken = accessToken,
                 RefreshToken = newRefreshToken
