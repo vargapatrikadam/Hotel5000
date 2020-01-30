@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Web.DTOs;
 
 namespace Web.Middlewares
 {
@@ -43,7 +44,9 @@ namespace Web.Middlewares
             // Specify different custom exceptions here
             if (ex is ArgumentException) code = HttpStatusCode.BadRequest;
 
-            string result = JsonConvert.SerializeObject(new { error = ex.Message });
+            ErrorDto response = new ErrorDto();
+            response.Message = ((int)code == 500) ? "Internal server error" : ex.Message;
+            //string result = JsonConvert.SerializeObject(new { error = ex.Message });
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)code;
@@ -52,9 +55,7 @@ namespace Web.Middlewares
             if ((int)code == 500) level = LogLevel.Critical;
             await loggingService.Log(ex.Message, level);
 
-            //TODO: if internal server error, dont write the exception message
-
-            await context.Response.WriteAsync(result);
+            await context.Response.WriteAsync(response.ToString());
         }
     }
 }
