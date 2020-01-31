@@ -23,6 +23,7 @@ namespace Infrastructure.Abstracts
         {
             var newEntity = await context.Set<TEntity>().AddAsync(entity);
             await context.SaveChangesAsync();
+            //TODO : is this necessary?
             context.DetachAllEntries();
         }
         public async Task DeleteAsync(TEntity entity)

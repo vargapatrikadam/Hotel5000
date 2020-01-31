@@ -1,6 +1,7 @@
 ﻿using Core.Enums.Logging;
 using Core.Interfaces.Logging;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ namespace Web.Middlewares
             while (ex.InnerException != null) ex = ex.InnerException;
 
             // Specify different custom exceptions here
-            if (ex is ArgumentException) code = HttpStatusCode.BadRequest;
+            if (ex is ArgumentException || ex is SqlException) code = HttpStatusCode.BadRequest;
 
             ErrorDto response = new ErrorDto();
             response.Message = ((int)code == 500) ? "Internal server error" : ex.Message;

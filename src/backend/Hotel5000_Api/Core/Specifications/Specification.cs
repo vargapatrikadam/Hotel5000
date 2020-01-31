@@ -22,29 +22,29 @@ namespace Core.Specifications
         public int Skip { get; private set; }
         public bool IsPagingEnabled { get; private set; }
 
-        public Specification<TEntity> ApplyFilter(Expression<Func<TEntity, bool>> filter)
+        public ISpecification<TEntity> ApplyFilter(Expression<Func<TEntity, bool>> filter)
         {
             Criteria = filter;
             return this;
         }
-        public Specification<TEntity> AddInclude(Expression<Func<TEntity, object>> includeExpression)
+        public ISpecification<TEntity> AddInclude(Expression<Func<TEntity, object>> includeExpression)
         {
             Includes.Add(includeExpression);
             return this;
         }
-        public Specification<TEntity> ApplyPaging(int skip, int take)
+        public ISpecification<TEntity> ApplyPaging(int skip, int take)
         {
             Skip = skip;
             Take = take;
             IsPagingEnabled = true;
             return this;
         }
-        public Specification<TEntity> ApplyOrderBy(Expression<Func<TEntity, object>> orderByExpression)
+        public ISpecification<TEntity> ApplyOrderBy(Expression<Func<TEntity, object>> orderByExpression)
         {
             OrderBy = orderByExpression;
             return this;
         }
-        public Specification<TEntity> ApplyOrderByDescending(Expression<Func<TEntity, object>> orderByDescendingExpression)
+        public ISpecification<TEntity> ApplyOrderByDescending(Expression<Func<TEntity, object>> orderByDescendingExpression)
         {
             OrderByDescending = orderByDescendingExpression;
             return this;

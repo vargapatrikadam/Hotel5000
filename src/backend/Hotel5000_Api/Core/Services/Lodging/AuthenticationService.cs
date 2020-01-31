@@ -38,11 +38,12 @@ namespace Core.Services.Lodging
             //            .Select(s => s.ReservationWindows)));
             //return user.WithoutPassword();
 
-            User user = (await UserRepository.GetAsync(
-                new Specification<User>()
+            ISpecification<User> specification = new Specification<User>()
                     .ApplyFilter(p => p.Email == email || p.Username == username)
-                    .AddInclude(p => p.Role)))
-                    .FirstOrDefault();
+                    .AddInclude(p => p.Role);
+
+            User user = (await UserRepository.GetAsync(specification))
+                .FirstOrDefault();
 
             if (user == null)
                 return null;
@@ -57,11 +58,8 @@ namespace Core.Services.Lodging
 
             await TokenRepository.AddAsync(newToken);
 
-            User userWithToken = (await UserRepository.GetAsync(
-                new Specification<User>()
-                    .ApplyFilter(p => p.Email == email || p.Username == username)
-                    .AddInclude(p => p.Role)
-                    .AddInclude(p => p.Tokens)))
+            User userWithToken = (await UserRepository.GetAsync
+                    (specification.AddInclude(p => p.Tokens)))
                     .FirstOrDefault();
 
             return userWithToken;
@@ -77,11 +75,9 @@ namespace Core.Services.Lodging
         }
         public async Task<User> RefreshAsync(string refreshToken)
         {
-            Token oldToken
-                = (await TokenRepository.GetAsync(
+            Token oldToken = (await TokenRepository.GetAsync(
                 new Specification<Token>()
-                .ApplyFilter(p => p.RefreshToken == refreshToken)
-                .AddInclude(p => p.User.Role)))
+                .ApplyFilter(p => p.RefreshToken == refreshToken)))
                 .FirstOrDefault();
 
             if (oldToken == null)

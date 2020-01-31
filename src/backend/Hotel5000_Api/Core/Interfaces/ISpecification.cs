@@ -16,5 +16,11 @@ namespace Core.Interfaces
         int Take { get; }
         int Skip { get; }
         bool IsPagingEnabled { get; }
+
+        public ISpecification<TEntity> ApplyFilter(Expression<Func<TEntity, bool>> filter);
+        public ISpecification<TEntity> AddInclude(Expression<Func<TEntity, object>> includeExpression);
+        public ISpecification<TEntity> ApplyPaging(int skip, int take);
+        public ISpecification<TEntity> ApplyOrderBy(Expression<Func<TEntity, object>> orderByExpression);
+        public ISpecification<TEntity> ApplyOrderByDescending(Expression<Func<TEntity, object>> orderByDescendingExpression);
     }
 }
