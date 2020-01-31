@@ -1,0 +1,25 @@
+#searchcontainer{
+    width: fit-content;
+    height: fit-content;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
+}
+.bordered{
+    border: 1px solid black;
+}
+#input{
+    height: 100%;
+}
+.innerdiv{
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+.innerdiv h5{
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+}

@@ -1,0 +1,16 @@
+.usernameh2{
+    border-bottom: 1px solid black;
+}
+.dropdownitem{
+    text-align: left;
+}
+#navbar {
+    border-bottom: 1px solid gray;
+}
+.icon{
+    color: #23d9d2;
+}
+.dropdownbutton{
+    width: 30px;
+    height: 30px;
+}
