@@ -21,7 +21,14 @@ namespace Infrastructure.Abstracts
         }
         public async Task AddAsync(TEntity entity)
         {
-            var newEntity = await context.Set<TEntity>().AddAsync(entity);
+            await context.Set<TEntity>().AddAsync(entity);
+            await context.SaveChangesAsync();
+            //TODO : is this necessary?
+            context.DetachAllEntries();
+        }
+        public async Task AddRange(IEnumerable<TEntity> entities)
+        {
+            await context.Set<TEntity>().AddRangeAsync(entities);
             await context.SaveChangesAsync();
             //TODO : is this necessary?
             context.DetachAllEntries();

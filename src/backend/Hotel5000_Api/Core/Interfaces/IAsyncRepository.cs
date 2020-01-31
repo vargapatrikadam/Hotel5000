@@ -12,6 +12,7 @@ namespace Core.Interfaces
         Task<IReadOnlyList<TEntity>> GetAllAsync();
         Task<IReadOnlyList<TEntity>> GetAsync(ISpecification<TEntity> specification);
         Task AddAsync(TEntity entity);
+        Task AddRange(IEnumerable<TEntity> entities);
         Task UpdateAsync(TEntity entity);
         Task DeleteAsync(TEntity entity);
     }
