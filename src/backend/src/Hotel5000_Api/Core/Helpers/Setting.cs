@@ -5,12 +5,13 @@ using System.Text;
 
 namespace Core.Helpers
 {
-    public class Option<T> : IOption<T>
+    public class Setting<T> : ISetting<T>
     {
-        public Option(T option)
+        public Setting(T option)
         {
-            this.option = option;
+            Option = option;
         }
-        public T option { get; }
+
+        public T Option { get; }
     }
 }

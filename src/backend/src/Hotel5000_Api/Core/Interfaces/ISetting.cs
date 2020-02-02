@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Core.Interfaces
 {
-    public interface IOption<T>
+    public interface ISetting<T>
     {
-        T option { get; }
+        T Option { get; }
     }
 }

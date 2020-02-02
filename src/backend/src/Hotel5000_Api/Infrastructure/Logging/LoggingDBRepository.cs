@@ -10,12 +10,11 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Logging
 {
-    public class LoggingDBRepository<TEntity> : ARepository<TEntity, LoggingDBContext> 
+    public class LoggingDbRepository<TEntity> : ARepository<TEntity, LoggingDbContext>
         where TEntity : BaseEntity
     {
-        public LoggingDBRepository(LoggingDBContext context) : base(context)
+        public LoggingDbRepository(LoggingDbContext context) : base(context)
         {
-
         }
     }
 }

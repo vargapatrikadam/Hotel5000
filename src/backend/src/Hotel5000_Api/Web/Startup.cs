@@ -8,7 +8,7 @@ using Core.Interfaces.PasswordHasher;
 using Core.Services.Lodging;
 using Core.Services.Logging;
 using Core.Services.PasswordHasher;
-using Infrastructure.Data;
+using Infrastructure.Lodgings;
 using Infrastructure.Logging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -38,16 +38,18 @@ namespace Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+                .AddNewtonsoftJson(x =>
+                    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddCors();
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
             #region swagger settings
+
             services.AddSwaggerGen(s =>
             {
-                s.SwaggerDoc("v1", new OpenApiInfo() { Title = "Hotel5000 Api", Version = "v0.1" });
+                s.SwaggerDoc("v1", new OpenApiInfo() {Title = "Hotel5000 Api", Version = "v0.1"});
                 var securityScheme = new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -71,73 +73,73 @@ namespace Web
                     }
                 });
             });
+
             #endregion
 
-            AuthenticationOptions authenticationOptions = Configuration.GetSection("AuthenticationOptions").Get<AuthenticationOptions>();
+            var authenticationOptions = Configuration.GetSection("AuthenticationOptions").Get<AuthenticationOptions>();
+
             #region jwt settings
+
             var key = Encoding.ASCII.GetBytes(authenticationOptions.Secret);
             services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = false;
-                // restful?
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
-                };
-                options.Events = new JwtBearerEvents
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
                 {
-                    OnAuthenticationFailed = context =>
+                    options.RequireHttpsMetadata = false;
+                    // restful?
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero
+                    };
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnAuthenticationFailed = context =>
                         {
-                            context.Response.Headers.Add("Token-Expired", "true");
+                            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                                context.Response.Headers.Add("Token-Expired", "true");
+                            context.Response.StatusCode = 401;
+                            return Task.CompletedTask;
                         }
-                        context.Response.StatusCode = 401;
-                        return Task.CompletedTask;
-                    }
-                    
-                };
-            });
+                    };
+                });
+
             #endregion
 
-            services.AddScoped<IAsyncRepository<Log>, LoggingDBRepository<Log>>();
+            services.AddScoped<IAsyncRepository<Log>, LoggingDbRepository<Log>>();
 
-            services.AddScoped<IAsyncRepository<Role>, LodgingDBRepository<Role>>();
-            services.AddScoped<IAsyncRepository<User>, LodgingDBRepository<User>>();
-            services.AddScoped<IAsyncRepository<Token>, LodgingDBRepository<Token>>();
-            services.AddScoped<IAsyncRepository<ApprovingData>, LodgingDBRepository<ApprovingData>>();
-            services.AddScoped<IAsyncRepository<Contact>, LodgingDBRepository<Contact>>();
-            services.AddScoped<IAsyncRepository<Lodging>, LodgingDBRepository<Lodging>>();
-            services.AddScoped<IAsyncRepository<Country>, LodgingDBRepository<Country>>();
-            services.AddScoped<IAsyncRepository<LodgingAddress>, LodgingDBRepository<LodgingAddress>>();
-            services.AddScoped<IAsyncRepository<Room>, LodgingDBRepository<Room>>();
-            services.AddScoped<IAsyncRepository<ReservationWindow>, LodgingDBRepository<ReservationWindow>>();
-            services.AddScoped<IAsyncRepository<PaymentType>, LodgingDBRepository<PaymentType>>();
-            services.AddScoped<IAsyncRepository<UserReservation>, LodgingDBRepository<UserReservation>>();
-            services.AddScoped<IAsyncRepository<Reservation>, LodgingDBRepository<Reservation>>();
-            
+            services.AddScoped<IAsyncRepository<Role>, LodgingDbRepository<Role>>();
+            services.AddScoped<IAsyncRepository<User>, LodgingDbRepository<User>>();
+            services.AddScoped<IAsyncRepository<Token>, LodgingDbRepository<Token>>();
+            services.AddScoped<IAsyncRepository<ApprovingData>, LodgingDbRepository<ApprovingData>>();
+            services.AddScoped<IAsyncRepository<Contact>, LodgingDbRepository<Contact>>();
+            services.AddScoped<IAsyncRepository<Lodging>, LodgingDbRepository<Lodging>>();
+            services.AddScoped<IAsyncRepository<Country>, LodgingDbRepository<Country>>();
+            services.AddScoped<IAsyncRepository<LodgingAddress>, LodgingDbRepository<LodgingAddress>>();
+            services.AddScoped<IAsyncRepository<Room>, LodgingDbRepository<Room>>();
+            services.AddScoped<IAsyncRepository<ReservationWindow>, LodgingDbRepository<ReservationWindow>>();
+            services.AddScoped<IAsyncRepository<PaymentType>, LodgingDbRepository<PaymentType>>();
+            services.AddScoped<IAsyncRepository<UserReservation>, LodgingDbRepository<UserReservation>>();
+            services.AddScoped<IAsyncRepository<Reservation>, LodgingDbRepository<Reservation>>();
 
-            services.AddSingleton<IOption<HashingOptions>>(new Option<HashingOptions>
+
+            services.AddSingleton<ISetting<HashingOptions>>(new Setting<HashingOptions>
                 (Configuration.GetSection("HashingOptions").Get<HashingOptions>()));
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
             services.AddScoped<ILoggingService, LoggingService>();
 
-            services.AddSingleton<IOption<AuthenticationOptions>>(new Option<AuthenticationOptions>
+            services.AddSingleton<ISetting<AuthenticationOptions>>(new Setting<AuthenticationOptions>
                 (authenticationOptions));
             services.AddScoped<IAuthenticationService, AuthenticationService>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -159,20 +161,17 @@ namespace Web
 
             app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
 
         //This method is only called when the project's enviroment variable 'ASPNETCORE_ENVIRONMENT' is set to 'Development'
         public void ConfigureDevelopmentServices(IServiceCollection services)
         {
             //If you want to use in-memory database during a development enviroment, use this
-            services.AddDbContext<LoggingDBContext>(options =>
+            services.AddDbContext<LoggingDbContext>(options =>
                 options.UseInMemoryDatabase("LoggingDatabase"));
 
-            services.AddDbContext<LodgingDBContext>(options =>
+            services.AddDbContext<LodgingDbContext>(options =>
                 options.UseInMemoryDatabase("LodgingDatabase"));
 
             ConfigureServices(services);

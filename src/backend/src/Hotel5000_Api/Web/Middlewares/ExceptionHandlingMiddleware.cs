@@ -14,20 +14,20 @@ namespace Web.Middlewares
 {
     public class ExceptionHandlingMiddleware
     {
-        private readonly RequestDelegate next;
-        private ILoggingService loggingService;
+        private readonly RequestDelegate _next;
+        private ILoggingService _loggingService;
 
         public ExceptionHandlingMiddleware(RequestDelegate next)
         {
-            this.next = next;
+            _next = next;
         }
 
-        public async Task Invoke(HttpContext context, ILoggingService LoggingService)
+        public async Task Invoke(HttpContext context, ILoggingService loggingService)
         {
-            loggingService = LoggingService;
+            _loggingService = loggingService;
             try
             {
-                await next(context);
+                await _next(context);
             }
             catch (Exception ex)
             {
@@ -37,7 +37,7 @@ namespace Web.Middlewares
 
         private async Task HandleException(HttpContext context, Exception ex)
         {
-            HttpStatusCode code = HttpStatusCode.InternalServerError; // 500 if unexpected
+            var code = HttpStatusCode.InternalServerError; // 500 if unexpected
 
             //Get innermost exception
             while (ex.InnerException != null) ex = ex.InnerException;
@@ -45,16 +45,16 @@ namespace Web.Middlewares
             // Specify different custom exceptions here
             if (ex is ArgumentException || ex is SqlException) code = HttpStatusCode.BadRequest;
 
-            ErrorDto response = new ErrorDto();
-            response.Message = ((int)code == 500) ? "Internal server error" : ex.Message;
+            var response = new ErrorDto();
+            response.Message = (int) code == 500 ? "Internal server error" : ex.Message;
             //string result = JsonConvert.SerializeObject(new { error = ex.Message });
 
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)code;
+            context.Response.StatusCode = (int) code;
 
-            LogLevel level = LogLevel.Warning;
-            if ((int)code == 500) level = LogLevel.Critical;
-            await loggingService.Log(ex.Message, level);
+            var level = LogLevel.Warning;
+            if ((int) code == 500) level = LogLevel.Critical;
+            await _loggingService.Log(ex.Message, level);
 
             await context.Response.WriteAsync(response.ToString());
         }

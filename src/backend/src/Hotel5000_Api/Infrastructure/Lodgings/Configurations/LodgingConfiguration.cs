@@ -6,7 +6,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Infrastructure.Helpers;
 
-namespace Infrastructure.Data.Configurations
+namespace Infrastructure.Lodgings.Configurations
 {
     public class LodgingConfiguration : IEntityTypeConfiguration<Lodging>, ILodgingConfigurationAggregate
     {

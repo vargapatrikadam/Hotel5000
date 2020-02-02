@@ -13,9 +13,7 @@ namespace Infrastructure.Helpers
         public static void UpdateSoftDeleteStatuses(this DbContext context)
         {
             foreach (var entry in context.ChangeTracker.Entries())
-            {
                 if (entry.Entity is BaseEntity)
-                {
                     switch (entry.State)
                     {
                         case EntityState.Added:
@@ -26,9 +24,8 @@ namespace Infrastructure.Helpers
                             entry.CurrentValues["IsDeleted"] = true;
                             break;
                     }
-                }
-            }
         }
+
         /// <summary>
         /// Adds new property & query filter to a configuration which enables soft deletion on it.
         /// </summary>
@@ -43,6 +40,7 @@ namespace Infrastructure.Helpers
 
             return builder;
         }
+
         /// <summary>
         /// Enables soft deletion filtering on indexes.
         /// </summary>
@@ -54,7 +52,9 @@ namespace Infrastructure.Helpers
 
             return builder;
         }
-        public static EntityTypeBuilder<TEntity> ConfigureBaseEntityColumns<TEntity>(this EntityTypeBuilder<TEntity> builder)
+
+        public static EntityTypeBuilder<TEntity> ConfigureBaseEntityColumns<TEntity>(
+            this EntityTypeBuilder<TEntity> builder)
             where TEntity : BaseEntity
         {
             builder.HasKey(k => k.Id)
@@ -73,6 +73,7 @@ namespace Infrastructure.Helpers
 
             return builder;
         }
+
         public static void DetachAllEntries(this DbContext context)
         {
             var entries = context.ChangeTracker.Entries()
@@ -80,12 +81,8 @@ namespace Infrastructure.Helpers
                 .ToList();
 
             foreach (var entry in entries)
-            {
                 if (entry.Entity != null)
-                {
                     entry.State = EntityState.Detached;
-                }
-            }
         }
     }
 }

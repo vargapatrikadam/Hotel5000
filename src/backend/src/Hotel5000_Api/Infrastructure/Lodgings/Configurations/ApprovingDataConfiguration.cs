@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Infrastructure.Data.Configurations
+namespace Infrastructure.Lodgings.Configurations
 {
     public class ApprovingDataConfiguration : IEntityTypeConfiguration<ApprovingData>, ILodgingConfigurationAggregate
     {

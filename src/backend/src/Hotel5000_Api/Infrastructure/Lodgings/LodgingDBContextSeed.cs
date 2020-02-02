@@ -8,58 +8,62 @@ using System.Text;
 using System.Threading.Tasks;
 using Core.Interfaces.PasswordHasher;
 
-namespace Infrastructure.Data
+namespace Infrastructure.Lodgings
 {
-    public static class LodgingDBContextSeed
+    public static class LodgingDbContextSeed
     {
-        public static async Task SeedAsync(LodgingDBContext Context, IPasswordHasher passwordHasher, bool isProduction)
+        public static async Task SeedAsync(LodgingDbContext context, IPasswordHasher passwordHasher, bool isProduction)
         {
             //Only run this if using a real database
-            if(isProduction)
-                Context.Database.Migrate();
+            if (isProduction)
+                context.Database.Migrate();
 
-            if (!Context.Roles.Any())
+            if (!context.Roles.Any())
             {
-                Context.Roles.AddRange(
+                context.Roles.AddRange(
                     GetPreconfiguredRoles());
 
-                await Context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
 
-            if (!Context.PaymentTypes.Any())
+            if (!context.PaymentTypes.Any())
             {
-                Context.PaymentTypes.AddRange(
+                context.PaymentTypes.AddRange(
                     GetPreconfiguredPaymentTypes());
 
-                await Context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
-            if (!Context.Users.Any())
+
+            if (!context.Users.Any())
             {
-                Context.Users.AddRange(
+                context.Users.AddRange(
                     GetPreconfiguredUsers(passwordHasher));
 
-                await Context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
         }
+
         private static IEnumerable<Role> GetPreconfiguredRoles()
         {
             return new List<Role>()
             {
-                new Role() { Name = Roles.APPROVED_USER},
-                new Role() { Name = Roles.COMPANY},
-                new Role() { Name = Roles.ADMIN}
+                new Role() {Name = Roles.ApprovedUser},
+                new Role() {Name = Roles.Company},
+                new Role() {Name = Roles.Admin}
             };
         }
+
         private static IEnumerable<PaymentType> GetPreconfiguredPaymentTypes()
         {
             return new List<PaymentType>()
             {
-                new PaymentType() { Name = PaymentTypes.CASH},
-                new PaymentType() { Name = PaymentTypes.BANKCARD},
-                new PaymentType() { Name = PaymentTypes.CASH_PART},
-                new PaymentType() { Name = PaymentTypes.BANKCARD_PART}
+                new PaymentType() {Name = PaymentTypes.Cash},
+                new PaymentType() {Name = PaymentTypes.Bankcard},
+                new PaymentType() {Name = PaymentTypes.CashPart},
+                new PaymentType() {Name = PaymentTypes.BankcardPart}
             };
         }
+
         private static IEnumerable<User> GetPreconfiguredUsers(IPasswordHasher passwordHasher)
         {
             return new List<User>()

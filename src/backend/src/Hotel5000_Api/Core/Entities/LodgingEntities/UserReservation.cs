@@ -9,7 +9,7 @@ namespace Core.Entities.LodgingEntities
         public string Email { get; set; }
 
         public int PaymentTypeId { get; set; }
-        public virtual PaymentType PaymentType{ get; set; }
+        public virtual PaymentType PaymentType { get; set; }
         public virtual ICollection<Reservation> Reservations { get; set; }
     }
 }

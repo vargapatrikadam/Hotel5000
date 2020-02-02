@@ -10,11 +10,11 @@ namespace Web.Attributes
 {
     public class AuthorizeRoles : AuthorizeAttribute
     {
-        public AuthorizeRoles(params Roles[] AllowedRoles)
+        public AuthorizeRoles(params Roles[] allowedRoles)
         {
-            this.AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme;
-            var allowedRolesAsStrings = AllowedRoles.Select(x => Enum.GetName(typeof(Roles), x));
-            this.Roles = string.Join(",", allowedRolesAsStrings);
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme;
+            var allowedRolesAsStrings = allowedRoles.Select(x => Enum.GetName(typeof(Roles), x));
+            Roles = string.Join(",", allowedRolesAsStrings);
         }
     }
 }

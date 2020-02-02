@@ -21,14 +21,14 @@ namespace Core.Helpers
             return user;
         }
 
-        public static bool ValidatePassword(this string password, out string ErrorMessage)
+        public static bool ValidatePassword(this string password, out string errorMessage)
         {
             var input = password;
-            ErrorMessage = string.Empty;
+            errorMessage = null;
 
             if (string.IsNullOrWhiteSpace(input))
             {
-                ErrorMessage = "Password should not be empty";
+                errorMessage = "Password should not be empty";
                 return false;
             }
 
@@ -39,22 +39,22 @@ namespace Core.Helpers
 
             if (!hasLowerChar.IsMatch(input))
             {
-                ErrorMessage = "Password should contain At least one lower case letter";
+                errorMessage = "Password should contain At least one lower case letter";
                 return false;
             }
             else if (!hasUpperChar.IsMatch(input))
             {
-                ErrorMessage = "Password should contain At least one upper case letter";
+                errorMessage = "Password should contain At least one upper case letter";
                 return false;
             }
             else if (!hasMiniMaxChars.IsMatch(input))
             {
-                ErrorMessage = "Password should not be less than 8 or greater than 40 characters";
+                errorMessage = "Password should not be less than 8 or greater than 40 characters";
                 return false;
             }
             else if (!hasNumber.IsMatch(input))
             {
-                ErrorMessage = "Password should contain At least one numeric value";
+                errorMessage = "Password should contain At least one numeric value";
                 return false;
             }
             else
@@ -62,19 +62,21 @@ namespace Core.Helpers
                 return true;
             }
         }
-        public static bool ValidateEmail(this string email, out string ErrorMessage)
+
+        public static bool ValidateEmail(this string email, out string errorMessage)
         {
             var input = email;
-            ErrorMessage = string.Empty;
+            errorMessage = null;
 
             if (string.IsNullOrWhiteSpace(input))
             {
-                ErrorMessage = "Email should not be empty";
+                errorMessage = "Email should not be empty";
                 return false;
             }
-            if (!(new EmailAddressAttribute().IsValid(email)))
+
+            if (!new EmailAddressAttribute().IsValid(email))
             {
-                ErrorMessage = "Email is not valid";
+                errorMessage = "Email is not valid";
                 return false;
             }
             else

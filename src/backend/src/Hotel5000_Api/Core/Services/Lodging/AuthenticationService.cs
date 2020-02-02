@@ -15,20 +15,22 @@ namespace Core.Services.Lodging
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly IAsyncRepository<User> UserRepository;
-        private readonly IAsyncRepository<Token> TokenRepository;
-        private readonly IPasswordHasher PasswordHasher;
-        private readonly AuthenticationOptions Options;
-        public AuthenticationService(IAsyncRepository<User> userRepository, 
-                                    IAsyncRepository<Token> tokenRepository,
-                                    IPasswordHasher passwordHasher,
-                                    IOption<AuthenticationOptions> options)
+        private readonly IAsyncRepository<User> _userRepository;
+        private readonly IAsyncRepository<Token> _tokenRepository;
+        private readonly IPasswordHasher _passwordHasher;
+        private readonly AuthenticationOptions _options;
+
+        public AuthenticationService(IAsyncRepository<User> userRepository,
+            IAsyncRepository<Token> tokenRepository,
+            IPasswordHasher passwordHasher,
+            ISetting<AuthenticationOptions> settings)
         {
-            UserRepository = userRepository;
-            TokenRepository = tokenRepository;
-            PasswordHasher = passwordHasher;
-            Options = options.option;
+            _userRepository = userRepository;
+            _tokenRepository = tokenRepository;
+            _passwordHasher = passwordHasher;
+            _options = settings.Option;
         }
+
         public async Task<User> AuthenticateAsync(string username, string password, string email)
         {
             //This way we don't need to implement a replica of ThenInclude from EF Core, because we cause eager loading on entities from the context.
@@ -38,46 +40,50 @@ namespace Core.Services.Lodging
             //            .Select(s => s.ReservationWindows)));
             //return user.WithoutPassword();
 
-            ISpecification<User> specification = new Specification<User>()
-                    .ApplyFilter(p => p.Email == email || p.Username == username)
-                    .AddInclude(p => p.Role);
+            var specification = new Specification<User>()
+                .ApplyFilter(p => p.Email == email || p.Username == username)
+                .AddInclude(p => p.Role);
 
-            User user = (await UserRepository.GetAsync(specification))
+            var user = (await _userRepository.GetAsync(specification))
                 .FirstOrDefault();
 
             if (user == null)
                 return null;
-            if (!PasswordHasher.Check(user.Password, password))
+            if (!_passwordHasher.Check(user.Password, password))
                 return null;
 
-            Token newToken = new Token();
-            newToken.RefreshToken = GenerateRefreshToken();
-            newToken.UserId = user.Id;
-            newToken.UsableFrom = DateTime.Now.AddSeconds(Options.AccessTokenDuration);
-            newToken.ExpiresAt = newToken.UsableFrom.AddSeconds(Options.RefreshTokenDuration);
+            var newToken = new Token
+            {
+                RefreshToken = GenerateRefreshToken(),
+                UserId = user.Id,
+                UsableFrom = DateTime.Now.AddSeconds(_options.AccessTokenDuration)
+            };
+            newToken.ExpiresAt = newToken.UsableFrom.AddSeconds(_options.RefreshTokenDuration);
 
-            await TokenRepository.AddAsync(newToken);
+            await _tokenRepository.AddAsync(newToken);
 
-            User userWithToken = (await UserRepository.GetAsync
+            var userWithToken = (await _userRepository.GetAsync
                     (specification.AddInclude(p => p.Tokens)))
-                    .FirstOrDefault();
+                .FirstOrDefault();
 
             return userWithToken;
         }
+
         private string GenerateRefreshToken()
         {
-            byte[] random = new byte[32];
+            var random = new byte[32];
             using (var rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(random);
                 return Convert.ToBase64String(random);
             }
         }
+
         public async Task<User> RefreshAsync(string refreshToken)
         {
-            Token oldToken = (await TokenRepository.GetAsync(
-                new Specification<Token>()
-                .ApplyFilter(p => p.RefreshToken == refreshToken)))
+            var oldToken = (await _tokenRepository.GetAsync(
+                    new Specification<Token>()
+                        .ApplyFilter(p => p.RefreshToken == refreshToken)))
                 .FirstOrDefault();
 
             if (oldToken == null)
@@ -88,37 +94,38 @@ namespace Core.Services.Lodging
             else if (oldToken.ExpiresAt < DateTime.Now)
                 return null;
 
-            Token newToken = new Token();
-            newToken.RefreshToken = GenerateRefreshToken();
-            newToken.UserId = oldToken.UserId;
-            newToken.UsableFrom = DateTime.Now.AddSeconds(Options.AccessTokenDuration);
-            newToken.ExpiresAt = newToken.UsableFrom.AddSeconds(Options.RefreshTokenDuration);
+            var newToken = new Token
+            {
+                RefreshToken = GenerateRefreshToken(),
+                UserId = oldToken.UserId,
+                UsableFrom = DateTime.Now.AddSeconds(_options.AccessTokenDuration)
+            };
+            newToken.ExpiresAt = newToken.UsableFrom.AddSeconds(_options.RefreshTokenDuration);
 
-            await TokenRepository.AddAsync(newToken);
+            await _tokenRepository.AddAsync(newToken);
 
-            await TokenRepository.DeleteAsync(oldToken);
+            await _tokenRepository.DeleteAsync(oldToken);
 
-            User userWithToken = (await UserRepository.GetAsync(
-                new Specification<User>()
-                    .ApplyFilter(p => p.Id == newToken.UserId)
-                    .AddInclude(p => p.Role)
-                    .AddInclude(p => p.Tokens)))
-                    .FirstOrDefault();
+            var userWithToken = (await _userRepository.GetAsync(
+                    new Specification<User>()
+                        .ApplyFilter(p => p.Id == newToken.UserId)
+                        .AddInclude(p => p.Role)
+                        .AddInclude(p => p.Tokens)))
+                .FirstOrDefault();
 
             return userWithToken;
         }
 
         public async Task<bool> RegisterAsync(User user)
         {
-            string errorMessage = null;
-            user.Email.ValidateEmail(out errorMessage);
+            user.Email.ValidateEmail(out var errorMessage);
             user.Password.ValidatePassword(out errorMessage);
             if (errorMessage != string.Empty)
                 throw new ArgumentException(errorMessage);
 
-            user.Password = PasswordHasher.Hash(user.Password);
+            user.Password = _passwordHasher.Hash(user.Password);
 
-            await UserRepository.AddAsync(user);
+            await _userRepository.AddAsync(user);
 
             return true;
         }

@@ -21,13 +21,16 @@ namespace Web.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly IAuthenticationService AuthenticationService;
-        private readonly AuthenticationOptions options;
-        public AuthenticationController(IAuthenticationService authenticationService, IOption<AuthenticationOptions> options)
+        private readonly IAuthenticationService _authenticationService;
+        private readonly AuthenticationOptions _options;
+
+        public AuthenticationController(IAuthenticationService authenticationService,
+            ISetting<AuthenticationOptions> settings)
         {
-            AuthenticationService = authenticationService;
-            this.options = options.option;
+            _authenticationService = authenticationService;
+            _options = settings.Option;
         }
+
         private string GenerateToken(string secret, int expiration, User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -51,34 +54,37 @@ namespace Web.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
         [AllowAnonymous]
         [HttpPost("Login")]
         [ProducesResponseType(typeof(AuthenticationDto), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> Login([FromBody] LoginDto loginData)
         {
-            User authenticatedUser = await AuthenticationService.AuthenticateAsync(loginData.Username, loginData.Password, loginData.Email);
+            var authenticatedUser =
+                await _authenticationService.AuthenticateAsync(loginData.Username, loginData.Password, loginData.Email);
             if (authenticatedUser == null)
-                return BadRequest(new ErrorDto { Message = "Invalid login data" });
-            string accessToken = GenerateToken(options.Secret, options.AccessTokenDuration, authenticatedUser);
-            string refreshToken = authenticatedUser.Tokens.FirstOrDefault().RefreshToken;
+                return BadRequest(new ErrorDto {Message = "Invalid login data"});
+            var accessToken = GenerateToken(_options.Secret, _options.AccessTokenDuration, authenticatedUser);
+            var refreshToken = authenticatedUser.Tokens.FirstOrDefault().RefreshToken;
             return Ok(new AuthenticationDto
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken
             });
         }
+
         [AllowAnonymous]
         [HttpPost("Refresh")]
         [ProducesResponseType(typeof(AuthenticationDto), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> Refresh([FromBody] string refreshToken)
         {
-            User authenticatedUser = await AuthenticationService.RefreshAsync(refreshToken);
+            var authenticatedUser = await _authenticationService.RefreshAsync(refreshToken);
             if (authenticatedUser == null)
-                return BadRequest(new ErrorDto { Message = "Invalid refresh token" });
-            string accessToken = GenerateToken(options.Secret, options.AccessTokenDuration, authenticatedUser);
-            string newRefreshToken = authenticatedUser.Tokens.FirstOrDefault().RefreshToken;
+                return BadRequest(new ErrorDto {Message = "Invalid refresh token"});
+            var accessToken = GenerateToken(_options.Secret, _options.AccessTokenDuration, authenticatedUser);
+            var newRefreshToken = authenticatedUser.Tokens.FirstOrDefault().RefreshToken;
             return Ok(new AuthenticationDto
             {
                 AccessToken = accessToken,

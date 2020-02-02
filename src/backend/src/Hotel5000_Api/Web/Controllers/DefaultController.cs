@@ -6,7 +6,7 @@ using Core.Interfaces.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Core.Enums.Logging;
-using Infrastructure.Data;
+using Infrastructure.Lodgings;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Entities.LodgingEntities;
@@ -20,19 +20,21 @@ namespace Web.Controllers
     [ApiController]
     public class DefaultController : ControllerBase
     {
-        private readonly ILoggingService loggingService;
-        private readonly IAuthenticationService authenticatonService;
-        public DefaultController(ILoggingService LoggingService, IAuthenticationService authenticaton)
+        private readonly ILoggingService _loggingService;
+        private readonly IAuthenticationService _authenticatonService;
+
+        public DefaultController(ILoggingService loggingService, IAuthenticationService authenticaton)
         {
-            loggingService = LoggingService;
-            authenticatonService = authenticaton;
+            _loggingService = loggingService;
+            _authenticatonService = authenticaton;
         }
+
         [HttpGet("test")]
         public async Task<IActionResult> Test()
         {
-            await loggingService.Log("test", LogLevel.Information);
+            await _loggingService.Log("test", LogLevel.Information);
 
-            List<string> data = new List<string>()
+            var data = new List<string>()
             {
                 "test1",
                 "test2",
@@ -41,7 +43,7 @@ namespace Web.Controllers
             return Ok(data);
         }
 
-        [AuthorizeRoles(Roles.ADMIN, Roles.APPROVED_USER, Roles.COMPANY)]
+        [AuthorizeRoles(Roles.Admin, Roles.ApprovedUser, Roles.Company)]
         [HttpGet("testAuthenticate")]
         public async Task<IActionResult> TestAuthenticate()
         {

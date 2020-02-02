@@ -7,16 +7,19 @@ using System.Text;
 
 namespace Infrastructure.Logging
 {
-    public class LoggingDBContext : DbContext
+    public class LoggingDbContext : DbContext
     {
-        public LoggingDBContext(DbContextOptions<LoggingDBContext> options) : base(options) { }
+        public LoggingDbContext(DbContextOptions<LoggingDbContext> options) : base(options)
+        {
+        }
+
         public DbSet<Log> Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             //modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ILoggingConfigurationAggregate).Assembly); 
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ILoggingConfigurationAggregate).Assembly);
         }
     }
 }

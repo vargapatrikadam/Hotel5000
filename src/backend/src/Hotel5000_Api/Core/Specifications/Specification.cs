@@ -14,7 +14,8 @@ namespace Core.Specifications
             Includes = new List<Expression<Func<TEntity, object>>>();
             IsPagingEnabled = false;
         }
-        public Expression<Func<TEntity, bool>> Criteria { get; private set;  }
+
+        public Expression<Func<TEntity, bool>> Criteria { get; private set; }
         public List<Expression<Func<TEntity, object>>> Includes { get; private set; }
         public Expression<Func<TEntity, object>> OrderBy { get; private set; }
         public Expression<Func<TEntity, object>> OrderByDescending { get; private set; }
@@ -27,11 +28,13 @@ namespace Core.Specifications
             Criteria = filter;
             return this;
         }
+
         public ISpecification<TEntity> AddInclude(Expression<Func<TEntity, object>> includeExpression)
         {
             Includes.Add(includeExpression);
             return this;
         }
+
         public ISpecification<TEntity> ApplyPaging(int skip, int take)
         {
             Skip = skip;
@@ -39,16 +42,18 @@ namespace Core.Specifications
             IsPagingEnabled = true;
             return this;
         }
+
         public ISpecification<TEntity> ApplyOrderBy(Expression<Func<TEntity, object>> orderByExpression)
         {
             OrderBy = orderByExpression;
             return this;
         }
-        public ISpecification<TEntity> ApplyOrderByDescending(Expression<Func<TEntity, object>> orderByDescendingExpression)
+
+        public ISpecification<TEntity> ApplyOrderByDescending(
+            Expression<Func<TEntity, object>> orderByDescendingExpression)
         {
             OrderByDescending = orderByDescendingExpression;
             return this;
         }
-
     }
 }

@@ -21,6 +21,8 @@ namespace Core.Interfaces
         public ISpecification<TEntity> AddInclude(Expression<Func<TEntity, object>> includeExpression);
         public ISpecification<TEntity> ApplyPaging(int skip, int take);
         public ISpecification<TEntity> ApplyOrderBy(Expression<Func<TEntity, object>> orderByExpression);
-        public ISpecification<TEntity> ApplyOrderByDescending(Expression<Func<TEntity, object>> orderByDescendingExpression);
+
+        public ISpecification<TEntity> ApplyOrderByDescending(
+            Expression<Func<TEntity, object>> orderByDescendingExpression);
     }
 }

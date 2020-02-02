@@ -6,8 +6,8 @@ namespace Core.Enums.Lodging
 {
     public enum Roles
     {
-        APPROVED_USER,
-        COMPANY,
-        ADMIN
+        ApprovedUser,
+        Company,
+        Admin
     }
 }

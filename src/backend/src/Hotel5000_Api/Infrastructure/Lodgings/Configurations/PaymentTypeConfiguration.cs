@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Infrastructure.Data.Configurations
+namespace Infrastructure.Lodgings.Configurations
 {
     public class PaymentTypeConfiguration : IEntityTypeConfiguration<PaymentType>, ILodgingConfigurationAggregate
     {

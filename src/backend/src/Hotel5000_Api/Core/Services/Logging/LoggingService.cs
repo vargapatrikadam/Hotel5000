@@ -12,30 +12,31 @@ namespace Core.Services.Logging
 {
     public class LoggingService : ILoggingService
     {
-        private readonly IAsyncRepository<Log> logRepository;
-        public LoggingService(IAsyncRepository<Log> LogRepository)
+        private readonly IAsyncRepository<Log> _logRepository;
+
+        public LoggingService(IAsyncRepository<Log> logRepository)
         {
-            logRepository = LogRepository;
+            _logRepository = logRepository;
         }
 
         public async Task<IReadOnlyList<Log>> GetAllLogs()
         {
-            return await logRepository.GetAllAsync();
+            return await _logRepository.GetAllAsync();
         }
 
         public async Task<IReadOnlyList<Log>> GetLogsByLevel(LogLevel type)
         {
-            return await logRepository.GetAsync(new Specification<Log>().ApplyFilter(p => p.Type == type));
+            return await _logRepository.GetAsync(new Specification<Log>().ApplyFilter(p => p.Type == type));
         }
 
         public async Task Log(Log log)
         {
-            await logRepository.AddAsync(log);
+            await _logRepository.AddAsync(log);
         }
 
         public async Task Log(string message, LogLevel type)
         {
-            await logRepository.AddAsync(new Log() { Message = message, Timestamp = DateTime.Now, Type = type });
+            await _logRepository.AddAsync(new Log() {Message = message, Timestamp = DateTime.Now, Type = type});
         }
     }
 }

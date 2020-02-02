@@ -6,9 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Infrastructure.Data.Configurations
+namespace Infrastructure.Lodgings.Configurations
 {
-    public class ReservationWindowConfiguration : IEntityTypeConfiguration<ReservationWindow>, ILodgingConfigurationAggregate
+    public class ReservationWindowConfiguration : IEntityTypeConfiguration<ReservationWindow>,
+        ILodgingConfigurationAggregate
     {
         public void Configure(EntityTypeBuilder<ReservationWindow> builder)
         {

@@ -1,5 +1,5 @@
 ﻿using Core.Entities.LodgingEntities;
-using Infrastructure.Data.Configurations;
+using Infrastructure.Lodgings.Configurations;
 using Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,12 +8,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Data
+namespace Infrastructure.Lodgings
 {
-    public class LodgingDBContext : DbContext
+    public class LodgingDbContext : DbContext
     {
-        public LodgingDBContext(DbContextOptions<LodgingDBContext> options) : base(options)
-        {}
+        public LodgingDbContext(DbContextOptions<LodgingDbContext> options) : base(options)
+        {
+        }
+
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<ApprovingData> ApprovingData { get; set; }
@@ -33,13 +35,16 @@ namespace Infrastructure.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ILodgingConfigurationAggregate).Assembly);
         }
+
         public override int SaveChanges()
         {
             this.UpdateSoftDeleteStatuses();
             //this.DetachAllEntries();
             return base.SaveChanges();
         }
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
+            CancellationToken cancellationToken = default)
         {
             this.UpdateSoftDeleteStatuses();
             //this.DetachAllEntries();
