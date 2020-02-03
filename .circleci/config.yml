@@ -8,7 +8,7 @@ jobs:
      # build image
      - run: |         
          docker info
-         docker build -t hotel5000api -f src/backend/src/Hotel5000_Api/Web/Dockerfile .
+         docker build -t hotel5000api -f src/backend/src/Hotel5000_Api/Web/Dockerfile
      # deploy the image
      - run: |         
          docker login --username=$HEROKU_USERNAME --password=$HEROKU_API_KEY registry.heroku.com
