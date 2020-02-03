@@ -17,30 +17,18 @@ interface | nem konkrét programozási értelemben vett interface, hanem az appl
 ### Szoftver architektúra
 ![Szoftver architektúra diagram](../Docs/imgs/sp/software_architecture_diagram.png)
 
-### Képernyőtervek
-#### Kezdőképernyő
-![Kezdőképernyő terv](../Docs/imgs/designs/home_page.PNG)
-
-#### Saját profil
-![Saját profil terv](../Docs/imgs/designs/own_profile.PNG)
-
-#### Menü
-![Menü terv](../Docs/imgs/designs/menu.PNG)
-
-#### Saját, meglévő hirdetések menedzselése
-![Menedzselés terv](../Docs/imgs/designs/manage_lodgings.PNG)
 #### Komponensek
 a fenti diagramból a komponensek leírása
 
 Komponens neve | Magyarázat |
 -------------- | ---------- |
+
 #### Interfacek
 
 Azonosító | Név | Magyarázat |
 --------- | --- | ---------- |
 
 ### Adatbázisréteg felépítése
-szöveg ide
 #### Adatbázis(ok)
 ##### Domain adatbázis
 Tulajdonságok | Konfiguráció |
@@ -311,6 +299,30 @@ Reservation_PK | Reservation | Id | | | PK |
 Reservation_ReservationWindow_FK | ReservationWindow | Id | Reservation | Reservation_Window_Id | FK 1-N |
 Reservation_UserReservation_FK | UserReservation | Id | Reservation | UserReservation_Id | FK 1-N
 
+##### Log adatbázis
+Tulajdonságok | Konfiguráció |
+------------- | ------------ |
+Név | LoggingDatabase
+Technológia | MSSQL via Code-First EF Core
+Collation | Latin1_General_CI_AS
+Egyéb |
+
+##### Adatmodell
+![Log adatbázis terv](../Docs/imgs/sp/logging_database_diagram.png)
+##### Adatbázis objektumok
+Log
+
+Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
+-------- | ----------- | -------- | --------------- | ----- | ----- |
+Id | int | igen | auto-increment | PK | |
+Timestamp | datetime | igen | now() | | |
+Message | varchar(1000) | igen | | | |
+Type | varchar(50) | igen | Information \| Warning \| Critical | | Érték enumból |
+
+Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
+--------- | ------- | ------ | ------- | ------ | ----- |
+Log_PK | Log | Id | | | PK |
+
 ## Követelmények megvalósítása
 
 URS azonosító | Kapcsolódó komponensek azonosítói | Egyéb |
@@ -341,5 +353,11 @@ leírni a titkosítási módszereket, hibakezelési módszereket stb.
 kifejteni a naplózás módját és szintjeit (pl rendszerinformáció, figyelmeztetés, hibaüzenet stb)
 
 ## Környezet-függő paraméterek
-Paraméter neve | Érték DEV környezetben |
--------------- | ---------------------- |
+Paraméter csoport | Paraméter neve | Érték DEV környezetben |
+----------------- | -------------- | ---------------------- |
+HashingOptions | Iterations | 10000 |
+HashingOptions | SaltSize | 16 |
+HashingOptions | KeySize | 32 |
+AuthenticationOptions | RefreshTokenDuration | 60 |
+AuthenticationOptions | AccessTokenDuration | 60 |
+AuthenticationOptions | Secret | JWT AUTHENTICATION SECRET |
