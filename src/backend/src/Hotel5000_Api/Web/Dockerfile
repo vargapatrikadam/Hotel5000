@@ -7,7 +7,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS builder
 ARG Configuration=Release
-WORKDIR /src
+WORKDIR /src/backend/src/Hotel5000_Api
 COPY *.sln ./
 COPY Core/Core.csproj Core/
 COPY Infrastructure/Infrastructure.csproj Infrastructure/
