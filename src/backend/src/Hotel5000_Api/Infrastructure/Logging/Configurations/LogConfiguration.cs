@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Infrastructure.Helpers;
 
 namespace Infrastructure.Logging
 {
@@ -15,6 +16,10 @@ namespace Infrastructure.Logging
 
             builder.Property(p => p.Id)
                 .ValueGeneratedOnAdd();
+
+            builder.ConfigureBaseEntityColumns();
+
+            builder.EnableSoftDeletion();
 
             builder.Property(p => p.Timestamp)
                 .IsRequired();
