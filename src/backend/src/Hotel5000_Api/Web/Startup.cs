@@ -114,6 +114,7 @@ namespace Web
 
             #endregion
 
+            #region repository registrations 
             services.AddScoped<IAsyncRepository<Log>, LoggingDbRepository<Log>>();
 
             services.AddScoped<IAsyncRepository<Role>, LodgingDbRepository<Role>>();
@@ -130,6 +131,7 @@ namespace Web
             services.AddScoped<IAsyncRepository<UserReservation>, LodgingDbRepository<UserReservation>>();
             services.AddScoped<IAsyncRepository<Reservation>, LodgingDbRepository<Reservation>>();
 
+            #endregion
 
             services.AddSingleton<ISetting<HashingOptions>>(new Setting<HashingOptions>
                 (Configuration.GetSection("HashingOptions").Get<HashingOptions>()));

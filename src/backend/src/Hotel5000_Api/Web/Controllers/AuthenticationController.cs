@@ -31,10 +31,10 @@ namespace Web.Controllers
             _options = settings.Option;
         }
 
-        private string GenerateToken(string secret, int expiration, User user)
+        private string GenerateToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(secret);
+            var key = Encoding.ASCII.GetBytes(_options.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
@@ -44,7 +44,7 @@ namespace Web.Controllers
                     new Claim(ClaimTypes.UserData, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, user.Role.Name.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddSeconds(expiration),
+                Expires = DateTime.UtcNow.AddSeconds(_options.AccessTokenDuration),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature
@@ -65,7 +65,7 @@ namespace Web.Controllers
                 await _authenticationService.AuthenticateAsync(loginData.Username, loginData.Password, loginData.Email);
             if (authenticatedUser == null)
                 return BadRequest(new ErrorDto {Message = "Invalid login data"});
-            var accessToken = GenerateToken(_options.Secret, _options.AccessTokenDuration, authenticatedUser);
+            var accessToken = GenerateToken(authenticatedUser);
             var refreshToken = authenticatedUser.Tokens.FirstOrDefault().RefreshToken;
             var role = authenticatedUser.Role.Name.ToString();
             return Ok(new AuthenticationDto
