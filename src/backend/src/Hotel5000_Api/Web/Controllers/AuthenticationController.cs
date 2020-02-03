@@ -17,7 +17,7 @@ using Web.DTOs;
 
 namespace Web.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
@@ -67,10 +67,12 @@ namespace Web.Controllers
                 return BadRequest(new ErrorDto {Message = "Invalid login data"});
             var accessToken = GenerateToken(_options.Secret, _options.AccessTokenDuration, authenticatedUser);
             var refreshToken = authenticatedUser.Tokens.FirstOrDefault().RefreshToken;
+            var role = authenticatedUser.Role.Name.ToString();
             return Ok(new AuthenticationDto
             {
                 AccessToken = accessToken,
-                RefreshToken = refreshToken
+                RefreshToken = refreshToken,
+                Role = role
             });
         }
 
@@ -85,10 +87,12 @@ namespace Web.Controllers
                 return BadRequest(new ErrorDto {Message = "Invalid refresh token"});
             var accessToken = GenerateToken(_options.Secret, _options.AccessTokenDuration, authenticatedUser);
             var newRefreshToken = authenticatedUser.Tokens.FirstOrDefault().RefreshToken;
+            var role = authenticatedUser.Role.Name.ToString();
             return Ok(new AuthenticationDto
             {
                 AccessToken = accessToken,
-                RefreshToken = newRefreshToken
+                RefreshToken = newRefreshToken,
+                Role = role
             });
         }
     }
