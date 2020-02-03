@@ -83,8 +83,7 @@ namespace Core.Services.Lodging
         {
             var oldToken = (await _tokenRepository.GetAsync(
                     new Specification<Token>()
-                        .ApplyFilter(p => p.RefreshToken == refreshToken)))
-                .FirstOrDefault();
+                        .ApplyFilter(p => p.RefreshToken == refreshToken))).FirstOrDefault();
 
             if (oldToken == null)
                 return null;
@@ -92,7 +91,11 @@ namespace Core.Services.Lodging
             if (oldToken.UsableFrom > DateTime.Now)
                 return null;
             else if (oldToken.ExpiresAt < DateTime.Now)
+            {
+                await _tokenRepository.DeleteAsync(oldToken);
                 return null;
+            }
+                
 
             var newToken = new Token
             {
