@@ -5,19 +5,25 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
-WORKDIR /app
-
-COPY *.sln .
-COPY . .
-WORKDIR /app/src/Web
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS builder
+ARG Configuration=Release
+WORKDIR /src
+COPY *.sln ./
+COPY Core/Core.csproj Core/
+COPY Infrastructure/Infrastructure.csproj Infrastructure/
+COPY Web/Web.csproj Web/
 RUN dotnet restore
+COPY . .
+WORKDIR /src/Web
+RUN dotnet build -c $Configuration -o /app
 
-RUN dotnet publish -c Release -o out
+FROM builder AS publish
+ARG Configuration=Release
+RUN dotnet publish -c $Configuration -o /app
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS runtime
+FROM base AS final
 WORKDIR /app
-COPY --from=build /app/src/Web/out ./
+COPY --from=publish /app .
 
 ENTRYPOINT ["dotnet", "Web.dll"]
 
