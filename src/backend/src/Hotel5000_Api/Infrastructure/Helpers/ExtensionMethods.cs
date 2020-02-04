@@ -21,8 +21,6 @@ namespace Infrastructure.Helpers
                             break;
                         case EntityState.Deleted:
                             entry.State = EntityState.Modified;
-                            //(entry.Entity as BaseEntity).AddedAt = null;
-                            //(entry.Entity as BaseEntity).ModifiedAt = null;
                             entry.CurrentValues["IsDeleted"] = true;
                             break;
                     }
@@ -63,15 +61,18 @@ namespace Infrastructure.Helpers
                 .HasName(typeof(TEntity).Name + "_PK");
 
             builder.Property(p => p.Id)
-                .ValueGeneratedOnAdd();
-
-            //builder.Property(p => p.AddedAt)
-            //    .ValueGeneratedOnAdd()
-            //    .HasComputedColumnSql("getdate()");
+                .UseIdentityColumn();
 
             builder.Property(p => p.ModifiedAt)
                 .ValueGeneratedOnAddOrUpdate()
                 .HasComputedColumnSql("getdate()");
+
+            builder.Property(p => p.AddedAt)
+                .ValueGeneratedOnAdd()
+                .HasComputedColumnSql("getdate()");
+
+            builder.Property(p => p.AddedAt)
+                .Metadata.SetAfterSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Ignore);
 
             return builder;
         }
