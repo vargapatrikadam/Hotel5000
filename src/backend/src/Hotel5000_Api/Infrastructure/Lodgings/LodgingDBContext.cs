@@ -33,20 +33,7 @@ namespace Infrastructure.Lodgings
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(ILodgingConfigurationAggregate).Assembly);
-            modelBuilder.ApplyConfiguration(new RoleConfiguration());
-            modelBuilder.ApplyConfiguration(new UserConfiguration());
-            modelBuilder.ApplyConfiguration(new ApprovingDataConfiguration());
-            modelBuilder.ApplyConfiguration(new ContactConfiguration());
-            modelBuilder.ApplyConfiguration(new TokenConfiguration());
-            modelBuilder.ApplyConfiguration(new LodgingConfiguration());
-            modelBuilder.ApplyConfiguration(new CountryConfiguration());
-            modelBuilder.ApplyConfiguration(new LodgingAddressConfiguration());
-            modelBuilder.ApplyConfiguration(new RoomConfiguration());
-            modelBuilder.ApplyConfiguration(new ReservationWindowConfiguration());
-            modelBuilder.ApplyConfiguration(new PaymentTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new UserReservationConfiguration());
-            modelBuilder.ApplyConfiguration(new ReservationConfiguration());
+            modelBuilder.ApplyConfigurationsDerivedFrom<ILodgingConfigurationAggregate>();
 
         }
 

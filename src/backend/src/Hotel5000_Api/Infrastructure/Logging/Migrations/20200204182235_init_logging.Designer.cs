@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Logging.Migrations
 {
     [DbContext(typeof(LoggingDbContext))]
-    [Migration("20200204163550_init_logging")]
+    [Migration("20200204182235_init_logging")]
     partial class init_logging
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
