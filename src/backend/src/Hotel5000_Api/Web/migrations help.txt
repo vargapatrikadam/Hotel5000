@@ -1,0 +1,8 @@
+create new migration:
+
+package manager console, cd to web project
+dotnet ef migrations add 02_04_init_lodging -s Web.csproj -p ..\Infrastructure\Infrastructure.csproj -c LodgingDbContext -o Lodgings\Migrations
+
+apply latest migration:
+
+dotnet ef database update -c lodgingdbcontext
