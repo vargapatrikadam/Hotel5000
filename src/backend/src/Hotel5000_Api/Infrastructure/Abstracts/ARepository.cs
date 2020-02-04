@@ -26,7 +26,7 @@ namespace Infrastructure.Abstracts
             await Context.Set<TEntity>().AddAsync(entity);
             await Context.SaveChangesAsync();
             //TODO : is this necessary?
-            Context.DetachAllEntries();
+            //Context.DetachAllEntries();
         }
 
         public async Task AddRange(IEnumerable<TEntity> entities)
@@ -34,13 +34,13 @@ namespace Infrastructure.Abstracts
             await Context.Set<TEntity>().AddRangeAsync(entities);
             await Context.SaveChangesAsync();
             //TODO : is this necessary?
-            Context.DetachAllEntries();
+            //Context.DetachAllEntries();
         }
 
         public async Task DeleteAsync(TEntity entity)
         {
-            var deleteThis = await Context.Set<TEntity>().FindAsync(entity.Id);
-            Context.Set<TEntity>().Remove(deleteThis);
+            //var deleteThis = await Context.Set<TEntity>().FindAsync(entity.Id);
+            Context.Set<TEntity>().Remove(entity);
             await Context.SaveChangesAsync();
         }
 

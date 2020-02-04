@@ -21,6 +21,8 @@ namespace Infrastructure.Helpers
                             break;
                         case EntityState.Deleted:
                             entry.State = EntityState.Modified;
+                            //(entry.Entity as BaseEntity).AddedAt = null;
+                            //(entry.Entity as BaseEntity).ModifiedAt = null;
                             entry.CurrentValues["IsDeleted"] = true;
                             break;
                     }
@@ -63,12 +65,12 @@ namespace Infrastructure.Helpers
             builder.Property(p => p.Id)
                 .ValueGeneratedOnAdd();
 
-            builder.Property(p => p.AddedAt)
-                .ValueGeneratedOnAdd()
-                .HasComputedColumnSql("getdate()");
+            //builder.Property(p => p.AddedAt)
+            //    .ValueGeneratedOnAdd()
+            //    .HasComputedColumnSql("getdate()");
 
             builder.Property(p => p.ModifiedAt)
-                .ValueGeneratedOnUpdate()
+                .ValueGeneratedOnAddOrUpdate()
                 .HasComputedColumnSql("getdate()");
 
             return builder;
