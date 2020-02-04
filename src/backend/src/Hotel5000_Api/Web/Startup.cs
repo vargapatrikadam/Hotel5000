@@ -47,7 +47,8 @@ namespace Web
 
             services.AddDbContext<LodgingDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("LodgingDb")));
-            services.AddDbContext<LoggingDbContext>(options => options.UseInMemoryDatabase("LoggingDb"));
+            services.AddDbContext<LoggingDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("LoggingDb")));
 
             #region swagger settings
 

@@ -1,10 +1,10 @@
 ﻿using Core.Enums.Logging;
 using Core.Interfaces.Logging;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Infrastructure.Lodgings.Migrations
 {
-    public partial class _02_04_init_lodging : Migration
+    public partial class init_lodging : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,24 +22,6 @@ namespace Infrastructure.Lodgings.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("Country_PK", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Log",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AddedAt = table.Column<DateTime>(nullable: false, computedColumnSql: "getdate()"),
-                    ModifiedAt = table.Column<DateTime>(nullable: false, computedColumnSql: "getdate()"),
-                    Timestamp = table.Column<DateTime>(nullable: false),
-                    Message = table.Column<string>(maxLength: 1000, nullable: false),
-                    Type = table.Column<string>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("Log_PK", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -282,7 +264,7 @@ namespace Infrastructure.Lodgings.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Reser",
+                name: "ReservationWindows",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -326,7 +308,7 @@ namespace Infrastructure.Lodgings.Migrations
                     table.ForeignKey(
                         name: "Reservation_ReservationWindow_FK",
                         column: x => x.ReservationWindowId,
-                        principalTable: "Reser",
+                        principalTable: "ReservationWindows",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -408,11 +390,6 @@ namespace Infrastructure.Lodgings.Migrations
                 filter: "IsDeleted = 0");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reser_RoomId",
-                table: "Reser",
-                column: "RoomId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Reservations_ReservationWindowId",
                 table: "Reservations",
                 column: "ReservationWindowId");
@@ -421,6 +398,11 @@ namespace Infrastructure.Lodgings.Migrations
                 name: "IX_Reservations_UserReservationId",
                 table: "Reservations",
                 column: "UserReservationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReservationWindows_RoomId",
+                table: "ReservationWindows",
+                column: "RoomId");
 
             migrationBuilder.CreateIndex(
                 name: "Role_Name_UQ",
@@ -476,9 +458,6 @@ namespace Infrastructure.Lodgings.Migrations
                 name: "LodgingAddresses");
 
             migrationBuilder.DropTable(
-                name: "Log");
-
-            migrationBuilder.DropTable(
                 name: "Reservations");
 
             migrationBuilder.DropTable(
@@ -488,7 +467,7 @@ namespace Infrastructure.Lodgings.Migrations
                 name: "Countries");
 
             migrationBuilder.DropTable(
-                name: "Reser");
+                name: "ReservationWindows");
 
             migrationBuilder.DropTable(
                 name: "UserReservations");

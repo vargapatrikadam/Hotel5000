@@ -19,7 +19,8 @@ namespace Infrastructure.Logging
         {
             base.OnModelCreating(modelBuilder);
             //modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ILoggingConfigurationAggregate).Assembly);
+            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(ILoggingConfigurationAggregate).Assembly);
+            modelBuilder.ApplyConfiguration<Log>(new LogConfiguration());
         }
     }
 }

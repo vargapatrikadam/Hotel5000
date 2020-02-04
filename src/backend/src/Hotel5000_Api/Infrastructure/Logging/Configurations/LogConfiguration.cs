@@ -12,11 +12,6 @@ namespace Infrastructure.Logging
     {
         public void Configure(EntityTypeBuilder<Log> builder)
         {
-            builder.HasKey(k => k.Id);
-
-            builder.Property(p => p.Id)
-                .ValueGeneratedOnAdd();
-
             builder.ConfigureBaseEntityColumns();
 
             builder.EnableSoftDeletion();
