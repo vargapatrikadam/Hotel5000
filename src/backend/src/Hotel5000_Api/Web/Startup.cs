@@ -45,6 +45,10 @@ namespace Web
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
+            services.AddDbContext<LodgingDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("LodgingDb")));
+            services.AddDbContext<LoggingDbContext>(options => options.UseInMemoryDatabase("LoggingDb"));
+
             #region swagger settings
 
             services.AddSwaggerGen(s =>
@@ -167,16 +171,16 @@ namespace Web
         }
 
         //This method is only called when the project's enviroment variable 'ASPNETCORE_ENVIRONMENT' is set to 'Development'
-        public void ConfigureDevelopmentServices(IServiceCollection services)
-        {
-            //If you want to use in-memory database during a development enviroment, use this
-            services.AddDbContext<LoggingDbContext>(options =>
-                options.UseInMemoryDatabase("LoggingDatabase"));
+        //public void ConfigureDevelopmentServices(IServiceCollection services)
+        //{
+        //    //If you want to use in-memory database during a development enviroment, use this
+        //    services.AddDbContext<LoggingDbContext>(options =>
+        //        options.UseInMemoryDatabase("LoggingDatabase"));
 
-            services.AddDbContext<LodgingDbContext>(options =>
-                options.UseInMemoryDatabase("LodgingDatabase"));
+        //    services.AddDbContext<LodgingDbContext>(options =>
+        //        options.UseInMemoryDatabase("LodgingDatabase"));
 
-            ConfigureServices(services);
-        }
+        //    ConfigureServices(services);
+        //}
     }
 }

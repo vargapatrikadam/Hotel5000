@@ -85,7 +85,7 @@ namespace Web.Controllers
             var authenticatedUser = await _authenticationService.RefreshAsync(refreshToken);
             if (authenticatedUser == null)
                 return BadRequest(new ErrorDto {Message = "Invalid refresh token"});
-            var accessToken = GenerateToken(_options.Secret, _options.AccessTokenDuration, authenticatedUser);
+            var accessToken = GenerateToken(authenticatedUser);
             var newRefreshToken = authenticatedUser.Tokens.FirstOrDefault().RefreshToken;
             var role = authenticatedUser.Role.Name.ToString();
             return Ok(new AuthenticationDto
