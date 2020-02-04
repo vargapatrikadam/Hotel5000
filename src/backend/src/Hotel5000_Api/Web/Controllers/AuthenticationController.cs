@@ -66,7 +66,7 @@ namespace Web.Controllers
             if (authenticatedUser == null)
                 return BadRequest(new ErrorDto {Message = "Invalid login data"});
             var accessToken = GenerateToken(authenticatedUser);
-            var refreshToken = authenticatedUser.Tokens.FirstOrDefault().RefreshToken;
+            var refreshToken = authenticatedUser.Tokens.LastOrDefault().RefreshToken;
             var role = authenticatedUser.Role.Name.ToString();
             return Ok(new AuthenticationDto
             {
