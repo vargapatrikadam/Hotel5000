@@ -39,8 +39,8 @@ namespace Infrastructure.Abstracts
 
         public async Task DeleteAsync(TEntity entity)
         {
-            //var deleteThis = await Context.Set<TEntity>().FindAsync(entity.Id);
-            Context.Set<TEntity>().Remove(entity);
+            var deleteThis = await Context.Set<TEntity>().FindAsync(entity.Id);
+            Context.Set<TEntity>().Remove(deleteThis);
             await Context.SaveChangesAsync();
         }
 
