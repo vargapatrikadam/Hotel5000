@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
@@ -152,8 +153,13 @@ namespace Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseHttpsRedirection();
+            if (env.IsDevelopment())
+                app.UseExceptionHandler("api/error-local-development");
+            else
+                app.UseExceptionHandler("api/error");
 
+            app.UseHttpsRedirection();
+            
             app.UseSwagger();
 
             app.UseSwaggerUI(s =>
@@ -165,8 +171,6 @@ namespace Web
             app.UseRouting();
 
             app.UseAuthorization();
-
-            app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
 
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
