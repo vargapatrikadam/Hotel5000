@@ -13,6 +13,7 @@ namespace Web.Controllers
     [ApiController]
     public class ErrorController : ControllerBase
     {
+        [ApiExplorerSettings(IgnoreApi = true)]
         [Route("/error")]
         public IActionResult Error()
         {
@@ -21,6 +22,7 @@ namespace Web.Controllers
             //handle internal server errors
             return Problem();
         }
+        [ApiExplorerSettings(IgnoreApi = true)]
         [Route("/error-local-development")]
         public IActionResult ErrorLocalDevelopment([FromServices] IWebHostEnvironment webHostEnvironment)
         {

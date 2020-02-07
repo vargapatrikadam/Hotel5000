@@ -20,9 +20,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Web.Middlewares;
 
 namespace Web
 {
@@ -46,10 +46,10 @@ namespace Web
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
-            services.AddDbContext<LodgingDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("LodgingDb")));
-            services.AddDbContext<LoggingDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("LoggingDb")));
+            //services.AddDbContext<LodgingDbContext>(options =>
+            //    options.UseSqlServer(Configuration.GetConnectionString("LodgingDb")));
+            //services.AddDbContext<LoggingDbContext>(options =>
+            //    options.UseSqlServer(Configuration.GetConnectionString("LoggingDb")));
 
             #region swagger settings
 
@@ -154,9 +154,9 @@ namespace Web
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
-                app.UseExceptionHandler("api/error-local-development");
+                app.UseExceptionHandler("/api/error-local-development");
             else
-                app.UseExceptionHandler("api/error");
+                app.UseExceptionHandler("/api/error");
 
             app.UseHttpsRedirection();
             
@@ -176,16 +176,16 @@ namespace Web
         }
 
         //This method is only called when the project's enviroment variable 'ASPNETCORE_ENVIRONMENT' is set to 'Development'
-        //public void ConfigureDevelopmentServices(IServiceCollection services)
-        //{
-        //    //If you want to use in-memory database during a development enviroment, use this
-        //    services.AddDbContext<LoggingDbContext>(options =>
-        //        options.UseInMemoryDatabase("LoggingDatabase"));
+        public void ConfigureDevelopmentServices(IServiceCollection services)
+        {
+            //If you want to use in-memory database during a development enviroment, use this
+            services.AddDbContext<LoggingDbContext>(options =>
+                options.UseInMemoryDatabase("LoggingDatabase"));
 
-        //    services.AddDbContext<LodgingDbContext>(options =>
-        //        options.UseInMemoryDatabase("LodgingDatabase"));
+            services.AddDbContext<LodgingDbContext>(options =>
+                options.UseInMemoryDatabase("LodgingDatabase"));
 
-        //    ConfigureServices(services);
-        //}
+            ConfigureServices(services);
+        }
     }
 }

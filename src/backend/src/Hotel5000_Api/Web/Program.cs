@@ -31,10 +31,11 @@ namespace Web
                 var lodgingContext = services.GetRequiredService<LodgingDbContext>();
                 var hasher = services.GetRequiredService<IPasswordHasher>();
 
+                //TODO: log exceptions?
                 await LodgingDbContextSeed.SeedAsync(lodgingContext, hasher, environment.IsProduction());
 
                 var loggingContext = services.GetRequiredService<LoggingDbContext>();
-                await LoggingDBContextSeed.Seed(loggingContext);
+                await LoggingDBContextSeed.Seed(loggingContext, environment.IsProduction());
             }
 
             host.Run();
