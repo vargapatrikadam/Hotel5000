@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Core.Helpers.Results
 {
-    public class NotFoundResult<T> : AResult<T>
+    public class NotFoundResult<T> : Result<T>
     {
         private readonly string[] _messages;
         public NotFoundResult(params string[] messages)

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Core.Helpers.Results
 {
-    public class SuccessfulResult<T> : AResult<T>
+    public class SuccessfulResult<T> : Result<T>
     {
         private readonly T _data;
         public SuccessfulResult(T data)

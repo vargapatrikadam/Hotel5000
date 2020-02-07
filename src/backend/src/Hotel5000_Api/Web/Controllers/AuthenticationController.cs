@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Core.Entities.LodgingEntities;
+using Core.Helpers.Results;
 using Core.Interfaces;
 using Core.Interfaces.Lodging;
 using Core.Services.Lodging;
@@ -61,13 +62,16 @@ namespace Web.Controllers
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> Login([FromBody] LoginDto loginData)
         {
-            var authenticatedUser =
+            Result<User> result =
                 await _authenticationService.AuthenticateAsync(loginData.Username, loginData.Password, loginData.Email);
-            if (authenticatedUser == null)
+
+            if (result.ResultType == ResultType.Unauthorized)
                 return BadRequest(new ErrorDto {Message = "Invalid login data"});
-            var accessToken = GenerateToken(authenticatedUser);
-            var refreshToken = authenticatedUser.Tokens.LastOrDefault().RefreshToken;
-            var role = authenticatedUser.Role.Name.ToString();
+
+            var accessToken = GenerateToken(result.Data);
+            var refreshToken = result.Data.Tokens.LastOrDefault().RefreshToken;
+            var role = result.Data.Role.Name.ToString();
+
             return Ok(new AuthenticationDto
             {
                 AccessToken = accessToken,
@@ -82,12 +86,12 @@ namespace Web.Controllers
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> Refresh([FromBody] string refreshToken)
         {
-            var authenticatedUser = await _authenticationService.RefreshAsync(refreshToken);
-            if (authenticatedUser == null)
+            Result<User> result = await _authenticationService.RefreshAsync(refreshToken);
+            if (result.ResultType == ResultType.Unauthorized)
                 return BadRequest(new ErrorDto {Message = "Invalid refresh token"});
-            var accessToken = GenerateToken(authenticatedUser);
-            var newRefreshToken = authenticatedUser.Tokens.FirstOrDefault().RefreshToken;
-            var role = authenticatedUser.Role.Name.ToString();
+            var accessToken = GenerateToken(result.Data);
+            var newRefreshToken = result.Data.Tokens.FirstOrDefault().RefreshToken;
+            var role = result.Data.Role.Name.ToString();
             return Ok(new AuthenticationDto
             {
                 AccessToken = accessToken,

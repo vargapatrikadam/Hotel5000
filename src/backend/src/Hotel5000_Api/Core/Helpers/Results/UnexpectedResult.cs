@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Core.Helpers.Results
 {
-    public class UnexpectedResult<T> : AResult<T>
+    public class UnexpectedResult<T> : Result<T>
     {
         private readonly string[] _messages;
         public UnexpectedResult(params string[] messages)

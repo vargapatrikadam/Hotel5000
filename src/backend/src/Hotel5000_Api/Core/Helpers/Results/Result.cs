@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Core.Helpers.Results
 {
-    public abstract class AResult<T>
+    public abstract class Result<T>
     {
         public abstract ResultType ResultType { get;}
         public abstract List<string> Errors { get; }

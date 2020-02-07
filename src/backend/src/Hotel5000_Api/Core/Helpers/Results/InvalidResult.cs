@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Core.Helpers.Results
 {
-    public class InvalidResult<T> : AResult<T>
+    public class InvalidResult<T> : Result<T>
     {
         private readonly string[] _messages;
         public InvalidResult(params string[] messages)

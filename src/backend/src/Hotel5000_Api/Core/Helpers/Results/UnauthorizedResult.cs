@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Core.Helpers.Results
 {
-    public class UnauthorizedResult<T> : AResult<T>
+    public class UnauthorizedResult<T> : Result<T>
     {
         private readonly string[] _messages;
         public UnauthorizedResult(params string[] messages)

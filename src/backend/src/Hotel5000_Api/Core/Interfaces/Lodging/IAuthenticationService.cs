@@ -1,4 +1,5 @@
 ﻿using Core.Entities.LodgingEntities;
+using Core.Helpers.Results;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,8 +9,8 @@ namespace Core.Interfaces.Lodging
 {
     public interface IAuthenticationService
     {
-        Task<User> AuthenticateAsync(string username, string password, string email);
-        Task<User> RefreshAsync(string refreshToken);
+        Task<Result<User>> AuthenticateAsync(string username, string password, string email);
+        Task<Result<User>> RefreshAsync(string refreshToken);
         Task<bool> RegisterAsync(User user);
     }
 }
