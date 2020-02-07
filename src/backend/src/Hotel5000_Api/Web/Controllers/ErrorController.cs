@@ -9,12 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers
 {
-    [Route("api")]
     [ApiController]
     public class ErrorController : ControllerBase
     {
         [ApiExplorerSettings(IgnoreApi = true)]
-        [Route("/error")]
+        [Route("/api/error")]
         public IActionResult Error()
         {
             var context = HttpContext.Features.Get<IExceptionHandlerFeature>();
@@ -23,7 +22,7 @@ namespace Web.Controllers
             return Problem();
         }
         [ApiExplorerSettings(IgnoreApi = true)]
-        [Route("/error-local-development")]
+        [Route("/api/error-local-development")]
         public IActionResult ErrorLocalDevelopment([FromServices] IWebHostEnvironment webHostEnvironment)
         {
             if (webHostEnvironment.EnvironmentName != "Development")

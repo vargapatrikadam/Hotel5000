@@ -33,7 +33,7 @@ namespace Web.Controllers
         public async Task<IActionResult> Test()
         {
             await _loggingService.Log("test", LogLevel.Information);
-
+            //throw new Exception("asd");
             var data = new List<string>()
             {
                 "test1",
