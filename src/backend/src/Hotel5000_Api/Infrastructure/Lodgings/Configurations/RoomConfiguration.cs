@@ -20,6 +20,9 @@ namespace Infrastructure.Lodgings.Configurations
             builder.Property(p => p.ChildrenCapacity)
                 .IsRequired();
 
+            builder.Property(p => p.Price)
+                .IsRequired();
+
             builder.EnableSoftDeletion();
 
             builder.HasOne(p => p.Lodging)

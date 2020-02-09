@@ -21,15 +21,12 @@ namespace Infrastructure.Lodgings.Configurations
             builder.Property(p => p.To)
                 .IsRequired();
 
-            builder.Property(p => p.Price)
-                .IsRequired();
-
             builder.EnableSoftDeletion();
 
-            builder.HasOne(p => p.Room)
+            builder.HasOne(p => p.Lodging)
                 .WithMany(p => p.ReservationWindows)
                 .IsRequired()
-                .HasConstraintName("ReservationWindow_Room_FK");
+                .HasConstraintName("ReservationWindow_Lodging_FK");
         }
     }
 }
