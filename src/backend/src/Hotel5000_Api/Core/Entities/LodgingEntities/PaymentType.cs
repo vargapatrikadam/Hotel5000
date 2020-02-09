@@ -9,6 +9,6 @@ namespace Core.Entities.LodgingEntities
     {
         public PaymentTypes Name { get; set; }
 
-        public virtual ICollection<UserReservation> UserReservations { get; set; }
+        public virtual ICollection<Reservation> UserReservations { get; set; }
     }
 }

@@ -134,8 +134,8 @@ namespace Web
             services.AddScoped<IAsyncRepository<Room>, LodgingDbRepository<Room>>();
             services.AddScoped<IAsyncRepository<ReservationWindow>, LodgingDbRepository<ReservationWindow>>();
             services.AddScoped<IAsyncRepository<PaymentType>, LodgingDbRepository<PaymentType>>();
-            services.AddScoped<IAsyncRepository<UserReservation>, LodgingDbRepository<UserReservation>>();
             services.AddScoped<IAsyncRepository<Reservation>, LodgingDbRepository<Reservation>>();
+            services.AddScoped<IAsyncRepository<ReservationItem>, LodgingDbRepository<ReservationItem>>();
 
             #endregion
 

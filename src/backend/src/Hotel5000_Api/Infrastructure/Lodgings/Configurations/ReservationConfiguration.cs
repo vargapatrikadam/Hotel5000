@@ -8,9 +8,9 @@ using System.Text;
 
 namespace Infrastructure.Lodgings.Configurations
 {
-    public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>, ILodgingConfigurationAggregate
+    public class ReservationConfiguration : IEntityTypeConfiguration<ReservationItem>, ILodgingConfigurationAggregate
     {
-        public void Configure(EntityTypeBuilder<Reservation> builder)
+        public void Configure(EntityTypeBuilder<ReservationItem> builder)
         {
             builder.ConfigureBaseEntityColumns();
 
