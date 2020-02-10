@@ -123,7 +123,7 @@ namespace Core.Services.Lodging
             return new SuccessfulResult<User>(userWithToken);
         }
 
-        public async Task<Result<bool>> RegisterAsync(User user)
+        public async Task<Result<bool>> RegisterAsync(User user, string role)
         {
             user.Email.ValidateEmail(out var errorMessage);
             user.Password.ValidatePassword(out errorMessage);
@@ -132,11 +132,14 @@ namespace Core.Services.Lodging
 
             user.Password = _passwordHasher.Hash(user.Password);
 
-            var role = (await _roleRepository.GetAsync(new Specification<Role>().ApplyFilter(p => p.Name == user.Role.Name))).FirstOrDefault();
+            var roleEntity = (await _roleRepository.GetAsync(new Specification<Role>().ApplyFilter(p => p.Name.ToString() == role))).FirstOrDefault();
+
+            if (roleEntity == null)
+                return new InvalidResult<bool>("Role not found");
 
             user.Role = null;
 
-            user.RoleId = role.Id;
+            user.RoleId = roleEntity.Id;
 
             await _userRepository.AddAsync(user);
 

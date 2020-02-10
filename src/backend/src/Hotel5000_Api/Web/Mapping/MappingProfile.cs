@@ -26,7 +26,7 @@ namespace Web.Mapping
                 .ReverseMap()
                     .ForPath(s => s.ApprovingData, opt => opt.Ignore())
                     .ForPath(s => s.Contacts, opt => opt.Ignore())
-                    .ForPath(s => s.Role.Name, opt => opt.MapFrom(src => src.Role))
+                    .ForPath(s => s.Role, opt => opt.Ignore())
                     .ForPath(s => s.FirstName, opt => opt.MapFrom(src => src.FirstName))
                     .ForPath(s => s.LastName, opt => opt.MapFrom(src => src.LastName))
                     .ForPath(s => s.Email, opt => opt.MapFrom(src => src.Email))

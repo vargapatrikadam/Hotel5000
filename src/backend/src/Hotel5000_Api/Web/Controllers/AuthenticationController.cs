@@ -107,11 +107,11 @@ namespace Web.Controllers
         [HttpPost("Register")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
-        public async Task<IActionResult> Register([FromBody] UserDto newUser)
+        public async Task<IActionResult> Register([FromBody] UserDto newUserDto)
         {
-            User userEntity = _mapper.Map<User>(newUser);
+            User newUserEntity = _mapper.Map<User>(newUserDto);
 
-            Result<bool> result = await _authenticationService.RegisterAsync(userEntity);
+            Result<bool> result = await _authenticationService.RegisterAsync(newUserEntity, newUserDto.Role);
 
             if (result.Data == true)
                 return Ok();
