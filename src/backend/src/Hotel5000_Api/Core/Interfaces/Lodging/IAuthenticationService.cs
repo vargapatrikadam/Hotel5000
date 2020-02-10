@@ -11,6 +11,6 @@ namespace Core.Interfaces.Lodging
     {
         Task<Result<User>> AuthenticateAsync(string username, string password, string email);
         Task<Result<User>> RefreshAsync(string refreshToken);
-        Task<bool> RegisterAsync(User user);
+        Task<Result<bool>> RegisterAsync(User user);
     }
 }

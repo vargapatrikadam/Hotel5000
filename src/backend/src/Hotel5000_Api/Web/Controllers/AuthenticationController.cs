@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Core.Entities.LodgingEntities;
 using Core.Helpers.Results;
 using Core.Interfaces;
@@ -24,12 +25,15 @@ namespace Web.Controllers
     {
         private readonly IAuthenticationService _authenticationService;
         private readonly AuthenticationOptions _options;
+        private readonly IMapper _mapper;
 
         public AuthenticationController(IAuthenticationService authenticationService,
-            ISetting<AuthenticationOptions> settings)
+            ISetting<AuthenticationOptions> settings,
+            IMapper mapper)
         {
             _authenticationService = authenticationService;
             _options = settings.Option;
+            _mapper = mapper;
         }
 
         private string GenerateToken(User user)
@@ -66,7 +70,7 @@ namespace Web.Controllers
                 await _authenticationService.AuthenticateAsync(loginData.Username, loginData.Password, loginData.Email);
 
             if (result.ResultType == ResultType.Unauthorized)
-                return BadRequest(new ErrorDto {Message = "Invalid login data"});
+                return BadRequest(new ErrorDto("Invalid login data"));
 
             var accessToken = GenerateToken(result.Data);
             var refreshToken = result.Data.Tokens.LastOrDefault().RefreshToken;
@@ -88,7 +92,7 @@ namespace Web.Controllers
         {
             Result<User> result = await _authenticationService.RefreshAsync(refreshToken);
             if (result.ResultType == ResultType.Unauthorized)
-                return BadRequest(new ErrorDto {Message = "Invalid refresh token"});
+                return BadRequest(new ErrorDto("Invalid refresh token"));
             var accessToken = GenerateToken(result.Data);
             var newRefreshToken = result.Data.Tokens.FirstOrDefault().RefreshToken;
             var role = result.Data.Role.Name.ToString();
@@ -98,6 +102,20 @@ namespace Web.Controllers
                 RefreshToken = newRefreshToken,
                 Role = role
             });
+        }
+        [AllowAnonymous]
+        [HttpPost("Register")]
+        [ProducesResponseType(200)]
+        [ProducesErrorResponseType(typeof(ErrorDto))]
+        public async Task<IActionResult> Register([FromBody] UserDto newUser)
+        {
+            User userEntity = _mapper.Map<User>(newUser);
+
+            Result<bool> result = await _authenticationService.RegisterAsync(userEntity);
+
+            if (result.Data == true)
+                return Ok();
+            else return BadRequest(new ErrorDto(result.Errors));
         }
     }
 }

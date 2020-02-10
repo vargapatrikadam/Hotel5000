@@ -7,10 +7,18 @@ namespace Web.DTOs
 {
     public class ErrorDto
     {
-        public string Message { get; set; }
-        public override string ToString()
+        public ErrorDto(params string[] messages)
         {
-            return Message;
+            Messages = messages.ToList();
         }
+        public ErrorDto(ICollection<string> messages)
+        {
+            Messages = messages.ToList();
+        }
+        public ErrorDto(string message)
+        {
+            Messages = new List<string> { message };
+        }
+        public ICollection<string> Messages { get; private set; }
     }
 }

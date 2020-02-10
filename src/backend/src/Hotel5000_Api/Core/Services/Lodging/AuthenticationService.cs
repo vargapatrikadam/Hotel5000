@@ -18,16 +18,19 @@ namespace Core.Services.Lodging
     {
         private readonly IAsyncRepository<User> _userRepository;
         private readonly IAsyncRepository<Token> _tokenRepository;
+        private readonly IAsyncRepository<Role> _roleRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly AuthenticationOptions _options;
 
         public AuthenticationService(IAsyncRepository<User> userRepository,
             IAsyncRepository<Token> tokenRepository,
+            IAsyncRepository<Role> roleRepository,
             IPasswordHasher passwordHasher,
             ISetting<AuthenticationOptions> settings)
         {
             _userRepository = userRepository;
             _tokenRepository = tokenRepository;
+            _roleRepository = roleRepository;
             _passwordHasher = passwordHasher;
             _options = settings.Option;
         }
@@ -120,18 +123,24 @@ namespace Core.Services.Lodging
             return new SuccessfulResult<User>(userWithToken);
         }
 
-        public async Task<bool> RegisterAsync(User user)
+        public async Task<Result<bool>> RegisterAsync(User user)
         {
             user.Email.ValidateEmail(out var errorMessage);
             user.Password.ValidatePassword(out errorMessage);
-            if (errorMessage != string.Empty)
-                throw new ArgumentException(errorMessage);
+            if (errorMessage != null)
+                return new InvalidResult<bool>(errorMessage);
 
             user.Password = _passwordHasher.Hash(user.Password);
 
+            var role = (await _roleRepository.GetAsync(new Specification<Role>().ApplyFilter(p => p.Name == user.Role.Name))).FirstOrDefault();
+
+            user.Role = null;
+
+            user.RoleId = role.Id;
+
             await _userRepository.AddAsync(user);
 
-            return true;
+            return new SuccessfulResult<bool>(true);
         }
     }
 }
