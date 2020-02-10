@@ -1,23 +1,26 @@
 import React, {Component} from 'react';
 import SearchBar from "../components/SearchBar";
-import Footer from "../components/Footer";
 import {Button} from "react-bootstrap";
 import './Home.css';
 import {Link} from "react-router-dom";
+import NavBar from '../components/NavBar';
 
 class Home extends Component {
     render() {
         return (
-            <div>
-                <SearchBar/>
-                <div className="buttonContainer">
-                    <Link to="/lodgings">
-                        <Button variant="outline-dark" className="button">Browse lodgings</Button>
-                    </Link>
-
-                    <Button variant="outline-dark" className="button">Register</Button>
+            <div id="homeContainer">
+                <NavBar/>
+                <div id="searchContainer" className="mx-auto">
+                    <SearchBar/>
                 </div>
-                <Footer/>
+                <div id="buttonContainer" className="text-center">
+                    <Link to="/lodgings">
+                        <Button variant="outline-dark" style={{marginRight: 20}}>Browse lodgings</Button>
+                    </Link>
+                    <Link to="/register">
+                        <Button variant="outline-dark" style={{marginLeft: 20}}>Register</Button>
+                    </Link>
+                </div>
             </div>
         );
     }
