@@ -23,7 +23,7 @@ namespace Infrastructure.Lodgings.Configurations
 
             builder.HasOne(p => p.PaymentType)
                 .WithMany(p => p.UserReservations)
-                .OnDelete(DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("UserReservation_PaymentType_FK")
                 .IsRequired();
         }

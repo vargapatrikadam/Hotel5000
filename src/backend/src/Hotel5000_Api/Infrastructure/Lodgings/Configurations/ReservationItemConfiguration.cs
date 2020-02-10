@@ -24,13 +24,13 @@ namespace Infrastructure.Lodgings.Configurations
 
             builder.HasOne(p => p.Room)
                 .WithMany(p => p.ReservationItems)
-                .OnDelete(DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired()
                 .HasConstraintName("ReservationItem_Room_FK");
 
             builder.HasOne(p => p.ReservationWindow)
                 .WithMany(p => p.ReservationItems)
-                .OnDelete(DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired()
                 .HasConstraintName("ReservationItem_ReservationWindow_FK");
 
