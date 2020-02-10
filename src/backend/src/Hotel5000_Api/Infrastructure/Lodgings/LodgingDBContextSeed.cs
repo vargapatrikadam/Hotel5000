@@ -16,8 +16,9 @@ namespace Infrastructure.Lodgings
         {
             //context.Database.Migrate();
             //Only run this if using a real database
-            if (isProduction)
-                context.Database.Migrate();
+            //if (isProduction)
+            //    context.Database.Migrate();
+            context.Database.Migrate();
 
             if (!context.Roles.Any())
             {

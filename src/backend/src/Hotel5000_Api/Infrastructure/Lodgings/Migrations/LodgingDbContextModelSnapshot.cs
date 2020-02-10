@@ -188,6 +188,9 @@ namespace Infrastructure.Lodgings.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<int>("LodgingTypeId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("ModifiedAt")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
@@ -203,6 +206,8 @@ namespace Infrastructure.Lodgings.Migrations
 
                     b.HasKey("Id")
                         .HasName("Lodging_PK");
+
+                    b.HasIndex("LodgingTypeId");
 
                     b.HasIndex("UserId");
 
@@ -282,6 +287,43 @@ namespace Infrastructure.Lodgings.Migrations
                     b.ToTable("LodgingAddresses");
                 });
 
+            modelBuilder.Entity("Core.Entities.LodgingEntities.LodgingType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("AddedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasComputedColumnSql("getdate()");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasComputedColumnSql("getdate()");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id")
+                        .HasName("LodgingType_PK");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasName("LodgingType_Name_UQ")
+                        .HasFilter("IsDeleted = 0");
+
+                    b.ToTable("LodgingType");
+                });
+
             modelBuilder.Entity("Core.Entities.LodgingEntities.PaymentType", b =>
                 {
                     b.Property<int>("Id")
@@ -333,6 +375,11 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasColumnType("datetime2")
                         .HasComputedColumnSql("getdate()");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -340,6 +387,42 @@ namespace Infrastructure.Lodgings.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasComputedColumnSql("getdate()");
+
+                    b.Property<int>("PaymentTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id")
+                        .HasName("Reservation_PK");
+
+                    b.HasIndex("PaymentTypeId");
+
+                    b.ToTable("Reservations");
+                });
+
+            modelBuilder.Entity("Core.Entities.LodgingEntities.ReservationItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("AddedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasComputedColumnSql("getdate()");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasComputedColumnSql("getdate()");
+
+                    b.Property<int>("ReservationId")
+                        .HasColumnType("int");
 
                     b.Property<int>("ReservationWindowId")
                         .HasColumnType("int");
@@ -350,17 +433,19 @@ namespace Infrastructure.Lodgings.Migrations
                     b.Property<DateTime>("ReservedTo")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserReservationId")
+                    b.Property<int>("RoomId")
                         .HasColumnType("int");
 
                     b.HasKey("Id")
-                        .HasName("Reservation_PK");
+                        .HasName("ReservationItem_PK");
+
+                    b.HasIndex("ReservationId");
 
                     b.HasIndex("ReservationWindowId");
 
-                    b.HasIndex("UserReservationId");
+                    b.HasIndex("RoomId");
 
-                    b.ToTable("Reservations");
+                    b.ToTable("ReservationItems");
                 });
 
             modelBuilder.Entity("Core.Entities.LodgingEntities.ReservationWindow", b =>
@@ -383,16 +468,13 @@ namespace Infrastructure.Lodgings.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<int>("LodgingId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("ModifiedAt")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasComputedColumnSql("getdate()");
-
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoomId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("To")
                         .HasColumnType("datetime2");
@@ -400,7 +482,7 @@ namespace Infrastructure.Lodgings.Migrations
                     b.HasKey("Id")
                         .HasName("ReservationWindow_PK");
 
-                    b.HasIndex("RoomId");
+                    b.HasIndex("LodgingId");
 
                     b.ToTable("ReservationWindows");
                 });
@@ -472,6 +554,9 @@ namespace Infrastructure.Lodgings.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
                         .HasComputedColumnSql("getdate()");
+
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
 
                     b.HasKey("Id")
                         .HasName("Room_PK");
@@ -592,44 +677,6 @@ namespace Infrastructure.Lodgings.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Core.Entities.LodgingEntities.UserReservation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
-                        .HasAnnotation("SqlServer:IdentitySeed", 1)
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("AddedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
-
-                    b.Property<int>("PaymentTypeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id")
-                        .HasName("UserReservation_PK");
-
-                    b.HasIndex("PaymentTypeId");
-
-                    b.ToTable("UserReservations");
-                });
-
             modelBuilder.Entity("Core.Entities.LodgingEntities.ApprovingData", b =>
                 {
                     b.HasOne("Core.Entities.LodgingEntities.User", "User")
@@ -652,10 +699,17 @@ namespace Infrastructure.Lodgings.Migrations
 
             modelBuilder.Entity("Core.Entities.LodgingEntities.Lodging", b =>
                 {
+                    b.HasOne("Core.Entities.LodgingEntities.LodgingType", "LodgingType")
+                        .WithMany("Lodgings")
+                        .HasForeignKey("LodgingTypeId")
+                        .HasConstraintName("Lodging_LodgingType_FK")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Core.Entities.LodgingEntities.User", "User")
                         .WithMany("Lodgings")
                         .HasForeignKey("UserId")
-                        .HasConstraintName("Lodgind_User_FK")
+                        .HasConstraintName("Lodging_User_FK")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -679,27 +733,44 @@ namespace Infrastructure.Lodgings.Migrations
 
             modelBuilder.Entity("Core.Entities.LodgingEntities.Reservation", b =>
                 {
-                    b.HasOne("Core.Entities.LodgingEntities.ReservationWindow", "ReservationWindow")
-                        .WithMany("Reservations")
-                        .HasForeignKey("ReservationWindowId")
-                        .HasConstraintName("Reservation_ReservationWindow_FK")
+                    b.HasOne("Core.Entities.LodgingEntities.PaymentType", "PaymentType")
+                        .WithMany("UserReservations")
+                        .HasForeignKey("PaymentTypeId")
+                        .HasConstraintName("UserReservation_PaymentType_FK")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Core.Entities.LodgingEntities.ReservationItem", b =>
+                {
+                    b.HasOne("Core.Entities.LodgingEntities.Reservation", "Reservation")
+                        .WithMany("ReservationItems")
+                        .HasForeignKey("ReservationId")
+                        .HasConstraintName("ReservationItem_Reservation_FK")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Entities.LodgingEntities.UserReservation", "UserReservation")
-                        .WithMany("Reservations")
-                        .HasForeignKey("UserReservationId")
-                        .HasConstraintName("Reservation_UserReservation_FK")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("Core.Entities.LodgingEntities.ReservationWindow", "ReservationWindow")
+                        .WithMany("ReservationItems")
+                        .HasForeignKey("ReservationWindowId")
+                        .HasConstraintName("ReservationItem_ReservationWindow_FK")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.LodgingEntities.Room", "Room")
+                        .WithMany("ReservationItems")
+                        .HasForeignKey("RoomId")
+                        .HasConstraintName("ReservationItem_Room_FK")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Core.Entities.LodgingEntities.ReservationWindow", b =>
                 {
-                    b.HasOne("Core.Entities.LodgingEntities.Room", "Room")
+                    b.HasOne("Core.Entities.LodgingEntities.Lodging", "Lodging")
                         .WithMany("ReservationWindows")
-                        .HasForeignKey("RoomId")
-                        .HasConstraintName("ReservationWindow_Room_FK")
+                        .HasForeignKey("LodgingId")
+                        .HasConstraintName("ReservationWindow_Lodging_FK")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -730,16 +801,6 @@ namespace Infrastructure.Lodgings.Migrations
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .HasConstraintName("User_Role_FK")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Core.Entities.LodgingEntities.UserReservation", b =>
-                {
-                    b.HasOne("Core.Entities.LodgingEntities.PaymentType", "PaymentType")
-                        .WithMany("UserReservations")
-                        .HasForeignKey("PaymentTypeId")
-                        .HasConstraintName("UserReservation_PaymentType_FK")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -27,8 +27,8 @@ namespace Infrastructure.Lodgings
         public DbSet<Room> Rooms { get; set; }
         public DbSet<ReservationWindow> ReservationWindows { get; set; }
         public DbSet<PaymentType> PaymentTypes { get; set; }
-        public DbSet<Reservation> UserReservations { get; set; }
-        public DbSet<ReservationItem> Reservations { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<ReservationItem> ReservationItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

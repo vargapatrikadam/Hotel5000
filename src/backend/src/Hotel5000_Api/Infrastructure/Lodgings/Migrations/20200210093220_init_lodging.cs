@@ -25,6 +25,22 @@ namespace Infrastructure.Lodgings.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "LodgingType",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AddedAt = table.Column<DateTime>(nullable: false, computedColumnSql: "getdate()"),
+                    ModifiedAt = table.Column<DateTime>(nullable: false, computedColumnSql: "getdate()"),
+                    Name = table.Column<string>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("LodgingType_PK", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PaymentTypes",
                 columns: table => new
                 {
@@ -57,7 +73,7 @@ namespace Infrastructure.Lodgings.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserReservations",
+                name: "Reservations",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -70,13 +86,12 @@ namespace Infrastructure.Lodgings.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("UserReservation_PK", x => x.Id);
+                    table.PrimaryKey("Reservation_PK", x => x.Id);
                     table.ForeignKey(
                         name: "UserReservation_PaymentType_FK",
                         column: x => x.PaymentTypeId,
                         principalTable: "PaymentTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -164,13 +179,20 @@ namespace Infrastructure.Lodgings.Migrations
                     ModifiedAt = table.Column<DateTime>(nullable: false, computedColumnSql: "getdate()"),
                     Name = table.Column<string>(maxLength: 255, nullable: false),
                     UserId = table.Column<int>(nullable: false),
+                    LodgingTypeId = table.Column<int>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("Lodging_PK", x => x.Id);
                     table.ForeignKey(
-                        name: "Lodgind_User_FK",
+                        name: "Lodging_LodgingType_FK",
+                        column: x => x.LodgingTypeId,
+                        principalTable: "LodgingType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "Lodging_User_FK",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -240,6 +262,30 @@ namespace Infrastructure.Lodgings.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ReservationWindows",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AddedAt = table.Column<DateTime>(nullable: false, computedColumnSql: "getdate()"),
+                    ModifiedAt = table.Column<DateTime>(nullable: false, computedColumnSql: "getdate()"),
+                    From = table.Column<DateTime>(nullable: false),
+                    To = table.Column<DateTime>(nullable: false),
+                    LodgingId = table.Column<int>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("ReservationWindow_PK", x => x.Id);
+                    table.ForeignKey(
+                        name: "ReservationWindow_Lodging_FK",
+                        column: x => x.LodgingId,
+                        principalTable: "Lodgings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Rooms",
                 columns: table => new
                 {
@@ -249,6 +295,7 @@ namespace Infrastructure.Lodgings.Migrations
                     ModifiedAt = table.Column<DateTime>(nullable: false, computedColumnSql: "getdate()"),
                     AdultCapacity = table.Column<int>(nullable: false),
                     ChildrenCapacity = table.Column<int>(nullable: false),
+                    Price = table.Column<float>(nullable: false),
                     LodgingId = table.Column<int>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false)
                 },
@@ -264,32 +311,7 @@ namespace Infrastructure.Lodgings.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ReservationWindows",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AddedAt = table.Column<DateTime>(nullable: false, computedColumnSql: "getdate()"),
-                    ModifiedAt = table.Column<DateTime>(nullable: false, computedColumnSql: "getdate()"),
-                    From = table.Column<DateTime>(nullable: false),
-                    To = table.Column<DateTime>(nullable: false),
-                    Price = table.Column<int>(nullable: false),
-                    RoomId = table.Column<int>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("ReservationWindow_PK", x => x.Id);
-                    table.ForeignKey(
-                        name: "ReservationWindow_Room_FK",
-                        column: x => x.RoomId,
-                        principalTable: "Rooms",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Reservations",
+                name: "ReservationItems",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -298,25 +320,30 @@ namespace Infrastructure.Lodgings.Migrations
                     ModifiedAt = table.Column<DateTime>(nullable: false, computedColumnSql: "getdate()"),
                     ReservedFrom = table.Column<DateTime>(nullable: false),
                     ReservedTo = table.Column<DateTime>(nullable: false),
+                    ReservationId = table.Column<int>(nullable: false),
+                    RoomId = table.Column<int>(nullable: false),
                     ReservationWindowId = table.Column<int>(nullable: false),
-                    UserReservationId = table.Column<int>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("Reservation_PK", x => x.Id);
+                    table.PrimaryKey("ReservationItem_PK", x => x.Id);
                     table.ForeignKey(
-                        name: "Reservation_ReservationWindow_FK",
+                        name: "ReservationItem_Reservation_FK",
+                        column: x => x.ReservationId,
+                        principalTable: "Reservations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "ReservationItem_ReservationWindow_FK",
                         column: x => x.ReservationWindowId,
                         principalTable: "ReservationWindows",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "Reservation_UserReservation_FK",
-                        column: x => x.UserReservationId,
-                        principalTable: "UserReservations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "ReservationItem_Room_FK",
+                        column: x => x.RoomId,
+                        principalTable: "Rooms",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -378,9 +405,21 @@ namespace Infrastructure.Lodgings.Migrations
                 column: "LodgingId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Lodgings_LodgingTypeId",
+                table: "Lodgings",
+                column: "LodgingTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Lodgings_UserId",
                 table: "Lodgings",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "LodgingType_Name_UQ",
+                table: "LodgingType",
+                column: "Name",
+                unique: true,
+                filter: "IsDeleted = 0");
 
             migrationBuilder.CreateIndex(
                 name: "PaymentType_Name_UQ",
@@ -390,19 +429,29 @@ namespace Infrastructure.Lodgings.Migrations
                 filter: "IsDeleted = 0");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservations_ReservationWindowId",
-                table: "Reservations",
+                name: "IX_ReservationItems_ReservationId",
+                table: "ReservationItems",
+                column: "ReservationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReservationItems_ReservationWindowId",
+                table: "ReservationItems",
                 column: "ReservationWindowId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservations_UserReservationId",
-                table: "Reservations",
-                column: "UserReservationId");
+                name: "IX_ReservationItems_RoomId",
+                table: "ReservationItems",
+                column: "RoomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReservationWindows_RoomId",
+                name: "IX_Reservations_PaymentTypeId",
+                table: "Reservations",
+                column: "PaymentTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReservationWindows_LodgingId",
                 table: "ReservationWindows",
-                column: "RoomId");
+                column: "LodgingId");
 
             migrationBuilder.CreateIndex(
                 name: "Role_Name_UQ",
@@ -420,11 +469,6 @@ namespace Infrastructure.Lodgings.Migrations
                 name: "IX_Tokens_UserId",
                 table: "Tokens",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserReservations_PaymentTypeId",
-                table: "UserReservations",
-                column: "PaymentTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "User_Email_UQ",
@@ -458,7 +502,7 @@ namespace Infrastructure.Lodgings.Migrations
                 name: "LodgingAddresses");
 
             migrationBuilder.DropTable(
-                name: "Reservations");
+                name: "ReservationItems");
 
             migrationBuilder.DropTable(
                 name: "Tokens");
@@ -467,10 +511,10 @@ namespace Infrastructure.Lodgings.Migrations
                 name: "Countries");
 
             migrationBuilder.DropTable(
-                name: "ReservationWindows");
+                name: "Reservations");
 
             migrationBuilder.DropTable(
-                name: "UserReservations");
+                name: "ReservationWindows");
 
             migrationBuilder.DropTable(
                 name: "Rooms");
@@ -480,6 +524,9 @@ namespace Infrastructure.Lodgings.Migrations
 
             migrationBuilder.DropTable(
                 name: "Lodgings");
+
+            migrationBuilder.DropTable(
+                name: "LodgingType");
 
             migrationBuilder.DropTable(
                 name: "Users");
