@@ -1,3 +1,4 @@
+using AutoMapper;
 using Core.Entities.LodgingEntities;
 using Core.Entities.LoggingEntities;
 using Core.Helpers;
@@ -23,6 +24,7 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Web.Mapping;
 
 namespace Web
 {
@@ -138,6 +140,8 @@ namespace Web
             services.AddScoped<IAsyncRepository<ReservationItem>, LodgingDbRepository<ReservationItem>>();
 
             #endregion
+
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddSingleton<ISetting<HashingOptions>>(new Setting<HashingOptions>
                 (Configuration.GetSection("HashingOptions").Get<HashingOptions>()));
