@@ -113,7 +113,7 @@ namespace Web.Controllers
 
             Result<bool> result = await _authenticationService.RegisterAsync(newUserEntity, newUserDto.Role);
 
-            if (result.Data == true)
+            if (result.ResultType == ResultType.Ok)
                 return Ok();
             else return BadRequest(new ErrorDto(result.Errors));
         }
