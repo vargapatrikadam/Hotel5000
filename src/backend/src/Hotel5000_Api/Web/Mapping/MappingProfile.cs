@@ -22,16 +22,22 @@ namespace Web.Mapping
                 .ForMember(dest => dest.IdentityNumber, o => o.MapFrom(src => src.ApprovingData.IdentityNumber))
                 .ForMember(dest => dest.TaxNumber, o => o.MapFrom(src => src.ApprovingData.TaxNumber))
                 .ForMember(dest => dest.RegistrationNumber, o => o.MapFrom(src => src.ApprovingData.RegistrationNumber))
-                .ForMember(dest => dest.Contacts, o => o.MapFrom(src => src.Contacts))
-                .ReverseMap()
-                    .ForPath(s => s.ApprovingData, opt => opt.Ignore())
-                    .ForPath(s => s.Contacts, opt => opt.Ignore())
-                    .ForPath(s => s.Role, opt => opt.Ignore())
-                    .ForPath(s => s.FirstName, opt => opt.MapFrom(src => src.FirstName))
-                    .ForPath(s => s.LastName, opt => opt.MapFrom(src => src.LastName))
-                    .ForPath(s => s.Email, opt => opt.MapFrom(src => src.Email))
-                    .ForPath(s => s.Password, opt => opt.MapFrom(src => src.Password))
-                    .ForPath(s => s.Username, opt => opt.MapFrom(src => src.Username));
+                //.ForMember(dest => dest.Contacts, o => o.MapFrom(src => src.Contacts))
+                .ForMember(dest => dest.Contacts, o => o.Ignore());
+
+
+            CreateMap<UserDto, User>()
+                .ForMember(dest => dest.Username, o => o.MapFrom(src => src.Username))
+                .ForMember(dest => dest.Password, o => o.MapFrom(src => src.Password))
+                .ForMember(dest => dest.Email, o => o.MapFrom(src => src.Email))
+                .ForMember(dest => dest.FirstName, o => o.MapFrom(src => src.FirstName))
+                .ForMember(dest => dest.LastName, o => o.MapFrom(src => src.LastName))
+                .ForMember(dest => dest.Role, o => o.Ignore())
+                .ForMember(dest => dest.ApprovingData, o => o.Ignore())
+                .ForMember(dest => dest.Contacts, o => o.Ignore())
+                .ForMember(dest => dest.Role, o => o.Ignore())
+                .ForMember(dest => dest.Tokens, o => o.Ignore());
+
         }
     }
 }

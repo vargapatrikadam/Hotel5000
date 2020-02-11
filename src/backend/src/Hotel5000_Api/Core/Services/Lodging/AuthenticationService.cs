@@ -1,4 +1,5 @@
 ﻿using Core.Entities.LodgingEntities;
+using Core.Enums.Lodging;
 using Core.Helpers;
 using Core.Helpers.Results;
 using Core.Interfaces;
@@ -132,10 +133,13 @@ namespace Core.Services.Lodging
 
             user.Password = _passwordHasher.Hash(user.Password);
 
-            var roleEntity = (await _roleRepository.GetAsync(new Specification<Role>().ApplyFilter(p => p.Name.ToString() == role))).FirstOrDefault();
-
-            if (roleEntity == null)
+            Roles roleAsEnum;
+            if(!Enum.TryParse(role, out roleAsEnum))
+            {
                 return new InvalidResult<bool>("Role not found");
+            }
+
+            var roleEntity = (await _roleRepository.GetAsync(new Specification<Role>().ApplyFilter(p => p.Name == roleAsEnum))).FirstOrDefault();
 
             user.Role = null;
 
