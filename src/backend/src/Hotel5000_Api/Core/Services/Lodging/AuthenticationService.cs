@@ -126,6 +126,13 @@ namespace Core.Services.Lodging
 
         public async Task<Result<bool>> RegisterAsync(User user, string role)
         {
+            //TODO: define known errors in an enum with unique codes & return them. write down the error codes in the system plan
+            if (await _userRepository.AnyAsync(p => p.Email == user.Email))
+                return new InvalidResult<bool>("Email not unique");
+
+            if (await _userRepository.AnyAsync(p => p.Username == user.Username))
+                return new InvalidResult<bool>("Username not unique");
+
             user.Email.ValidateEmail(out var errorMessage);
             user.Password.ValidatePassword(out errorMessage);
             if (errorMessage != null)
