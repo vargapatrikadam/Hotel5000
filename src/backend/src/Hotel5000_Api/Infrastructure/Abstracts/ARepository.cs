@@ -61,6 +61,11 @@ namespace Infrastructure.Abstracts
             await Context.SaveChangesAsync();
         }
 
+        public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate)
+        {
+            return await Context.Set<TEntity>().AnyAsync(predicate);
+        }
+
         private IQueryable<TEntity> ApplySpecification(ISpecification<TEntity> specification)
         {
             return SpecificationEvaluator<TEntity>.GetQuery(Context.Set<TEntity>().AsQueryable(), specification);
