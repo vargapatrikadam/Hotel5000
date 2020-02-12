@@ -169,8 +169,6 @@ namespace Web
                 app.UseExceptionHandler("/api/error");
 
             app.UseHttpsRedirection();
-
-            app.UseCors("CorsPolicy");
             
             app.UseSwagger();
 
@@ -182,9 +180,12 @@ namespace Web
 
             app.UseRouting();
 
+            app.UseCors("CorsPolicy");
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => endpoints.MapControllers());
+
         }
 
         //This method is only called when the project's enviroment variable 'ASPNETCORE_ENVIRONMENT' is set to 'Development'
