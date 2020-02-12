@@ -21,7 +21,7 @@ namespace Infrastructure.Logging
 
             builder.Property(p => p.Message)
                 .IsRequired()
-                .HasMaxLength(1000);
+                .HasMaxLength(10000);
 
             builder.Property(p => p.Type)
                 .IsRequired()
