@@ -5,11 +5,11 @@ import './Loginform.css';
 class Loginform extends Component {
 
     constructor(){
-        super()
+        super();
         this.state={
             username:"",
             password:"",
-            loggeding: false,
+            loggedin: false,
             data: []
         }
     }
@@ -36,12 +36,13 @@ class Loginform extends Component {
             body: JSON.stringify(data)
         }).then(response => response.json())
         .then((responsedata) => {
-            this.setState({data: responsedata, loggeding: true})
+            this.setState({data: responsedata, loggedin: true})
             console.log(this.state.data)
-            console.log(this.state.loggeding)
+            console.log(this.state.loggedin)
         })
         .catch(console.log)
     }
+
 
     render() {
         return (
@@ -55,7 +56,7 @@ class Loginform extends Component {
                         <Form.Label>Password</Form.Label>
                         <Form.Control type="password" placeholder="Password" onChange={(text) => {this.handlePassword(text)}}/>
                     </Form.Group>
-                    <Button variant="outline-dark" block onClick={()=>{this.login(this.state.username, this.state.password)}}>Log In</Button>
+                        <Button variant="outline-dark" block onClick={()=>{this.login(this.state.username, this.state.password)}}>Log In</Button>
                 </Form>
             </div>
         );
