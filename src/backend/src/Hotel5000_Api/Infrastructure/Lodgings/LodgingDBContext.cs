@@ -25,6 +25,7 @@ namespace Infrastructure.Lodgings
         public DbSet<Lodging> Lodgings { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<LodgingAddress> LodgingAddresses { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<ReservationWindow> ReservationWindows { get; set; }
         public DbSet<PaymentType> PaymentTypes { get; set; }
