@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{5579617C-B617-42D7-9455-7356D0832374}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{5579617C-B617-42D7-9455-7356D0832374}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{FB04D3E6-0B0B-45E1-BA05-2E63D4FCD2FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{FB04D3E6-0B0B-45E1-BA05-2E63D4FCD2FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{7FAC1CEF-3118-4926-BE48-F1E6460DB504}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{7FAC1CEF-3118-4926-BE48-F1E6460DB504}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hotel5000_Api_Tests", "..\..\tests\Hotel5000_Api_Tests\Hotel5000_Api_Tests.csproj", "{31CA5AB7-79FF-45BD-8911-BF7862BA9AAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{7FAC1CEF-3118-4926-BE48-F1E6460DB504}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FAC1CEF-3118-4926-BE48-F1E6460DB504}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FAC1CEF-3118-4926-BE48-F1E6460DB504}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31CA5AB7-79FF-45BD-8911-BF7862BA9AAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31CA5AB7-79FF-45BD-8911-BF7862BA9AAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31CA5AB7-79FF-45BD-8911-BF7862BA9AAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31CA5AB7-79FF-45BD-8911-BF7862BA9AAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
