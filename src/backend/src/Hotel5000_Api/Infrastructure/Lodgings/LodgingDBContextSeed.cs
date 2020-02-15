@@ -75,6 +75,38 @@ namespace Infrastructure.Lodgings
 
                 await context.SaveChangesAsync();
             }
+
+            if (!context.Lodgings.Any())
+            {
+                context.Lodgings.AddRange(
+                    GetPreconfiguredLodgings());
+
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.LodgingAddresses.Any())
+            {
+                context.LodgingAddresses.AddRange(
+                    GetPreconfiguredLodgingAddresses());
+
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.PaymentTypes.Any())
+            {
+                context.PaymentTypes.AddRange(
+                    GetPreconfiguredPaymentTypes());
+
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.Reservations.Any())
+            {
+                context.Reservations.AddRange(
+                    GetPreconfiguredReservations());
+
+                await context.SaveChangesAsync();
+            }
         }
 
         private static IEnumerable<Role> GetPreconfiguredRoles()
@@ -194,16 +226,92 @@ namespace Infrastructure.Lodgings
                 new LodgingType() {Name = LodgingTypes.Private}
             };
         }
-        //private static IEnumerable<Lodging> GetPreconfiguredLodgings()
+        private static IEnumerable<Lodging> GetPreconfiguredLodgings()
+        {
+            return new List<Lodging>()
+            {
+                new Lodging()
+                {
+                    Name = "Test lodging for preuser1 approved user",
+                    UserId = 3,
+                    LodgingTypeId = 1
+                },
+                new Lodging()
+                {
+                    Name = "Test lodging 1 for preuser2 company",
+                    UserId = 2,
+                    LodgingTypeId = 2
+                },
+                new Lodging()
+                {
+                    Name = "Test lodging 2 for preuser2 company",
+                    UserId = 2,
+                    LodgingTypeId = 2
+                }
+            };
+        }
+        private static IEnumerable<LodgingAddress> GetPreconfiguredLodgingAddresses()
+        {
+            return new List<LodgingAddress>()
+            {
+                new LodgingAddress()
+                {
+                    CountryId = 2,
+                    County = "Banská Bystrica Region",
+                    City = "Banská Bystrica",
+                    PostalCode = "97401",
+                    Street = "teststreet",
+                    HouseNumber = "1",
+                    LodgingId = 2
+                },
+                new LodgingAddress()
+                {
+                    CountryId = 2,
+                    County = "Nitra Region",
+                    City = "Nitra",
+                    PostalCode = "94901",
+                    Street = "teststreet2",
+                    HouseNumber = "2",
+                    LodgingId = 3
+                },
+                new LodgingAddress()
+                {
+                    CountryId = 1,
+                    County = "Nógrád",
+                    City = "Balassagyarmat",
+                    PostalCode = "2660",
+                    Street = "teststreet3",
+                    HouseNumber = "3",
+                    LodgingId = 1
+                }
+            };
+        }
+        private static IEnumerable<Reservation> GetPreconfiguredReservations()
+        {
+            return new List<Reservation>()
+            {
+                new Reservation()
+                {
+                    Email = "test1@test.com",
+                    PaymentTypeId = 3
+                },
+                new Reservation()
+                {
+                    Email = "test2@test.com",
+                    PaymentTypeId = 2
+                }
+            };
+        }
+        //private static IEnumerable<Room> GetPreconfiguredRooms()
         //{
-        //    return new List<Lodging>()
+        //    return new List<Room>()
         //    {
-        //        new Lodging()
+        //        new Room()
         //        {
-        //            Name = "Test lodging for preuser1 approved user",
-        //            UserId = 3,
-        //            LodgingTypeId = 
-        //        }
+        //            AdultCapacity = 2,
+        //            ChildrenCapacity = 0,
+        //            Price = 
+        //        },
         //    }
         //}
     }
