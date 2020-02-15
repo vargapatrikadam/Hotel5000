@@ -226,6 +226,23 @@ LodgingAddress_HouseNumber_CK | LodgingAddress | HouseNumber | | | CK |
 LodgingAddress_Floor_CK | LodgingAddress | Floor | | | CK |
 LodgingAddress_DoorNumber_CK | LodgingAddress | DoorNumber | | | CK |
 
+Currency
+
+Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
+-------- | ----------- | -------- | --------------- | ----- | ----- |
+Id | int | igen | auto-increment | PK | |
+Name | varchar(10) | igen | | | |
+AddedAt | datetime | igen | | | |
+ModifiedAt | datetime | igen | | | |
+IsDeleted | int | igen | 0 vagy 1 | | |
+
+Currency megszorítások
+
+Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
+--------- | ------- | ------ | ------- | ------ | ----- |
+Currency_PK | Currency | Id | | | PK |
+Currency_Name_UQ | Currency | Name | | | UQ | 
+
 Room
 
 Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
@@ -234,6 +251,7 @@ Id | int | igen | auto-increment | PK | |
 AdultCapacity | int | igen | érték >= 0 | | |
 ChildrenCapacity | int | igen | érték >= 0 | | |
 Price | float | igen | | | |
+Currency_Id | int | igen | | FK | |
 Lodging_Id | int | igen | | FK | |
 AddedAt | datetime | igen | | | |
 ModifiedAt | datetime | igen | | | |
@@ -244,6 +262,7 @@ Room megszorítások
 Azonosító | Tábla 1 | Mező 1 | Tábla 2 | Mező 2 | Típus |
 --------- | ------- | ------ | ------- | ------ | ----- |
 Room_PK | Room | Id | | | PK |
+Room_Currency_FK | Currency | Id | Room | Currency_Id | FK 1-N |
 Room_Lodging_FK | Lodging | Id | Room | Lodging_Id | FK 1-N |
 
 ReservationWindow
