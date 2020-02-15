@@ -115,6 +115,30 @@ namespace Infrastructure.Lodgings
 
                 await context.SaveChangesAsync();
             }
+
+            if (!context.Rooms.Any())
+            {
+                context.Rooms.AddRange(
+                    GetPreconfiguredRooms());
+
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.ReservationWindows.Any())
+            {
+                context.ReservationWindows.AddRange(
+                    GetPreconfiguredReservationWindows());
+
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.ReservationItems.Any())
+            {
+                context.ReservationItems.AddRange(
+                    GetPreconfiguredReservationItems());
+
+                await context.SaveChangesAsync();
+            }
         }
 
         private static IEnumerable<Role> GetPreconfiguredRoles()
@@ -324,17 +348,113 @@ namespace Infrastructure.Lodgings
                 }
             };
         }
-        //private static IEnumerable<Room> GetPreconfiguredRooms()
-        //{
-        //    return new List<Room>()
-        //    {
-        //        new Room()
-        //        {
-        //            AdultCapacity = 2,
-        //            ChildrenCapacity = 0,
-        //            Price = 
-        //        },
-        //    }
-        //}
+        private static IEnumerable<Room> GetPreconfiguredRooms()
+        {
+            return new List<Room>()
+            {
+                new Room()
+                {
+                    AdultCapacity = 2,
+                    ChildrenCapacity = 0,
+                    Price = 5000,
+                    CurrencyId = 1,
+                    LodgingId = 1
+                },
+                new Room()
+                {
+                    AdultCapacity = 2,
+                    ChildrenCapacity = 2,
+                    Price = 20,
+                    CurrencyId = 2,
+                    LodgingId = 2
+                },
+                new Room()
+                {
+                    AdultCapacity = 2,
+                    ChildrenCapacity = 0,
+                    Price = 15,
+                    CurrencyId = 2,
+                    LodgingId = 2
+                },
+                new Room()
+                {
+                    AdultCapacity = 4,
+                    ChildrenCapacity = 2,
+                    Price = 40,
+                    CurrencyId = 2,
+                    LodgingId = 3
+                },
+                new Room()
+                {
+                    AdultCapacity = 2,
+                    ChildrenCapacity = 0,
+                    Price = 20,
+                    CurrencyId = 2,
+                    LodgingId = 3
+                },
+                new Room()
+                {
+                    AdultCapacity = 2,
+                    ChildrenCapacity = 1,
+                    Price = 25,
+                    CurrencyId = 2,
+                    LodgingId = 3
+                }
+            };
+        }
+        private static IEnumerable<ReservationWindow> GetPreconfiguredReservationWindows()
+        {
+            return new List<ReservationWindow>()
+            {
+                new ReservationWindow()
+                {
+                    From = new DateTime(2020,3,1),
+                    To = new DateTime(2020,4,1),
+                    LodgingId = 1
+                },
+                new ReservationWindow()
+                {
+                    From = new DateTime(2020,5,2),
+                    To = new DateTime(2020,9,1),
+                    LodgingId = 2
+                },
+                new ReservationWindow()
+                {
+                    From = new DateTime(2020,5,20),
+                    To = new DateTime(2020,8,20),
+                    LodgingId = 3
+                },
+            };
+        }
+        private static IEnumerable<ReservationItem> GetPreconfiguredReservationItems()
+        {
+            return new List<ReservationItem>()
+            {
+                new ReservationItem()
+                {
+                    ReservationId = 1,
+                    ReservationWindowId = 3,
+                    RoomId = 1,
+                    ReservedFrom = new DateTime(2020, 4, 2),
+                    ReservedTo = new DateTime(2020, 4,30)
+                },
+                new ReservationItem()
+                {
+                    ReservationId = 2,
+                    ReservationWindowId = 2,
+                    RoomId = 3,
+                    ReservedFrom = new DateTime(2020, 5, 3),
+                    ReservedTo = new DateTime(2020, 5, 10)
+                },
+                new ReservationItem()
+                {
+                    ReservationId = 2,
+                    ReservationWindowId = 1,
+                    RoomId = 6,
+                    ReservedFrom = new DateTime(2020, 5,20),
+                    ReservedTo = new DateTime(2020,6,1)
+                }
+            };
+        }
     }
 }
