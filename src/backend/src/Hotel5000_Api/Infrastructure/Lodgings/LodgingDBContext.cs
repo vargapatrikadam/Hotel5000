@@ -21,6 +21,7 @@ namespace Infrastructure.Lodgings
         public DbSet<ApprovingData> ApprovingData { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Token> Tokens { get; set; }
+        public DbSet<LodgingType> LodgingTypes { get; set; }
         public DbSet<Lodging> Lodgings { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<LodgingAddress> LodgingAddresses { get; set; }

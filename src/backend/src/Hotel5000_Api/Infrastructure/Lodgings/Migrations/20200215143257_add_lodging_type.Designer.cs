@@ -4,14 +4,16 @@ using Infrastructure.Lodgings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Lodgings.Migrations
 {
     [DbContext(typeof(LodgingDbContext))]
-    partial class LodgingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200215143257_add_lodging_type")]
+    partial class add_lodging_type
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

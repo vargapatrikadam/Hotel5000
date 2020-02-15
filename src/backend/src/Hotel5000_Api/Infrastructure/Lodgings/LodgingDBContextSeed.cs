@@ -43,6 +43,38 @@ namespace Infrastructure.Lodgings
 
                 await context.SaveChangesAsync();
             }
+
+            if (!context.ApprovingData.Any())
+            {
+                context.ApprovingData.AddRange(
+                    GetPreconfiguredApprovingData());
+
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.Countries.Any())
+            {
+                context.Countries.AddRange(
+                    GetPreconfiguredCountries());
+
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.Contacts.Any())
+            {
+                context.Contacts.AddRange(
+                    GetPreconfiguredContacts());
+
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.LodgingTypes.Any())
+            {
+                context.LodgingTypes.AddRange(
+                    GetPreconfiguredLodgingTypes());
+
+                await context.SaveChangesAsync();
+            }
         }
 
         private static IEnumerable<Role> GetPreconfiguredRoles()
@@ -99,5 +131,80 @@ namespace Infrastructure.Lodgings
                 }
             };
         }
+
+        private static IEnumerable<ApprovingData> GetPreconfiguredApprovingData()
+        {
+            return new List<ApprovingData>()
+            {
+                new ApprovingData()
+                {
+                    IdentityNumber = "12345678",
+                    TaxNumber = "1234567891234",
+                    UserId = 3
+                },
+                new ApprovingData()
+                {
+                    RegistrationNumber = "123456789123",
+                    UserId = 2
+                }
+            };
+        }
+        private static IEnumerable<Country> GetPreconfiguredCountries()
+        {
+            return new List<Country>
+            {
+                new Country()
+                {
+                    Code = "HU",
+                    Name = "Hungary"
+                },
+                new Country()
+                {
+                    Code = "SK",
+                    Name = "Slovakia"
+                }
+            };
+        }
+        private static IEnumerable<Contact> GetPreconfiguredContacts()
+        {
+            return new List<Contact>
+            {
+                new Contact()
+                {
+                    MobileNumber = "06 30 666 666",
+                    UserId = 2
+                },
+                new Contact()
+                {
+                    MobileNumber = "06 20 666 666",
+                    UserId = 2
+                },
+                new Contact()
+                {
+                    MobileNumber = "06 90 555 555",
+                    UserId = 3
+                }
+            };
+        }
+        private static IEnumerable<LodgingType> GetPreconfiguredLodgingTypes()
+        {
+            return new List<LodgingType>()
+            {
+                new LodgingType() {Name = LodgingTypes.Company},
+                new LodgingType() {Name = LodgingTypes.Private}
+            };
+        }
+        //private static IEnumerable<Lodging> GetPreconfiguredLodgings()
+        //{
+        //    return new List<Lodging>()
+        //    {
+        //        new Lodging()
+        //        {
+        //            Name = "Test lodging for preuser1 approved user",
+        //            UserId = 3,
+        //            LodgingTypeId = 
+        //        }
+        //    }
+        //}
     }
 }
