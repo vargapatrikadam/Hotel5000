@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Lodgings.Migrations
 {
     [DbContext(typeof(LodgingDbContext))]
-    [Migration("20200215150933_added_currency")]
+    [Migration("20200215154444_added_currency")]
     partial class added_currency
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -178,20 +178,36 @@ namespace Infrastructure.Lodgings.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasComputedColumnSql("getdate()");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasComputedColumnSql("getdate()");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("Currency_PK");
 
-                    b.ToTable("Currency");
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasName("Currency_Name_UQ");
+
+                    b.ToTable("Currencies");
                 });
 
             modelBuilder.Entity("Core.Entities.LodgingEntities.Lodging", b =>

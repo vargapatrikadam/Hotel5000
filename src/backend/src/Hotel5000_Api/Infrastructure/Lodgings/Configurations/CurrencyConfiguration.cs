@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Infrastructure.Lodgings.Configurations
 {
-    public class CurrencyConfiguration : IEntityTypeConfiguration<Currency>
+    public class CurrencyConfiguration : IEntityTypeConfiguration<Currency>, ILodgingConfigurationAggregate
     {
         public void Configure(EntityTypeBuilder<Currency> builder)
         {

@@ -6,3 +6,6 @@ dotnet ef migrations add 02_04_init_lodging -s Web.csproj -p ..\Infrastructure\I
 apply latest migration:
 
 dotnet ef database update -c lodgingdbcontext
+
+remove latest migration:
+dotnet ef migrations remove -s Web.csproj -p ..\Infrastructure\Infrastructure.csproj -c LodgingDbContext

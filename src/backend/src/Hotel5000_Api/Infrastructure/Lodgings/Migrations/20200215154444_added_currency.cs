@@ -19,18 +19,19 @@ namespace Infrastructure.Lodgings.Migrations
                 defaultValue: 0);
 
             migrationBuilder.CreateTable(
-                name: "Currency",
+                name: "Currencies",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AddedAt = table.Column<DateTime>(nullable: false),
-                    ModifiedAt = table.Column<DateTime>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    AddedAt = table.Column<DateTime>(nullable: false, computedColumnSql: "getdate()"),
+                    ModifiedAt = table.Column<DateTime>(nullable: false, computedColumnSql: "getdate()"),
+                    Name = table.Column<string>(maxLength: 10, nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Currency", x => x.Id);
+                    table.PrimaryKey("Currency_PK", x => x.Id);
                 });
 
             migrationBuilder.CreateIndex(
@@ -38,11 +39,17 @@ namespace Infrastructure.Lodgings.Migrations
                 table: "Rooms",
                 column: "CurrencyId");
 
+            migrationBuilder.CreateIndex(
+                name: "Currency_Name_UQ",
+                table: "Currencies",
+                column: "Name",
+                unique: true);
+
             migrationBuilder.AddForeignKey(
                 name: "Room_Currency_FK",
                 table: "Rooms",
                 column: "CurrencyId",
-                principalTable: "Currency",
+                principalTable: "Currencies",
                 principalColumn: "Id");
         }
 
@@ -53,7 +60,7 @@ namespace Infrastructure.Lodgings.Migrations
                 table: "Rooms");
 
             migrationBuilder.DropTable(
-                name: "Currency");
+                name: "Currencies");
 
             migrationBuilder.DropIndex(
                 name: "IX_Rooms_CurrencyId",

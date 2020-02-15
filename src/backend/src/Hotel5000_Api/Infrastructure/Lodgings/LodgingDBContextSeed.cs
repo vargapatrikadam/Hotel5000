@@ -107,6 +107,14 @@ namespace Infrastructure.Lodgings
 
                 await context.SaveChangesAsync();
             }
+
+            if (!context.Currencies.Any())
+            {
+                context.Currencies.AddRange(
+                    GetPreconfiguredCurrencies());
+
+                await context.SaveChangesAsync();
+            }
         }
 
         private static IEnumerable<Role> GetPreconfiguredRoles()
@@ -299,6 +307,20 @@ namespace Infrastructure.Lodgings
                 {
                     Email = "test2@test.com",
                     PaymentTypeId = 2
+                }
+            };
+        }
+        private static IEnumerable<Currency> GetPreconfiguredCurrencies()
+        {
+            return new List<Currency>()
+            {
+                new Currency()
+                {
+                    Name = "Forint"
+                },
+                new Currency()
+                {
+                    Name = "Euro"
                 }
             };
         }

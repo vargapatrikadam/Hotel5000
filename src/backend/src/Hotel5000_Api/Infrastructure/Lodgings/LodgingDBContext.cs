@@ -36,7 +36,6 @@ namespace Infrastructure.Lodgings
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsDerivedFrom<ILodgingConfigurationAggregate>();
-
         }
 
         public override int SaveChanges()
