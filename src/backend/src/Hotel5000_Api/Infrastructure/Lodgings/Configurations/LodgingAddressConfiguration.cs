@@ -54,17 +54,16 @@ namespace Infrastructure.Lodgings.Configurations
                 .IsRequired()
                 .HasConstraintName("LodgingAddress_Country_FK");
 
-            builder.HasAlternateKey(k => new
+            builder.HasIndex(k => new
             {
                 k.CountryId,
                 k.County,
                 k.City,
                 k.PostalCode,
-                k.Street,
-                k.HouseNumber,
-                k.Floor,
-                k.DoorNumber
-            });
+                k.Street
+            }).IsUnique()
+              .HasName("LodgingAddress_UQ")
+              .IsSoftDeleteable();
         }
     }
 }

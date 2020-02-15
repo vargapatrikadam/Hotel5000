@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Infrastructure.Helpers;
 
 namespace Infrastructure.Logging
 {
@@ -18,8 +19,7 @@ namespace Infrastructure.Logging
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            //modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ILoggingConfigurationAggregate).Assembly);
+            modelBuilder.ApplyConfigurationsDerivedFrom<ILoggingConfigurationAggregate>();
         }
     }
 }

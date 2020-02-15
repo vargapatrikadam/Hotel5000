@@ -1,3 +1,4 @@
+using AutoMapper;
 using Core.Entities.LodgingEntities;
 using Core.Entities.LoggingEntities;
 using Core.Helpers;
@@ -16,12 +17,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Web.Middlewares;
+using Web.Mapping;
 
 namespace Web
 {
@@ -41,9 +44,20 @@ namespace Web
                 .AddNewtonsoftJson(x =>
                     x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder => builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
+            });
 
             services.AddRouting(options => options.LowercaseUrls = true);
+
+            services.AddDbContext<LodgingDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("LodgingDb")));
+            services.AddDbContext<LoggingDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("LoggingDb")));
 
             #region swagger settings
 
@@ -128,10 +142,12 @@ namespace Web
             services.AddScoped<IAsyncRepository<Room>, LodgingDbRepository<Room>>();
             services.AddScoped<IAsyncRepository<ReservationWindow>, LodgingDbRepository<ReservationWindow>>();
             services.AddScoped<IAsyncRepository<PaymentType>, LodgingDbRepository<PaymentType>>();
-            services.AddScoped<IAsyncRepository<UserReservation>, LodgingDbRepository<UserReservation>>();
             services.AddScoped<IAsyncRepository<Reservation>, LodgingDbRepository<Reservation>>();
+            services.AddScoped<IAsyncRepository<ReservationItem>, LodgingDbRepository<ReservationItem>>();
 
             #endregion
+
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddSingleton<ISetting<HashingOptions>>(new Setting<HashingOptions>
                 (Configuration.GetSection("HashingOptions").Get<HashingOptions>()));
@@ -147,8 +163,13 @@ namespace Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseHttpsRedirection();
+            if (env.IsDevelopment())
+                app.UseExceptionHandler("/api/error-local-development");
+            else
+                app.UseExceptionHandler("/api/error");
 
+            app.UseHttpsRedirection();
+            
             app.UseSwagger();
 
             app.UseSwaggerUI(s =>
@@ -159,24 +180,25 @@ namespace Web
 
             app.UseRouting();
 
+            app.UseCors("CorsPolicy");
+
             app.UseAuthorization();
 
-            app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
-
             app.UseEndpoints(endpoints => endpoints.MapControllers());
+
         }
 
         //This method is only called when the project's enviroment variable 'ASPNETCORE_ENVIRONMENT' is set to 'Development'
-        public void ConfigureDevelopmentServices(IServiceCollection services)
-        {
-            //If you want to use in-memory database during a development enviroment, use this
-            services.AddDbContext<LoggingDbContext>(options =>
-                options.UseInMemoryDatabase("LoggingDatabase"));
+        //public void ConfigureDevelopmentServices(IServiceCollection services)
+        //{
+        //    //If you want to use in-memory database during a development enviroment, use this
+        //    services.AddDbContext<LoggingDbContext>(options =>
+        //        options.UseInMemoryDatabase("LoggingDatabase"));
 
-            services.AddDbContext<LodgingDbContext>(options =>
-                options.UseInMemoryDatabase("LodgingDatabase"));
+        //    services.AddDbContext<LodgingDbContext>(options =>
+        //        options.UseInMemoryDatabase("LodgingDatabase"));
 
-            ConfigureServices(services);
-        }
+        //    ConfigureServices(services);
+        //}
     }
 }

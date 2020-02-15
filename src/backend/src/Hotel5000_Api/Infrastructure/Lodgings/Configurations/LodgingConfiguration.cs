@@ -22,7 +22,13 @@ namespace Infrastructure.Lodgings.Configurations
 
             builder.HasOne(p => p.User)
                 .WithMany(p => p.Lodgings)
-                .HasConstraintName("Lodgind_User_FK")
+                .HasConstraintName("Lodging_User_FK")
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+            builder.HasOne(p => p.LodgingType)
+                .WithMany(p => p.Lodgings)
+                .HasConstraintName("Lodging_LodgingType_FK")
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
         }

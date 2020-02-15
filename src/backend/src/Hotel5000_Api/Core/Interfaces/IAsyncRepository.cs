@@ -15,5 +15,7 @@ namespace Core.Interfaces
         Task AddRange(IEnumerable<TEntity> entities);
         Task UpdateAsync(TEntity entity);
         Task DeleteAsync(TEntity entity);
+        Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate);
+
     }
 }

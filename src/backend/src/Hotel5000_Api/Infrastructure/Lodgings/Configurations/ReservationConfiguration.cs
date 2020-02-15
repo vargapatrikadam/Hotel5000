@@ -8,31 +8,24 @@ using System.Text;
 
 namespace Infrastructure.Lodgings.Configurations
 {
-    public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>, ILodgingConfigurationAggregate
+    public class ReservationConfiguration : IEntityTypeConfiguration<Reservation>,
+        ILodgingConfigurationAggregate
     {
         public void Configure(EntityTypeBuilder<Reservation> builder)
         {
             builder.ConfigureBaseEntityColumns();
 
-            builder.Property(p => p.ReservedFrom)
-                .IsRequired();
-
-            builder.Property(p => p.ReservedTo)
-                .IsRequired();
+            builder.Property(p => p.Email)
+                .IsRequired()
+                .HasMaxLength(255);
 
             builder.EnableSoftDeletion();
 
-            builder.HasOne(p => p.ReservationWindow)
-                .WithMany(p => p.Reservations)
-                .OnDelete(DeleteBehavior.Cascade)
-                .IsRequired()
-                .HasConstraintName("Reservation_ReservationWindow_FK");
-
-            builder.HasOne(p => p.UserReservation)
-                .WithMany(p => p.Reservations)
-                .OnDelete(DeleteBehavior.Cascade)
-                .IsRequired()
-                .HasConstraintName("Reservation_UserReservation_FK");
+            builder.HasOne(p => p.PaymentType)
+                .WithMany(p => p.UserReservations)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("UserReservation_PaymentType_FK")
+                .IsRequired();
         }
     }
 }

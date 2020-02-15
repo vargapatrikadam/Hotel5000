@@ -21,6 +21,8 @@ class NavBar extends Component {
                             <Dropdown.Item className="dropdownitem"><FaSuitcase/>Post new lodging</Dropdown.Item>
                             <Dropdown.Divider/>
                             <Dropdown.Item className="dropdownitem"><FaGripHorizontal/>Manage existing lodging</Dropdown.Item>
+                            <Dropdown.Divider/>
+                            <Dropdown.Item className="dropdownitem" href="/about">About</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Nav>

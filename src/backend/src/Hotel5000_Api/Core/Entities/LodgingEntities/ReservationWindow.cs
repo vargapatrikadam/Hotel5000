@@ -8,10 +8,9 @@ namespace Core.Entities.LodgingEntities
     {
         public DateTime From { get; set; }
         public DateTime To { get; set; }
-        public int Price { get; set; }
+        public int LodgingId { get; set; }
 
-        public int RoomId { get; set; }
-        public virtual Room Room { get; set; }
-        public virtual ICollection<Reservation> Reservations { get; set; }
+        public virtual Lodging Lodging { get; set; }
+        public virtual ICollection<ReservationItem> ReservationItems { get; set; }
     }
 }

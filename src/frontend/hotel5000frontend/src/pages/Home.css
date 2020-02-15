@@ -1,11 +1,10 @@
-.buttonContainer{
-    width: fit-content;
-    height: fit-content;
-    position: absolute;
-    left: 50%;
-    top: 60%;
-    transform: translate(-50%, -50%);
+#searchContainer{
+    width: 50%;
+    margin-top: 15%;
 }
-.button{
-    margin: 10px;
+#buttonContainer{
+    margin-top: 2%;
+}
+#footerDiv{
+    border-top: 1px solid gray;
 }

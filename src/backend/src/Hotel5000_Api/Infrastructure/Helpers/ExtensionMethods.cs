@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Core.Entities;
+using System.Reflection;
 
 namespace Infrastructure.Helpers
 {
@@ -61,15 +62,18 @@ namespace Infrastructure.Helpers
                 .HasName(typeof(TEntity).Name + "_PK");
 
             builder.Property(p => p.Id)
-                .ValueGeneratedOnAdd();
+                .UseIdentityColumn();
+
+            builder.Property(p => p.ModifiedAt)
+                .ValueGeneratedOnAddOrUpdate()
+                .HasComputedColumnSql("getdate()");
 
             builder.Property(p => p.AddedAt)
                 .ValueGeneratedOnAdd()
                 .HasComputedColumnSql("getdate()");
 
-            builder.Property(p => p.ModifiedAt)
-                .ValueGeneratedOnUpdate()
-                .HasComputedColumnSql("getdate()");
+            builder.Property(p => p.AddedAt)
+                .Metadata.SetAfterSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Ignore);
 
             return builder;
         }
@@ -83,6 +87,18 @@ namespace Infrastructure.Helpers
             foreach (var entry in entries)
                 if (entry.Entity != null)
                     entry.State = EntityState.Detached;
+        }
+        public static void ApplyConfigurationsDerivedFrom<T>(this ModelBuilder builder)
+        {
+            var typesToRegister = Assembly.GetExecutingAssembly().GetTypes()
+                         .Where(t => t.GetInterfaces().Any(gi => gi.IsGenericType && gi.GetGenericTypeDefinition() == typeof(IEntityTypeConfiguration<>)) 
+                         && t.GetInterfaces().Contains(typeof(T))).ToList();
+
+            foreach (var type in typesToRegister)
+            {
+                dynamic configurationInstance = Activator.CreateInstance(type);
+                builder.ApplyConfiguration(configurationInstance);
+            }
         }
     }
 }

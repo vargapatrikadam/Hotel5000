@@ -20,6 +20,9 @@ namespace Infrastructure.Lodgings.Configurations
             builder.Property(p => p.ChildrenCapacity)
                 .IsRequired();
 
+            builder.Property(p => p.Price)
+                .IsRequired();
+
             builder.EnableSoftDeletion();
 
             builder.HasOne(p => p.Lodging)
@@ -27,6 +30,12 @@ namespace Infrastructure.Lodgings.Configurations
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Room_Lodging_FK");
+
+            builder.HasOne(p => p.Currency)
+                .WithMany(p => p.Rooms)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("Room_Currency_FK");
         }
     }
 }

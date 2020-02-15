@@ -12,11 +12,6 @@ namespace Infrastructure.Logging
     {
         public void Configure(EntityTypeBuilder<Log> builder)
         {
-            builder.HasKey(k => k.Id);
-
-            builder.Property(p => p.Id)
-                .ValueGeneratedOnAdd();
-
             builder.ConfigureBaseEntityColumns();
 
             builder.EnableSoftDeletion();
@@ -26,7 +21,7 @@ namespace Infrastructure.Logging
 
             builder.Property(p => p.Message)
                 .IsRequired()
-                .HasMaxLength(1000);
+                .HasMaxLength(10000);
 
             builder.Property(p => p.Type)
                 .IsRequired()

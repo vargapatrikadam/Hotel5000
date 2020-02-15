@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Core.Interfaces.PasswordHasher;
 using Infrastructure.Lodgings;
+using Infrastructure.Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,10 +28,14 @@ namespace Web
             {
                 var services = scope.ServiceProvider;
                 var environment = services.GetRequiredService<IWebHostEnvironment>();
-                var context = services.GetRequiredService<LodgingDbContext>();
+                var lodgingContext = services.GetRequiredService<LodgingDbContext>();
                 var hasher = services.GetRequiredService<IPasswordHasher>();
 
-                await LodgingDbContextSeed.SeedAsync(context, hasher, environment.IsProduction());
+                //TODO: log exceptions?
+                await LodgingDbContextSeed.SeedAsync(lodgingContext, hasher, environment.IsProduction());
+
+                var loggingContext = services.GetRequiredService<LoggingDbContext>();
+                LoggingDBContextSeed.Seed(loggingContext, environment.IsProduction());
             }
 
             host.Run();

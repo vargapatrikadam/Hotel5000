@@ -1,15 +1,5 @@
 import React from "react";
-import {FaFacebookSquare, FaPhone, FaEnvelope } from 'react-icons/fa'
-
-var style = {
-    position: "fixed",
-    textAlign: "center",
-    left: "0",
-    bottom: "0",
-    height: "10%",
-    width: "100%",
-    borderTop: "1px solid gray"
-}
+import {FaFacebookSquare, FaPhone, FaEnvelope } from 'react-icons/fa';
 
 var iconstyle = {
     color: "#23d9d2",
@@ -22,7 +12,7 @@ var iconstyle = {
 function Footer() {
     return(
       <div>
-          <div style={style}>
+          <div style={{marginBottom: 10}}>
               <div>
                   <h3 style={{color: "#23d9d2"}}>Contact us</h3>
               </div>

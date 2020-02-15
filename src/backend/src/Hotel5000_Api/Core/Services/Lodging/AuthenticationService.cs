@@ -1,5 +1,7 @@
 ﻿using Core.Entities.LodgingEntities;
+using Core.Enums.Lodging;
 using Core.Helpers;
+using Core.Helpers.Results;
 using Core.Interfaces;
 using Core.Interfaces.Lodging;
 using Core.Interfaces.PasswordHasher;
@@ -17,21 +19,24 @@ namespace Core.Services.Lodging
     {
         private readonly IAsyncRepository<User> _userRepository;
         private readonly IAsyncRepository<Token> _tokenRepository;
+        private readonly IAsyncRepository<Role> _roleRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly AuthenticationOptions _options;
 
         public AuthenticationService(IAsyncRepository<User> userRepository,
             IAsyncRepository<Token> tokenRepository,
+            IAsyncRepository<Role> roleRepository,
             IPasswordHasher passwordHasher,
             ISetting<AuthenticationOptions> settings)
         {
             _userRepository = userRepository;
             _tokenRepository = tokenRepository;
+            _roleRepository = roleRepository;
             _passwordHasher = passwordHasher;
             _options = settings.Option;
         }
 
-        public async Task<User> AuthenticateAsync(string username, string password, string email)
+        public async Task<Result<User>> AuthenticateAsync(string username, string password, string email)
         {
             //This way we don't need to implement a replica of ThenInclude from EF Core, because we cause eager loading on entities from the context.
             //Specification<User> spec = new Specification<User>()
@@ -48,9 +53,9 @@ namespace Core.Services.Lodging
                 .FirstOrDefault();
 
             if (user == null)
-                return null;
+                return new UnauthorizedResult<User>();
             if (!_passwordHasher.Check(user.Password, password))
-                return null;
+                return new UnauthorizedResult<User>();
 
             var newToken = new Token
             {
@@ -66,7 +71,7 @@ namespace Core.Services.Lodging
                     (specification.AddInclude(p => p.Tokens)))
                 .FirstOrDefault();
 
-            return userWithToken;
+            return new SuccessfulResult<User>(userWithToken);
         }
 
         private string GenerateRefreshToken()
@@ -79,21 +84,21 @@ namespace Core.Services.Lodging
             }
         }
 
-        public async Task<User> RefreshAsync(string refreshToken)
+        public async Task<Result<User>> RefreshAsync(string refreshToken)
         {
             var oldToken = (await _tokenRepository.GetAsync(
                     new Specification<Token>()
                         .ApplyFilter(p => p.RefreshToken == refreshToken))).FirstOrDefault();
 
             if (oldToken == null)
-                return null;
+                return new UnauthorizedResult<User>();
 
             if (oldToken.UsableFrom > DateTime.Now)
-                return null;
+                return new UnauthorizedResult<User>();
             else if (oldToken.ExpiresAt < DateTime.Now)
             {
                 await _tokenRepository.DeleteAsync(oldToken);
-                return null;
+                return new UnauthorizedResult<User>();
             }
                 
 
@@ -116,21 +121,40 @@ namespace Core.Services.Lodging
                         .AddInclude(p => p.Tokens)))
                 .FirstOrDefault();
 
-            return userWithToken;
+            return new SuccessfulResult<User>(userWithToken);
         }
 
-        public async Task<bool> RegisterAsync(User user)
+        public async Task<Result<bool>> RegisterAsync(User user, string role)
         {
+            //TODO: define known errors in an enum with unique codes & return them. write down the error codes in the system plan
+            if (await _userRepository.AnyAsync(p => p.Email == user.Email))
+                return new InvalidResult<bool>("Email not unique");
+
+            if (await _userRepository.AnyAsync(p => p.Username == user.Username))
+                return new InvalidResult<bool>("Username not unique");
+
             user.Email.ValidateEmail(out var errorMessage);
             user.Password.ValidatePassword(out errorMessage);
-            if (errorMessage != string.Empty)
-                throw new ArgumentException(errorMessage);
+            if (errorMessage != null)
+                return new InvalidResult<bool>(errorMessage);
 
             user.Password = _passwordHasher.Hash(user.Password);
 
+            Roles roleAsEnum;
+            if(!Enum.TryParse(role, out roleAsEnum))
+            {
+                return new InvalidResult<bool>("Role not found");
+            }
+
+            var roleEntity = (await _roleRepository.GetAsync(new Specification<Role>().ApplyFilter(p => p.Name == roleAsEnum))).FirstOrDefault();
+
+            user.Role = null;
+
+            user.RoleId = roleEntity.Id;
+
             await _userRepository.AddAsync(user);
 
-            return true;
+            return new SuccessfulResult<bool>(true);
         }
     }
 }
