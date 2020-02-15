@@ -8,7 +8,7 @@ namespace Infrastructure.Logging
 {
     public class LoggingDBContextSeed
     {
-        public static async Task Seed(LoggingDbContext context, bool isProduction)
+        public static void Seed(LoggingDbContext context, bool isProduction)
         {
             //if(isProduction)
             //    context.Database.Migrate();

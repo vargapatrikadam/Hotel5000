@@ -35,7 +35,7 @@ namespace Web
                 await LodgingDbContextSeed.SeedAsync(lodgingContext, hasher, environment.IsProduction());
 
                 var loggingContext = services.GetRequiredService<LoggingDbContext>();
-                await LoggingDBContextSeed.Seed(loggingContext, environment.IsProduction());
+                LoggingDBContextSeed.Seed(loggingContext, environment.IsProduction());
             }
 
             host.Run();
