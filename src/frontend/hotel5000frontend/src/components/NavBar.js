@@ -3,9 +3,23 @@ import logo from '../images/Logo.PNG';
 import {FaAlignJustify, FaUser, FaSuitcase, FaGripHorizontal, FaShoppingCart, FaClock, FaIdBadge, FaPen } from 'react-icons/fa';
 import './NavBar.css';
 
-import {Navbar, Dropdown, Nav} from "react-bootstrap";
+import {Navbar, Dropdown, Nav, Button} from "react-bootstrap";
+import {Link} from "react-router-dom";
 
 class NavBar extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            loggedin: false,
+            loggedinuser: {
+                username: "",
+                accessToken: "",
+                refreshToken: ""
+            }
+        }
+    }
 
     render() {
         return (
@@ -39,13 +53,15 @@ class NavBar extends Component {
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <h3 align="center" className="usernameh2">Username</h3>
-                            <Dropdown.Item className="dropdownitem"> <FaShoppingCart/>Cart</Dropdown.Item>
+                            <Dropdown.Item className="dropdownitem" disabled={!this.state.loggedin}> <FaShoppingCart/>Cart</Dropdown.Item>
                             <Dropdown.Divider/>
-                            <Dropdown.Item className="dropdownitem"><FaClock/>Reservations</Dropdown.Item>
+                            <Dropdown.Item className="dropdownitem" disabled={!this.state.loggedin}><FaClock/>Reservations</Dropdown.Item>
                             <Dropdown.Divider/>
-                            <Dropdown.Item className="dropdownitem"><FaIdBadge/>Personal data</Dropdown.Item>
+                            <Dropdown.Item className="dropdownitem" disabled={!this.state.loggedin}><FaIdBadge/>Personal data</Dropdown.Item>
                             <Dropdown.Divider/>
-                            <Dropdown.Item className="dropdownitem"><FaPen/>Ratings</Dropdown.Item>
+                            <Dropdown.Item className="dropdownitem" disabled={!this.state.loggedin}><FaPen/>Ratings</Dropdown.Item>
+                            <Dropdown.Divider/>
+                            <Dropdown.Item className="dropdownitem"><Link to="/login"><Button variant="outline-dark">Bejelentkezés</Button></Link></Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Nav>
