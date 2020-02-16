@@ -88,9 +88,9 @@ namespace Web.Controllers
         [HttpPost("Refresh")]
         [ProducesResponseType(typeof(AuthenticationDto), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
-        public async Task<IActionResult> Refresh([FromBody] string refreshToken)
+        public async Task<IActionResult> Refresh([FromBody] RefreshDto refreshDto)
         {
-            Result<User> result = await _authenticationService.RefreshAsync(refreshToken);
+            Result<User> result = await _authenticationService.RefreshAsync(refreshDto.RefreshToken);
             if (result.ResultType == ResultType.Unauthorized)
                 return BadRequest(new ErrorDto("Invalid refresh token"));
             var accessToken = GenerateToken(result.Data);
