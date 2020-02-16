@@ -4,6 +4,7 @@ using Core.Entities.LoggingEntities;
 using Core.Helpers;
 using Core.Interfaces;
 using Core.Interfaces.Lodging;
+using Core.Interfaces.Lodging.UserManagementService;
 using Core.Interfaces.Logging;
 using Core.Interfaces.PasswordHasher;
 using Core.Services.Lodging;
@@ -155,6 +156,11 @@ namespace Web
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
             services.AddScoped<ILoggingService, LoggingService>();
+
+            services.AddScoped<IUserManagementService, UserManagementService>();
+            services.AddScoped<IContactService, UserManagementService>();
+            services.AddScoped<IApprovingDataService, UserManagementService>();
+            services.AddScoped<IUserService, UserManagementService>();
 
             services.AddSingleton<ISetting<AuthenticationOptions>>(new Setting<AuthenticationOptions>
                 (authenticationOptions));

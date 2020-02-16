@@ -8,6 +8,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using Core.Helpers;
+using Core.Enums.Lodging;
+using Core.Interfaces.PasswordHasher;
 
 namespace Core.Services.Lodging
 {
@@ -16,11 +19,15 @@ namespace Core.Services.Lodging
         private readonly IAsyncRepository<Contact> _contactRepository;
         private readonly IAsyncRepository<ApprovingData> _approvingDataRepository;
         private readonly IAsyncRepository<User> _userRepository;
-        public UserManagementService(IAsyncRepository<Contact> contactRepository, IAsyncRepository<ApprovingData> approvingDataRepository, IAsyncRepository<User> userRepository)
+        private readonly IPasswordHasher _passwordHasher;
+        private readonly IAsyncRepository<Role> _roleRepository;
+        public UserManagementService(IAsyncRepository<Contact> contactRepository, IAsyncRepository<ApprovingData> approvingDataRepository, IAsyncRepository<User> userRepository, IPasswordHasher passwordHasher, IAsyncRepository<Role> roleRepository)
         {
             _contactRepository = contactRepository;
             _approvingDataRepository = approvingDataRepository;
             _userRepository = userRepository;
+            _passwordHasher = passwordHasher;
+            _roleRepository = roleRepository;
         }
 
         public async Task<Result<bool>> AddApprovingData(ApprovingData approvingData, int userId)
@@ -54,6 +61,38 @@ namespace Core.Services.Lodging
             return new SuccessfulResult<bool>(true);
         }
 
+        public async Task<Result<bool>> AddUser(User user, string role)
+        {
+            if (await _userRepository.AnyAsync(p => p.Email == user.Email))
+                return new InvalidResult<bool>("Email not unique");
+
+            if (await _userRepository.AnyAsync(p => p.Username == user.Username))
+                return new InvalidResult<bool>("Username not unique");
+
+            user.Email.ValidateEmail(out var errorMessage);
+            user.Password.ValidatePassword(out errorMessage);
+            if (errorMessage != null)
+                return new InvalidResult<bool>(errorMessage);
+
+            user.Password = _passwordHasher.Hash(user.Password);
+
+            Roles roleAsEnum;
+            if (!Enum.TryParse(role, out roleAsEnum))
+            {
+                return new InvalidResult<bool>("Role not found");
+            }
+
+            var roleEntity = (await _roleRepository.GetAsync(new Specification<Role>().ApplyFilter(p => p.Name == roleAsEnum))).FirstOrDefault();
+
+            user.Role = null;
+
+            user.RoleId = roleEntity.Id;
+
+            await _userRepository.AddAsync(user);
+
+            return new SuccessfulResult<bool>(true);
+        }
+
         public async Task<Result<IReadOnlyList<ApprovingData>>> GetAllApprovingData()
         {
             return new SuccessfulResult<IReadOnlyList<ApprovingData>>(await _approvingDataRepository.GetAllAsync());
@@ -62,6 +101,11 @@ namespace Core.Services.Lodging
         public async Task<Result<IReadOnlyList<Contact>>> GetAllContacts()
         {
             return new SuccessfulResult<IReadOnlyList<Contact>>(await _contactRepository.GetAllAsync());
+        }
+
+        public async Task<Result<IReadOnlyList<User>>> GetAllUsers()
+        {
+            return new SuccessfulResult<IReadOnlyList<User>>(await _userRepository.GetAllAsync());
         }
 
         public async Task<Result<ApprovingData>> GetApprovingData(int userId)
@@ -87,6 +131,17 @@ namespace Core.Services.Lodging
             return new SuccessfulResult<IReadOnlyList<Contact>>(contacts);
         }
 
+        public async Task<Result<User>> GetUser(int userId)
+        {
+            User user = (await _userRepository.GetAsync(
+                new Specification<User>().ApplyFilter(p => p.Id == userId))).FirstOrDefault();
+
+            if (user == null)
+                return new NotFoundResult<User>("User not found");
+
+            return new SuccessfulResult<User>(user);
+        }
+
         public async Task<Result<bool>> RemoveApprovingData(int userId)
         {
             ApprovingData approvingData = (await _approvingDataRepository.GetAsync(
@@ -108,6 +163,18 @@ namespace Core.Services.Lodging
                 return new NotFoundResult<bool>("Contact not found");
 
             await _contactRepository.DeleteAsync(contact);
+            return new SuccessfulResult<bool>(true);
+        }
+
+        public async Task<Result<bool>> RemoveUser(int userId)
+        {
+            User user = (await _userRepository.GetAsync(
+                    new Specification<User>().ApplyFilter(p => p.Id == userId))).FirstOrDefault();
+
+            if (user == null)
+                return new NotFoundResult<bool>("User not found");
+
+            await _userRepository.DeleteAsync(user);
             return new SuccessfulResult<bool>(true);
         }
 
@@ -139,6 +206,19 @@ namespace Core.Services.Lodging
                 return new NotFoundResult<bool>("Contact not found");
 
             await _contactRepository.UpdateAsync(contact);
+
+            return new SuccessfulResult<bool>(true);
+        }
+
+        public async Task<Result<bool>> UpdateUser(User user, int userId)
+        {
+            User oldUser = (await _userRepository.GetAsync(
+                new Specification<User>().ApplyFilter(p => p.Id == userId))).FirstOrDefault();
+
+            if (oldUser == null)
+                return new NotFoundResult<bool>("User not found");
+
+            await _userRepository.UpdateAsync(user);
 
             return new SuccessfulResult<bool>(true);
         }

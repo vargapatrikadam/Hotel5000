@@ -2,6 +2,7 @@
 using Core.Helpers.Results;
 using Core.Interfaces;
 using Core.Interfaces.Lodging;
+using Core.Interfaces.Lodging.UserManagementService;
 using Core.Interfaces.PasswordHasher;
 using Core.Services.Lodging;
 using Core.Specifications;
@@ -24,9 +25,9 @@ namespace Hotel5000_Api_Tests.UnitTests.Core
             mockUserRepo.Setup(s => s.GetAsync(It.IsAny<ISpecification<User>>()))
                 .ReturnsAsync(new List<User>());
             var mockTokenRepo = new Mock<IAsyncRepository<Token>>();
-            var mockRoleRepo = new Mock<IAsyncRepository<Role>>();
             var mockPasswordHasher = new Mock<IPasswordHasher>();
             var mockAuthenticationOptions = new Mock<ISetting<AuthenticationOptions>>();
+            var mockUserService = new Mock<IUserService>();
             mockAuthenticationOptions.Setup(s => s.Option)
                 .Returns(new AuthenticationOptions()
                 {
@@ -34,7 +35,7 @@ namespace Hotel5000_Api_Tests.UnitTests.Core
                     RefreshTokenDuration = 60,
                     Secret = "Unit Test Secret"
                 });
-            var service = new AuthenticationService(mockUserRepo.Object, mockTokenRepo.Object, mockRoleRepo.Object, mockPasswordHasher.Object, mockAuthenticationOptions.Object);
+            var service = new AuthenticationService(mockUserRepo.Object, mockTokenRepo.Object, mockPasswordHasher.Object, mockAuthenticationOptions.Object, mockUserService.Object);
 
             var result = await service.AuthenticateAsync("asd", "asd", "asd");
 
@@ -48,7 +49,7 @@ namespace Hotel5000_Api_Tests.UnitTests.Core
             mockUserRepo.Setup(s => s.GetAsync(It.IsAny<ISpecification<User>>()))
                 .ReturnsAsync(new List<User>() { AuthenticationEntities.GetTestUser() });
             var mockTokenRepo = new Mock<IAsyncRepository<Token>>();
-            var mockRoleRepo = new Mock<IAsyncRepository<Role>>();
+            var mockUserService = new Mock<IUserService>();
             var mockPasswordHasher = new Mock<IPasswordHasher>();
             mockPasswordHasher.Setup(s => s.Check(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(false);
@@ -60,7 +61,7 @@ namespace Hotel5000_Api_Tests.UnitTests.Core
                     RefreshTokenDuration = 60,
                     Secret = "Unit Test Secret"
                 });
-            var service = new AuthenticationService(mockUserRepo.Object, mockTokenRepo.Object, mockRoleRepo.Object, mockPasswordHasher.Object, mockAuthenticationOptions.Object);
+            var service = new AuthenticationService(mockUserRepo.Object, mockTokenRepo.Object, mockPasswordHasher.Object, mockAuthenticationOptions.Object, mockUserService.Object);
 
             var result = await service.AuthenticateAsync("testusername", "badpassword", "testemail");
 
@@ -76,7 +77,7 @@ namespace Hotel5000_Api_Tests.UnitTests.Core
             Token insertedToken = null;
             mockTokenRepo.Setup(s => s.AddAsync(It.IsAny<Token>()))
                 .Callback((Token t) => insertedToken = t);
-            var mockRoleRepo = new Mock<IAsyncRepository<Role>>();
+            var mockUserService = new Mock<IUserService>();
             var mockPasswordHasher = new Mock<IPasswordHasher>();
             mockPasswordHasher.Setup(s => s.Check(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(true);
@@ -88,7 +89,7 @@ namespace Hotel5000_Api_Tests.UnitTests.Core
                     RefreshTokenDuration = 60,
                     Secret = "Unit Test Secret"
                 });
-            var service = new AuthenticationService(mockUserRepo.Object, mockTokenRepo.Object, mockRoleRepo.Object, mockPasswordHasher.Object, mockAuthenticationOptions.Object);
+            var service = new AuthenticationService(mockUserRepo.Object, mockTokenRepo.Object, mockPasswordHasher.Object, mockAuthenticationOptions.Object, mockUserService.Object);
 
             var result = await service.AuthenticateAsync("testusername", "testpassword", "testemail");
 

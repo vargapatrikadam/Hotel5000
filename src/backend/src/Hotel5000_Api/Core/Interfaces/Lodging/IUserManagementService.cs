@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Core.Interfaces.Lodging
 {
-    public interface IUserManagementService : IApprovingDataService, IContactService
+    public interface IUserManagementService : IApprovingDataService, IContactService, IUserService
     { 
         
     }

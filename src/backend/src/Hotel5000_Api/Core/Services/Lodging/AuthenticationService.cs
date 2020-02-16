@@ -4,6 +4,7 @@ using Core.Helpers;
 using Core.Helpers.Results;
 using Core.Interfaces;
 using Core.Interfaces.Lodging;
+using Core.Interfaces.Lodging.UserManagementService;
 using Core.Interfaces.PasswordHasher;
 using Core.Specifications;
 using System;
@@ -19,21 +20,21 @@ namespace Core.Services.Lodging
     {
         private readonly IAsyncRepository<User> _userRepository;
         private readonly IAsyncRepository<Token> _tokenRepository;
-        private readonly IAsyncRepository<Role> _roleRepository;
+        private readonly IUserService _userService;
         private readonly IPasswordHasher _passwordHasher;
         private readonly AuthenticationOptions _options;
 
         public AuthenticationService(IAsyncRepository<User> userRepository,
             IAsyncRepository<Token> tokenRepository,
-            IAsyncRepository<Role> roleRepository,
             IPasswordHasher passwordHasher,
-            ISetting<AuthenticationOptions> settings)
+            ISetting<AuthenticationOptions> settings,
+            IUserService userService)
         {
             _userRepository = userRepository;
             _tokenRepository = tokenRepository;
-            _roleRepository = roleRepository;
             _passwordHasher = passwordHasher;
             _options = settings.Option;
+            _userService = userService;
         }
 
         public async Task<Result<User>> AuthenticateAsync(string username, string password, string email)
@@ -126,35 +127,7 @@ namespace Core.Services.Lodging
 
         public async Task<Result<bool>> RegisterAsync(User user, string role)
         {
-            //TODO: define known errors in an enum with unique codes & return them. write down the error codes in the system plan
-            if (await _userRepository.AnyAsync(p => p.Email == user.Email))
-                return new InvalidResult<bool>("Email not unique");
-
-            if (await _userRepository.AnyAsync(p => p.Username == user.Username))
-                return new InvalidResult<bool>("Username not unique");
-
-            user.Email.ValidateEmail(out var errorMessage);
-            user.Password.ValidatePassword(out errorMessage);
-            if (errorMessage != null)
-                return new InvalidResult<bool>(errorMessage);
-
-            user.Password = _passwordHasher.Hash(user.Password);
-
-            Roles roleAsEnum;
-            if(!Enum.TryParse(role, out roleAsEnum))
-            {
-                return new InvalidResult<bool>("Role not found");
-            }
-
-            var roleEntity = (await _roleRepository.GetAsync(new Specification<Role>().ApplyFilter(p => p.Name == roleAsEnum))).FirstOrDefault();
-
-            user.Role = null;
-
-            user.RoleId = roleEntity.Id;
-
-            await _userRepository.AddAsync(user);
-
-            return new SuccessfulResult<bool>(true);
+            return await _userService.AddUser(user, role);
         }
     }
 }
