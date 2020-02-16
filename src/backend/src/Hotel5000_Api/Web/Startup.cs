@@ -49,7 +49,8 @@ namespace Web
                 options.AddPolicy("CorsPolicy", builder => builder
                     .AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader());
+                    .AllowAnyHeader()
+                    .WithExposedHeaders("Token-Expired"));
             });
 
             services.AddRouting(options => options.LowercaseUrls = true);
