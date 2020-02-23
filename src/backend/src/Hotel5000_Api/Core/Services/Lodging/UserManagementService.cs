@@ -163,14 +163,18 @@ namespace Core.Services.Lodging
             await _approvingDataRepository.DeleteAsync(approvingData);
             return new SuccessfulResult<bool>(true);
         }
-        public async Task<Result<bool>> RemoveContact(int contactId, int resourceAccessorId)
+        public async Task<Result<bool>> RemoveContact(int contactOwnerId, int contactId, int resourceAccessorId)
         {
-            Contact contact = (await _contactRepository.GetAsync(
-                    new Specification<Contact>().ApplyFilter(p => p.Id == contactId))).FirstOrDefault();
+            //Contact contact = (await _contactRepository.GetAsync(
+            //        new Specification<Contact>().ApplyFilter(p => p.Id == contactId))).FirstOrDefault();
+            User user = (await _userRepository.GetAsync(
+                    new Specification<User>().ApplyFilter(p => p.Id == contactOwnerId).AddInclude(p => p.Contacts))).FirstOrDefault();
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(contact.UserId, resourceAccessorId);
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(user.Id, resourceAccessorId);
             if (!authenticationResult.Data)
                 return authenticationResult;
+
+            Contact contact = user.Contacts.Where(p => p.Id == contactId).FirstOrDefault();
 
             if (contact == null)
                 return new NotFoundResult<bool>("Contact not found");

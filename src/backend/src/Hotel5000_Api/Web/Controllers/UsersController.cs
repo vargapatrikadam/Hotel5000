@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Enums.Lodging;
+using Core.Helpers.Results;
 using Core.Interfaces.Lodging;
 using Core.Interfaces.Lodging.UserManagementService;
 using Microsoft.AspNetCore.Mvc;
@@ -56,13 +57,61 @@ namespace Web.Controllers
         {
             var result = await _userManagementService.GetApprovingData(id);
 
-            if (result.ResultType == Core.Helpers.Results.ResultType.Invalid)
+            if (result.ResultType == ResultType.Invalid)
                 return BadRequest(new ErrorDto(result.Errors));
 
-            if (result.ResultType == Core.Helpers.Results.ResultType.NotFound)
+            if (result.ResultType == ResultType.NotFound)
                 return NotFound(new ErrorDto(result.Errors));
 
             return Ok(_mapper.Map<ApprovingDataDto>(result.Data));
+        }
+        [HttpDelete("{userId}")]
+        [ProducesResponseType(200)]
+        [ProducesErrorResponseType(typeof(ErrorDto))]
+        [AuthorizeRoles]
+        public async Task<IActionResult> DeleteUser(int userId)
+        {
+            var result = await _userManagementService.RemoveUser(userId, int.Parse(User.Identity.Name));
+
+            if (result.ResultType == ResultType.Unauthorized)
+                return Unauthorized(new ErrorDto(result.Errors));
+
+            if (result.ResultType == ResultType.NotFound)
+                return NotFound(new ErrorDto(result.Errors));
+
+            return Ok();
+        }
+        [HttpDelete("{userId}/approvingdata")]
+        [ProducesResponseType(200)]
+        [ProducesErrorResponseType(typeof(ErrorDto))]
+        [AuthorizeRoles]
+        public async Task<IActionResult> DeleteApprovingData(int userId)
+        {
+            var result = await _userManagementService.RemoveApprovingData(userId, int.Parse(User.Identity.Name));
+
+            if (result.ResultType == ResultType.Unauthorized)
+                return Unauthorized(new ErrorDto(result.Errors));
+
+            if (result.ResultType == ResultType.NotFound)
+                return NotFound(new ErrorDto(result.Errors));
+
+            return Ok();
+        }
+        [HttpDelete("{userId}/contacts/{contactId}")]
+        [ProducesResponseType(200)]
+        [ProducesErrorResponseType(typeof(ErrorDto))]
+        [AuthorizeRoles]
+        public async Task<IActionResult> DeleteContact(int userId, int contactId)
+        {
+            var result = await _userManagementService.RemoveContact(userId, contactId, int.Parse(User.Identity.Name));
+
+            if (result.ResultType == ResultType.Unauthorized)
+                return Unauthorized(new ErrorDto(result.Errors));
+
+            if (result.ResultType == ResultType.NotFound)
+                return NotFound(new ErrorDto(result.Errors));
+
+            return Ok();
         }
     }
 }
