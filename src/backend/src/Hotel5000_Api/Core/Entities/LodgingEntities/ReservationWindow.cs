@@ -10,7 +10,7 @@ namespace Core.Entities.LodgingEntities
         public DateTime To { get; set; }
         public int LodgingId { get; set; }
 
-        public virtual Lodging Lodging { get; set; }
+        public Lodging Lodging { get; set; }
         public virtual ICollection<ReservationItem> ReservationItems { get; set; }
     }
 }

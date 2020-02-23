@@ -13,7 +13,7 @@ namespace Core.Entities.LodgingEntities
         public string LastName { get; set; }
 
         public int RoleId { get; set; }
-        public virtual Role Role { get; set; }
+        public Role Role { get; set; }
 
         public virtual ApprovingData ApprovingData { get; set; }
         public virtual ICollection<Contact> Contacts { get; set; }

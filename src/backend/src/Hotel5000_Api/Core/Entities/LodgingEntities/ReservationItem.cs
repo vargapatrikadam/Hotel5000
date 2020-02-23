@@ -12,8 +12,8 @@ namespace Core.Entities.LodgingEntities
         public int RoomId { get; set; }
         public int ReservationWindowId { get; set; }
 
-        public virtual Reservation Reservation { get; set; }
-        public virtual Room Room { get; set; }
-        public virtual ReservationWindow ReservationWindow { get; set; }
+        public Reservation Reservation { get; set; }
+        public Room Room { get; set; }
+        public ReservationWindow ReservationWindow { get; set; }
     }
 }

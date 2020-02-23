@@ -11,6 +11,6 @@ namespace Core.Entities.LodgingEntities
         public DateTime ExpiresAt { get; set; }
 
         public int UserId { get; set; }
-        public virtual User User { get; set; }
+        public User User { get; set; }
     }
 }

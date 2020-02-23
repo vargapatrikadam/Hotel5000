@@ -12,8 +12,8 @@ namespace Core.Entities.LodgingEntities
         public int CurrencyId { get; set; }
         public int LodgingId { get; set; }
 
-        public virtual Lodging Lodging { get; set; }
-        public virtual Currency Currency { get; set; }
+        public Lodging Lodging { get; set; }
+        public Currency Currency { get; set; }
         public virtual ICollection<ReservationItem> ReservationItems { get; set; }
     }
 }

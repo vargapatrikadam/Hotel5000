@@ -26,9 +26,10 @@ namespace Web.Controllers
         private readonly ILoggingService _loggingService;
         private readonly IAuthenticationService _authenticatonService;
         private readonly IMapper _mapper;
-        private readonly IAsyncRepository<User> _asyncRepository;
+        private readonly IAsyncRepository<ReservationItem> _asyncRepository;
 
-        public DefaultController(ILoggingService loggingService, IAuthenticationService authenticaton, IMapper mapper, IAsyncRepository<User> asyncRepository)
+        public DefaultController(ILoggingService loggingService, IAuthenticationService authenticaton, IMapper mapper, 
+            IAsyncRepository<ReservationItem> asyncRepository)
         {
             _asyncRepository = asyncRepository;
             _mapper = mapper;
@@ -47,9 +48,10 @@ namespace Web.Controllers
             //    "test2",
             //    "test3"
             //};
-            ICollection<User> users = (await _asyncRepository.GetAsync(new Specification<User>().AddInclude(p => p.Role))).ToList();
-            ICollection<UserDto> mappedUsers = _mapper.Map<ICollection<UserDto>>(users);
-            return Ok(mappedUsers);
+            ICollection<ReservationItem> items = (await _asyncRepository.GetAsync(
+                new Specification<ReservationItem>().AddInclude(p => p.Room.Lodging.User))).ToList();
+            //ICollection<UserDto> mappedUsers = _mapper.Map<ICollection<UserDto>>(users);
+            return Ok();
         }
 
         [AuthorizeRoles(Roles.Admin, Roles.ApprovedUser, Roles.Company)]

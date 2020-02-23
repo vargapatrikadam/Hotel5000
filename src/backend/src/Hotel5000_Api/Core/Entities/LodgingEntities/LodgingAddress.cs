@@ -15,8 +15,8 @@ namespace Core.Entities.LodgingEntities
         public string DoorNumber { get; set; }
 
         public int CountryId { get; set; }
-        public virtual Country Country { get; set; }
+        public Country Country { get; set; }
         public int LodgingId { get; set; }
-        public virtual Lodging Lodging { get; set; }
+        public Lodging Lodging { get; set; }
     }
 }
