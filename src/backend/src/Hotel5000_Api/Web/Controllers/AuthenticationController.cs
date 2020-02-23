@@ -10,6 +10,7 @@ using Core.Entities.LodgingEntities;
 using Core.Helpers.Results;
 using Core.Interfaces;
 using Core.Interfaces.Lodging;
+using Core.Interfaces.Lodging.UserManagementService;
 using Core.Services.Lodging;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -24,16 +25,19 @@ namespace Web.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationService _authenticationService;
+        private readonly IUserService _userService;
         private readonly AuthenticationOptions _options;
         private readonly IMapper _mapper;
 
         public AuthenticationController(IAuthenticationService authenticationService,
             ISetting<AuthenticationOptions> settings,
-            IMapper mapper)
+            IMapper mapper,
+            IUserService userService)
         {
             _authenticationService = authenticationService;
             _options = settings.Option;
             _mapper = mapper;
+            _userService = userService;
         }
 
         private string GenerateToken(User user)
@@ -44,9 +48,7 @@ namespace Web.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Username),
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.UserData, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, user.Role.Name.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddSeconds(_options.AccessTokenDuration),
@@ -111,7 +113,7 @@ namespace Web.Controllers
         {
             User newUserEntity = _mapper.Map<User>(newUserDto);
 
-            Result<bool> result = await _authenticationService.RegisterAsync(newUserEntity, newUserDto.Role);
+            Result<bool> result = await _userService.AddUser(newUserEntity, newUserDto.Role);
 
             if (result.ResultType == ResultType.Ok)
                 return Ok();

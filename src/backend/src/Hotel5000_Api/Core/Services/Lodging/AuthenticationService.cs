@@ -20,21 +20,18 @@ namespace Core.Services.Lodging
     {
         private readonly IAsyncRepository<User> _userRepository;
         private readonly IAsyncRepository<Token> _tokenRepository;
-        private readonly IUserService _userService;
         private readonly IPasswordHasher _passwordHasher;
         private readonly AuthenticationOptions _options;
 
         public AuthenticationService(IAsyncRepository<User> userRepository,
             IAsyncRepository<Token> tokenRepository,
             IPasswordHasher passwordHasher,
-            ISetting<AuthenticationOptions> settings,
-            IUserService userService)
+            ISetting<AuthenticationOptions> settings)
         {
             _userRepository = userRepository;
             _tokenRepository = tokenRepository;
             _passwordHasher = passwordHasher;
             _options = settings.Option;
-            _userService = userService;
         }
 
         public async Task<Result<User>> AuthenticateAsync(string username, string password, string email)
@@ -123,11 +120,6 @@ namespace Core.Services.Lodging
                 .FirstOrDefault();
 
             return new SuccessfulResult<User>(userWithToken);
-        }
-
-        public async Task<Result<bool>> RegisterAsync(User user, string role)
-        {
-            return await _userService.AddUser(user, role);
         }
 
         public async Task<Result<bool>> IsAuthorized(int resourceOwnerId, int accessingUserId)
