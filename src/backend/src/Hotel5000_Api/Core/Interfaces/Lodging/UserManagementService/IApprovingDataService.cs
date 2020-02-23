@@ -9,10 +9,10 @@ namespace Core.Interfaces.Lodging.UserManagementService
 {
     public interface IApprovingDataService
     {
-        Task<Result<bool>> AddApprovingData(ApprovingData approvingData, int userId);
-        Task<Result<bool>> RemoveApprovingData(int userId);
-        Task<Result<bool>> UpdateApprovingData(ApprovingData approvingData, int userId, int approvingDataId);
-        Task<Result<ApprovingData>> GetApprovingData(int userId);
+        Task<Result<bool>> AddApprovingData(ApprovingData newApprovingData, int resourceAccessorId);
+        Task<Result<bool>> RemoveApprovingData(int approvingDataOwnerId, int resourceAccessorId);
+        Task<Result<bool>> UpdateApprovingData(ApprovingData newApprovingData, int approvingDataOwnerId, int resourceAccessorId);
+        Task<Result<ApprovingData>> GetApprovingData(int approvingDataOwnerId);
         Task<Result<IReadOnlyList<ApprovingData>>> GetAllApprovingData();
     }
 }

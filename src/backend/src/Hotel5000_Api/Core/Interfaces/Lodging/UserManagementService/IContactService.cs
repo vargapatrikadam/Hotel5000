@@ -9,9 +9,9 @@ namespace Core.Interfaces.Lodging.UserManagementService
 {
     public interface IContactService
     {
-        Task<Result<bool>> AddContact(Contact contact, int userId);
-        Task<Result<bool>> RemoveContact(int contactId);
-        Task<Result<bool>> UpdateContact(Contact contact, int userId, int contactId);
+        Task<Result<bool>> AddContact(Contact contact, int resourceAccessorId);
+        Task<Result<bool>> RemoveContact(int contactId, int resourceAccessorId);
+        Task<Result<bool>> UpdateContact(Contact newContact, int oldContactId, int resourceAccessorId);
         Task<Result<IReadOnlyList<Contact>>> GetContacts(int userId);
         Task<Result<IReadOnlyList<Contact>>> GetAllContacts();
     }

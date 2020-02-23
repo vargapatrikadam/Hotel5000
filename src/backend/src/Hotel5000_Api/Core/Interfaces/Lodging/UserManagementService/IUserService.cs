@@ -11,8 +11,9 @@ namespace Core.Interfaces.Lodging.UserManagementService
     {
         Task<Result<IReadOnlyList<User>>> GetAllUsers();
         Task<Result<User>> GetUser(int userId);
-        Task<Result<bool>> UpdateUser(User user, int userId);
-        Task<Result<bool>> RemoveUser(int userId);
-        Task<Result<bool>> AddUser(User user, string role);
+        Task<Result<bool>> UpdateUser(User newUser, int oldUserId, int resourceAccessorId);
+        Task<Result<bool>> RemoveUser(int userId, int resourceAccessorId);
+        Task<Result<bool>> AddUser(User newUser, string role);
+        Task<Result<bool>> ChangePassword(int userId, string oldPassword, string newPassword);
     }
 }
