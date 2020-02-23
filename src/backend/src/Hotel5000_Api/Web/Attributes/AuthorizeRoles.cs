@@ -10,6 +10,10 @@ namespace Web.Attributes
 {
     public class AuthorizeRoles : AuthorizeAttribute
     {
+        public AuthorizeRoles() : this(new Roles[] { Core.Enums.Lodging.Roles.Company, Core.Enums.Lodging.Roles.ApprovedUser, Core.Enums.Lodging.Roles.Admin})
+        {
+
+        }
         public AuthorizeRoles(params Roles[] allowedRoles)
         {
             AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme;
