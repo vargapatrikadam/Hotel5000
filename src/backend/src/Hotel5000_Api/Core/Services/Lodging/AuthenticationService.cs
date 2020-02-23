@@ -129,5 +129,21 @@ namespace Core.Services.Lodging
         {
             return await _userService.AddUser(user, role);
         }
+
+        public async Task<Result<bool>> IsAuthorized(int resourceOwnerId, int accessingUserId)
+        {
+            ISpecification<User> query = new Specification<User>().AddInclude(p => p.Role);
+            User resourceOwner = (await _userRepository.GetAsync(query.ApplyFilter(f => f.Id == resourceOwnerId))).FirstOrDefault();
+            if (resourceOwner == null)
+                return new NotFoundResult<bool>("Resource owner not found");
+            User accessingUser = (await _userRepository.GetAsync(query.ApplyFilter(f => f.Id == accessingUserId))).FirstOrDefault();
+            if (accessingUser == null)
+                return new NotFoundResult<bool>("Accessing user not found");
+
+            if (accessingUser.Role.Name == Roles.Admin
+                || accessingUser.Id == resourceOwner.Id)
+                return new SuccessfulResult<bool>(true);
+            else return new UnauthorizedResult<bool>("You cannot modify this resource");
+        }
     }
 }

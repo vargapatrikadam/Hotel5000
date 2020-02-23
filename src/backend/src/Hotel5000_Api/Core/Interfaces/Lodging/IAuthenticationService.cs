@@ -12,5 +12,6 @@ namespace Core.Interfaces.Lodging
         Task<Result<User>> AuthenticateAsync(string username, string password, string email);
         Task<Result<User>> RefreshAsync(string refreshToken);
         Task<Result<bool>> RegisterAsync(User user, string role);
+        Task<Result<bool>> IsAuthorized(int resourceOwnerId, int accessingUserId);
     }
 }

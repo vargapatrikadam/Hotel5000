@@ -21,19 +21,27 @@ namespace Core.Services.Lodging
         private readonly IAsyncRepository<User> _userRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IAsyncRepository<Role> _roleRepository;
-        public UserManagementService(IAsyncRepository<Contact> contactRepository, IAsyncRepository<ApprovingData> approvingDataRepository, IAsyncRepository<User> userRepository, IPasswordHasher passwordHasher, IAsyncRepository<Role> roleRepository)
+        private readonly IAuthenticationService _authenticationService;
+        public UserManagementService(IAsyncRepository<Contact> contactRepository, 
+            IAsyncRepository<ApprovingData> approvingDataRepository, 
+            IAsyncRepository<User> userRepository, 
+            IPasswordHasher passwordHasher, 
+            IAsyncRepository<Role> roleRepository,
+            IAuthenticationService authenticationService)
         {
             _contactRepository = contactRepository;
             _approvingDataRepository = approvingDataRepository;
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _roleRepository = roleRepository;
+            _authenticationService = authenticationService;
         }
 
         public async Task<Result<bool>> AddApprovingData(ApprovingData approvingData, int userId)
         {
-            if (!(await _userRepository.AnyAsync(p => p.Id == userId)))
-                return new NotFoundResult<bool>("User not found");
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(approvingData.Id, userId);
+            if (!authenticationResult.Data)
+                return authenticationResult;
 
             if (await _approvingDataRepository.AnyAsync(p => p.UserId == userId))
                 return new InvalidResult<bool>("User already has approving data");
@@ -50,8 +58,9 @@ namespace Core.Services.Lodging
 
         public async Task<Result<bool>> AddContact(Contact contact, int userId)
         {
-            if (!(await _userRepository.AnyAsync(p => p.Id == userId)))
-                return new NotFoundResult<bool>("User not found");
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(contact.UserId, userId);
+            if (!authenticationResult.Data)
+                return authenticationResult;
 
             if (await _contactRepository.AnyAsync(p => p.MobileNumber == contact.MobileNumber))
                 return new InvalidResult<bool>("Mobile number already exists");
@@ -147,6 +156,10 @@ namespace Core.Services.Lodging
             ApprovingData approvingData = (await _approvingDataRepository.GetAsync(
                     new Specification<ApprovingData>().ApplyFilter(p => p.UserId == userId))).FirstOrDefault();
 
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(approvingData.UserId, userId);
+            if (!authenticationResult.Data)
+                return authenticationResult;
+
             if (approvingData == null)
                 return new NotFoundResult<bool>("Approving data not found for user");
 
@@ -158,6 +171,10 @@ namespace Core.Services.Lodging
         {
             Contact contact = (await _contactRepository.GetAsync(
                     new Specification<Contact>().ApplyFilter(p => p.Id == contactId))).FirstOrDefault();
+
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(contact.UserId, userId);
+            if (!authenticationResult.Data)
+                return authenticationResult;
 
             if (contact == null)
                 return new NotFoundResult<bool>("Contact not found");
@@ -171,6 +188,10 @@ namespace Core.Services.Lodging
             User user = (await _userRepository.GetAsync(
                     new Specification<User>().ApplyFilter(p => p.Id == userId))).FirstOrDefault();
 
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(user.Id, userId);
+            if (!authenticationResult.Data)
+                return authenticationResult;
+
             if (user == null)
                 return new NotFoundResult<bool>("User not found");
 
@@ -180,11 +201,12 @@ namespace Core.Services.Lodging
 
         public async Task<Result<bool>> UpdateApprovingData(ApprovingData approvingData, int userId, int approvingDataId)
         {
-            if (!(await _userRepository.AnyAsync(p => p.Id == userId)))
-                return new NotFoundResult<bool>("User not found");
-
             ApprovingData oldApprovingData = (await _approvingDataRepository.GetAsync(
                     new Specification<ApprovingData>().ApplyFilter(p => p.Id == approvingDataId))).FirstOrDefault();
+
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(approvingData.UserId, userId);
+            if (!authenticationResult.Data)
+                return authenticationResult;
 
             if (oldApprovingData == null)
                 return new NotFoundResult<bool>("Approving data not found");
@@ -196,11 +218,12 @@ namespace Core.Services.Lodging
 
         public async Task<Result<bool>> UpdateContact(Contact contact, int userId, int contactId)
         {
-            if (!(await _userRepository.AnyAsync(p => p.Id == userId)))
-                return new NotFoundResult<bool>("User not found");
-
             Contact oldContact = (await _contactRepository.GetAsync(
                     new Specification<Contact>().ApplyFilter(p => p.Id == contactId))).FirstOrDefault();
+
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(contact.UserId, userId);
+            if (!authenticationResult.Data)
+                return authenticationResult;
 
             if (oldContact == null)
                 return new NotFoundResult<bool>("Contact not found");
@@ -214,6 +237,10 @@ namespace Core.Services.Lodging
         {
             User oldUser = (await _userRepository.GetAsync(
                 new Specification<User>().ApplyFilter(p => p.Id == userId))).FirstOrDefault();
+
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(oldUser.Id, userId);
+            if (!authenticationResult.Data)
+                return authenticationResult;
 
             if (oldUser == null)
                 return new NotFoundResult<bool>("User not found");
