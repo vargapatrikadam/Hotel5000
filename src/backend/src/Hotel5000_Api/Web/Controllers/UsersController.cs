@@ -70,7 +70,7 @@ namespace Web.Controllers
             if (result.ResultType == ResultType.NotFound)
                 return NotFound(new ErrorDto(result.Errors));
 
-            return Ok(_mapper.Map<ApprovingDataDto>(result.Data));
+            return Ok(_mapper.Map<ICollection<ApprovingDataDto>>(result.Data));
         }
         [HttpGet("approvingdata")]
         [ProducesResponseType(typeof(ICollection<ApprovingDataDto>), 200)]
