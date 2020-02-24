@@ -49,6 +49,8 @@ namespace Web.Controllers
             return Ok(_mapper.Map<ICollection<ContactDto>>(result.Data));
         }
         [HttpGet("contacts")]
+        [ProducesResponseType(typeof(ICollection<ContactDto>), 200)]
+        [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetContacts([FromQuery] int? userId = null, [FromQuery] string phoneNumber = null, [FromQuery] string username = null)
         {
             var result = await _userManagementService.GetContacts(userId, phoneNumber, username);
@@ -71,6 +73,8 @@ namespace Web.Controllers
             return Ok(_mapper.Map<ApprovingDataDto>(result.Data));
         }
         [HttpGet("approvingdata")]
+        [ProducesResponseType(typeof(ICollection<ApprovingData>), 200)]
+        [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetApprovingData([FromQuery] int? userId = null,
             [FromQuery] int? id = null,
             [FromQuery] string username = null,
