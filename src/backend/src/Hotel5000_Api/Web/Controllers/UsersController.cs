@@ -55,12 +55,12 @@ namespace Web.Controllers
 
             return Ok(_mapper.Map<ICollection<ContactDto>>(result.Data));
         }
-        [HttpGet("{id}/approvingdata")]
+        [HttpGet("{userId}/approvingdata")]
         [ProducesResponseType(typeof(ICollection<ApprovingDataDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
-        public async Task<IActionResult> GetApprovingDataForUser(int id)
+        public async Task<IActionResult> GetApprovingDataForUser(int userId)
         {
-            var result = await _userManagementService.GetApprovingData(id);
+            var result = await _userManagementService.GetApprovingData(approvingDataOwnerId: userId);
 
             if (result.ResultType == ResultType.Invalid)
                 return BadRequest(new ErrorDto(result.Errors));
@@ -69,6 +69,26 @@ namespace Web.Controllers
                 return NotFound(new ErrorDto(result.Errors));
 
             return Ok(_mapper.Map<ApprovingDataDto>(result.Data));
+        }
+        [HttpGet("approvingdata")]
+        public async Task<IActionResult> GetApprovingData([FromQuery] int? userId = null,
+            [FromQuery] int? id = null,
+            [FromQuery] string username = null,
+            [FromQuery] string taxNumber = null,
+            [FromQuery] string identityNumber = null,
+            [FromQuery] string registrationNumber = null)
+        {
+            var result = await _userManagementService.GetApprovingData(approvingDataOwnerId: userId,
+               approvingDataId: id,
+               username: username,
+               taxNumber: taxNumber,
+               identityNumber: identityNumber,
+               registrationNumber: registrationNumber);
+
+            if (result.ResultType == ResultType.NotFound)
+                return NotFound(new ErrorDto(result.Errors));
+
+            return Ok(_mapper.Map<ICollection<ApprovingDataDto>>(result.Data));
         }
         [HttpDelete("{userId}")]
         [ProducesResponseType(200)]

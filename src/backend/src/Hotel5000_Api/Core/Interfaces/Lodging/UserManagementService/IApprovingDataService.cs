@@ -12,7 +12,11 @@ namespace Core.Interfaces.Lodging.UserManagementService
         Task<Result<bool>> AddApprovingData(ApprovingData newApprovingData, int resourceAccessorId);
         Task<Result<bool>> RemoveApprovingData(int approvingDataOwnerId, int resourceAccessorId);
         Task<Result<bool>> UpdateApprovingData(ApprovingData newApprovingData, int approvingDataOwnerId, int resourceAccessorId);
-        Task<Result<ApprovingData>> GetApprovingData(int approvingDataOwnerId);
-        Task<Result<IReadOnlyList<ApprovingData>>> GetAllApprovingData();
+        Task<Result<IReadOnlyList<ApprovingData>>> GetApprovingData(int? approvingDataOwnerId = null, 
+            int? approvingDataId = null, 
+            string username = null,
+            string taxNumber = null,
+            string identityNumber = null,
+            string registrationNumber = null);
     }
 }
