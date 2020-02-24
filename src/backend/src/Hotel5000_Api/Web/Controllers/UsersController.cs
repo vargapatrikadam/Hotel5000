@@ -28,12 +28,11 @@ namespace Web.Controllers
         [ProducesResponseType(typeof(ICollection<UserDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         //[AuthorizeRoles(Roles.Admin)]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetUsers([FromQuery] int? id = null, [FromQuery] string username = null, [FromQuery] string? email = null)
         {
-            var result = await _userManagementService.GetAllUsers();
+            var result = await _userManagementService.GetUsers(id, username, email);
             return Ok(_mapper.Map<ICollection<UserDto>>(result.Data));
         }
-
         [HttpGet("{id}/contacts")]
         [ProducesResponseType(typeof(ICollection<ContactDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -41,10 +40,10 @@ namespace Web.Controllers
         {
             var result = await _userManagementService.GetContacts(id);
             
-            if (result.ResultType == Core.Helpers.Results.ResultType.Invalid)
+            if (result.ResultType == ResultType.Invalid)
                 return BadRequest(new ErrorDto(result.Errors));
 
-            if (result.ResultType == Core.Helpers.Results.ResultType.NotFound)
+            if (result.ResultType == ResultType.NotFound)
                 return NotFound(new ErrorDto(result.Errors));
 
             return Ok(_mapper.Map<ICollection<ContactDto>>(result.Data));

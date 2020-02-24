@@ -110,9 +110,14 @@ namespace Core.Services.Lodging
             return new SuccessfulResult<IReadOnlyList<Contact>>(await _contactRepository.GetAllAsync());
         }
 
-        public async Task<Result<IReadOnlyList<User>>> GetAllUsers()
+        public async Task<Result<IReadOnlyList<User>>> GetUsers(int? id = null, string username = null, string email = null)
         {
-            return new SuccessfulResult<IReadOnlyList<User>>(await _userRepository.GetAllAsync());
+            ISpecification<User> specification = new Specification<User>();
+            specification.ApplyFilter(p => 
+                (!id.HasValue || p.Id == id) && 
+                (username == null || p.Username == username) && 
+                (email == null || p.Email == email));
+            return new SuccessfulResult<IReadOnlyList<User>>(await _userRepository.GetAsync(specification));
         }
 
         public async Task<Result<ApprovingData>> GetApprovingData(int userId)
