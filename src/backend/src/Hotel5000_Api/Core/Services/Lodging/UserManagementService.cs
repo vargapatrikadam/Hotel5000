@@ -104,7 +104,9 @@ namespace Core.Services.Lodging
         }
         public async Task<Result<IReadOnlyList<User>>> GetUsers(int? id = null, 
             string username = null, 
-            string email = null)
+            string email = null,
+            int? skip = null,
+            int? take = null)
         {
             ISpecification<User> specification = new Specification<User>();
             specification.ApplyFilter(p => 
@@ -112,6 +114,9 @@ namespace Core.Services.Lodging
                 (username == null || p.Username.Contains(username)) && 
                 (email == null || p.Email.Contains(email)))
                 .AddInclude(p => p.Role);
+
+            if (skip.HasValue && take.HasValue)
+                specification.ApplyPaging(skip.Value, take.Value);
 
             return new SuccessfulResult<IReadOnlyList<User>>(
                 (await _userRepository.GetAsync(specification)).WithoutPasswords().ToList());

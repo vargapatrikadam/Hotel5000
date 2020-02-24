@@ -28,9 +28,17 @@ namespace Web.Controllers
         [ProducesResponseType(typeof(ICollection<UserDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         //[AuthorizeRoles(Roles.Admin)]
-        public async Task<IActionResult> GetUsers([FromQuery] int? id = null, [FromQuery] string username = null, [FromQuery] string email = null)
+        public async Task<IActionResult> GetUsers([FromQuery] int? id = null, 
+            [FromQuery] string username = null, 
+            [FromQuery] string email = null,
+            [FromQuery] int? pageNumber = null, 
+            [FromQuery] int? resultPerPage = null)
         {
-            var result = await _userManagementService.GetUsers(id, username, email);
+            var result = await _userManagementService.GetUsers(id, 
+                username, 
+                email, 
+                pageNumber.HasValue ? ((pageNumber.Value - 1) * resultPerPage) : null,
+                resultPerPage);
             return Ok(_mapper.Map<ICollection<UserDto>>(result.Data));
         }
         [HttpGet("{id}/contacts")]
