@@ -73,7 +73,7 @@ namespace Web.Controllers
             return Ok(_mapper.Map<ApprovingDataDto>(result.Data));
         }
         [HttpGet("approvingdata")]
-        [ProducesResponseType(typeof(ICollection<ApprovingData>), 200)]
+        [ProducesResponseType(typeof(ICollection<ApprovingDataDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetApprovingData([FromQuery] int? userId = null,
             [FromQuery] int? id = null,
