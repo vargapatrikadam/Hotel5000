@@ -38,7 +38,7 @@ namespace Web.Controllers
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetContactsForUser(int id)
         {
-            var result = await _userManagementService.GetContacts(id);
+            var result = await _userManagementService.GetContacts(userId: id);
             
             if (result.ResultType == ResultType.Invalid)
                 return BadRequest(new ErrorDto(result.Errors));
@@ -48,7 +48,13 @@ namespace Web.Controllers
 
             return Ok(_mapper.Map<ICollection<ContactDto>>(result.Data));
         }
+        [HttpGet("contacts")]
+        public async Task<IActionResult> GetContacts([FromQuery] int? userId = null, [FromQuery] string phoneNumber = null, [FromQuery] string username = null)
+        {
+            var result = await _userManagementService.GetContacts(userId, phoneNumber, username);
 
+            return Ok(_mapper.Map<ICollection<ContactDto>>(result.Data));
+        }
         [HttpGet("{id}/approvingdata")]
         [ProducesResponseType(typeof(ICollection<ApprovingDataDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]

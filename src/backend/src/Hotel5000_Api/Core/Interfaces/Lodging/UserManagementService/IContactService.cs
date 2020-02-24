@@ -12,7 +12,6 @@ namespace Core.Interfaces.Lodging.UserManagementService
         Task<Result<bool>> AddContact(Contact contact, int resourceAccessorId);
         Task<Result<bool>> RemoveContact(int contactOwnerId, int contactId, int resourceAccessorId);
         Task<Result<bool>> UpdateContact(Contact newContact, int oldContactId, int resourceAccessorId);
-        Task<Result<IReadOnlyList<Contact>>> GetContacts(int userId);
-        Task<Result<IReadOnlyList<Contact>>> GetAllContacts();
+        Task<Result<IReadOnlyList<Contact>>> GetContacts(int? userId = null, string phoneNumber = null, string username = null);
     }
 }

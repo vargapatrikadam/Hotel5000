@@ -105,18 +105,14 @@ namespace Core.Services.Lodging
             return new SuccessfulResult<IReadOnlyList<ApprovingData>>(await _approvingDataRepository.GetAllAsync());
         }
 
-        public async Task<Result<IReadOnlyList<Contact>>> GetAllContacts()
-        {
-            return new SuccessfulResult<IReadOnlyList<Contact>>(await _contactRepository.GetAllAsync());
-        }
 
         public async Task<Result<IReadOnlyList<User>>> GetUsers(int? id = null, string username = null, string email = null)
         {
             ISpecification<User> specification = new Specification<User>();
             specification.ApplyFilter(p => 
                 (!id.HasValue || p.Id == id) && 
-                (username == null || p.Username == username) && 
-                (email == null || p.Email == email));
+                (username == null || p.Username.Contains(username)) && 
+                (email == null || p.Email.Contains(email)));
 
             return new SuccessfulResult<IReadOnlyList<User>>(
                 (await _userRepository.GetAsync(specification)).WithoutPasswords().ToList());
@@ -134,15 +130,16 @@ namespace Core.Services.Lodging
             return new SuccessfulResult<ApprovingData>(approvingData);
         }
 
-        public async Task<Result<IReadOnlyList<Contact>>> GetContacts(int userId)
+        public async Task<Result<IReadOnlyList<Contact>>> GetContacts(int? userId = null, string phoneNumber = null, string username = null)
         {
-            IReadOnlyList<Contact> contacts = await _contactRepository.GetAsync(
-                    new Specification<Contact>().ApplyFilter(p => p.UserId == userId));
+            ISpecification<Contact> specification = new Specification<Contact>();
+            specification.ApplyFilter(p =>
+                (!userId.HasValue || p.UserId == userId) &&
+                (phoneNumber == null || p.MobileNumber.Contains(phoneNumber)) &&
+                (username == null || p.User.Username.Contains(phoneNumber)))
+                .AddInclude(i => i.User);
 
-            if (contacts.Count == 0)
-                return new NotFoundResult<IReadOnlyList<Contact>>("Contacts not found for user");
-
-            return new SuccessfulResult<IReadOnlyList<Contact>>(contacts);
+            return new SuccessfulResult<IReadOnlyList<Contact>>(await _contactRepository.GetAsync(specification));
         }
 
         public async Task<Result<User>> GetUser(int userId)
