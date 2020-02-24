@@ -117,7 +117,9 @@ namespace Core.Services.Lodging
                 (!id.HasValue || p.Id == id) && 
                 (username == null || p.Username == username) && 
                 (email == null || p.Email == email));
-            return new SuccessfulResult<IReadOnlyList<User>>(await _userRepository.GetAsync(specification));
+
+            return new SuccessfulResult<IReadOnlyList<User>>(
+                (await _userRepository.GetAsync(specification)).WithoutPasswords().ToList());
         }
 
         public async Task<Result<ApprovingData>> GetApprovingData(int userId)

@@ -20,7 +20,10 @@ namespace Core.Helpers
             user.Password = null;
             return user;
         }
-
+        public static ICollection<User> WithoutPasswords(this ICollection<User> users)
+        {
+            return users.Select(x => x.WithoutPassword()).ToList();
+        }
         public static bool ValidatePassword(this string password, out string errorMessage)
         {
             var input = password;
