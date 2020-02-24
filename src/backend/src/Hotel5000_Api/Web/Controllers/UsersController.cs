@@ -28,7 +28,7 @@ namespace Web.Controllers
         [ProducesResponseType(typeof(ICollection<UserDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         //[AuthorizeRoles(Roles.Admin)]
-        public async Task<IActionResult> GetUsers([FromQuery] int? id = null, [FromQuery] string username = null, [FromQuery] string? email = null)
+        public async Task<IActionResult> GetUsers([FromQuery] int? id = null, [FromQuery] string username = null, [FromQuery] string email = null)
         {
             var result = await _userManagementService.GetUsers(id, username, email);
             return Ok(_mapper.Map<ICollection<UserDto>>(result.Data));

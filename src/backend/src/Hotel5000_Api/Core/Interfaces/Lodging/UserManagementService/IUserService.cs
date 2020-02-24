@@ -1,4 +1,5 @@
 ﻿using Core.Entities.LodgingEntities;
+using Core.Enums.Lodging;
 using Core.Helpers.Results;
 using System;
 using System.Collections.Generic;

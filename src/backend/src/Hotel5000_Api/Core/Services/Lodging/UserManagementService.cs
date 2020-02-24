@@ -110,7 +110,8 @@ namespace Core.Services.Lodging
             specification.ApplyFilter(p => 
                 (!id.HasValue || p.Id == id) && 
                 (username == null || p.Username.Contains(username)) && 
-                (email == null || p.Email.Contains(email)));
+                (email == null || p.Email.Contains(email)))
+                .AddInclude(p => p.Role);
 
             return new SuccessfulResult<IReadOnlyList<User>>(
                 (await _userRepository.GetAsync(specification)).WithoutPasswords().ToList());
