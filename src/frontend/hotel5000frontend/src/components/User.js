@@ -10,7 +10,9 @@ class User extends Component {
     constructor(props) {
         super(props);
         this.state={
-            users:{},
+            previousPageData: {},
+            currentPageData: {},
+            nextPageData: {},
             pageNumber: 1,
             resultPerPage: 2,
             username: ""
@@ -19,7 +21,8 @@ class User extends Component {
 
 
     increasePageNumber = () => {
-        this.setState({pageNumber: this.state.pageNumber + 1})
+        if(Array.from(this.state.nextPageData).length !== 0)
+            this.setState({pageNumber: this.state.pageNumber + 1})
     }
 
     decreasePageNumber = () => {
@@ -28,17 +31,38 @@ class User extends Component {
     }
 
     componentDidMount() {
-        this.getData()
+        this.getCurrentData();
+        this.getNextData();
     }
-
-
 
     componentDidUpdate(prevProps, prevState) {
-        if(prevState.pageNumber !== this.state.pageNumber || prevState.username !== this.state.username)
-            this.getData()
+        if(prevState.pageNumber !== this.state.pageNumber || prevState.username !== this.state.username){
+            if(this.state.pageNumber > 1){
+                this.getPreviousData();
+            }
+            this.getCurrentData();
+            this.getNextData();
+        }
     }
 
-    getData = () => {
+    getPreviousData = () => {
+        let url = new URL("https://localhost:5000/api/users"),
+            params = {pageNumber:this.state.pageNumber - 1, resultPerPage:this.state.resultPerPage, username:this.state.username}
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+
+        fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+            }
+        })
+            .then(response => response.json())
+            .then(responsejson => {
+                this.setState({previousPageData: responsejson})
+            })
+    }
+    getCurrentData = () => {
         let url = new URL("https://localhost:5000/api/users"),
             params = {pageNumber:this.state.pageNumber, resultPerPage:this.state.resultPerPage, username:this.state.username}
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
@@ -52,13 +76,29 @@ class User extends Component {
         })
             .then(response => response.json())
             .then(responsejson => {
-                this.setState({users: responsejson})
+                this.setState({currentPageData: responsejson})
+            })
+    }
+    getNextData = () => {
+        let url = new URL("https://localhost:5000/api/users"),
+            params = {pageNumber:this.state.pageNumber + 1, resultPerPage:this.state.resultPerPage, username:this.state.username}
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+
+        fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+            }
+        })
+            .then(response => response.json())
+            .then(responsejson => {
+                this.setState({nextPageData: responsejson})
             })
     }
 
-
     renderUsers = () => {
-        return Array.from(this.state.users).map((user, index, array) => {
+        return Array.from(this.state.currentPageData).map((user, index, array) => {
             return (
                 <Card style={{width: '30rem'}} className="mx-auto my-2" key={user.id}>
                     <Card.Body>
@@ -121,8 +161,8 @@ class User extends Component {
                     {this.renderUsers()}
                 </Suspense>
                 <div className="buttonContainer mx-auto my-3">
-                    <Button variant="outline-dark" onClick={() => this.decreasePageNumber()} className="pageButton mr-2">Previous page</Button>
-                    <Button variant="outline-dark" onClick={() => this.increasePageNumber()} className="pageButton ml-2">Next page</Button>
+                    <Button variant="outline-dark" onClick={() => this.decreasePageNumber()} className="pageButton mr-2" disabled={this.state.pageNumber === 1}>Previous page</Button>
+                    <Button variant="outline-dark" onClick={() => this.increasePageNumber()} className="pageButton ml-2" disabled={Array.from(this.state.nextPageData).length === 0}>Next page</Button>
                 </div>
 
             </div>
