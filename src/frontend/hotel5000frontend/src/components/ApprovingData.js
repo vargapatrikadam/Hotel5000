@@ -39,9 +39,7 @@ class ApprovingData extends Component {
             data => {
                 return (
                     <div key={data.id}>
-                        {data.identityNumber === null ? (
-                            null
-                        ) : (
+                        {data.identityNumber === null ? null : (
                             <div>
                                 <label>Identity number:</label>
                                 <p>{data.identityNumber}</p>
@@ -49,9 +47,7 @@ class ApprovingData extends Component {
 
                         )}
 
-                        {data.taxNumber === null ? (
-                            null
-                        ) : (
+                        {data.taxNumber === null ? null : (
                             <div>
                                 <label>Tax number:</label>
                                 <p>{data.taxNumber}</p>
@@ -59,9 +55,7 @@ class ApprovingData extends Component {
 
                         )}
 
-                        {data.registrationNumber === null ? (
-                            null
-                        ) : (
+                        {data.registrationNumber === null ? null : (
                             <div>
                                 <label>Registration number:</label>
                                 <p>{data.registrationNumber}</p>

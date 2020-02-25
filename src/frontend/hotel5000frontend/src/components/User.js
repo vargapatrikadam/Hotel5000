@@ -1,5 +1,5 @@
 import React, {Component, Suspense} from 'react';
-import {Accordion, Button, Card, Form, FormControl, ListGroup, ListGroupItem} from "react-bootstrap";
+import {Accordion, Button, Card, FormControl, ListGroup, ListGroupItem} from "react-bootstrap";
 import Contacts from "./Contacts";
 import Spinner from "react-bootstrap/Spinner";
 import "./Users.css"
@@ -58,7 +58,7 @@ class User extends Component {
 
 
     renderUsers = () => {
-        return Array.from(this.state.users).map(user => {
+        return Array.from(this.state.users).map((user, index, array) => {
             return (
                 <Card style={{width: '30rem'}} className="mx-auto my-2" key={user.id}>
                     <Card.Body>
@@ -116,7 +116,7 @@ class User extends Component {
     render() {
         return (
             <div>
-                <FormControl type="text" onChange={(text) => {this.inputChanged(text)}} placeholder="Search by username" className="mx-auto mt-2" style={{width: '30rem'}}></FormControl>
+                <FormControl type="text" onChange={(text) => {this.inputChanged(text)}} placeholder="Search by username" className="mx-auto mt-2" style={{width: '30rem'}}/>
                 <Suspense fallback={<Spinner />}>
                     {this.renderUsers()}
                 </Suspense>
