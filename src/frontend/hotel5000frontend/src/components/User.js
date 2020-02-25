@@ -1,11 +1,28 @@
-import React, {Component} from 'react';
-import {Accordion, Button, Card, ListGroup, ListGroupItem} from "react-bootstrap";
+import React, {Component, Suspense} from 'react';
+import {Accordion, Button, Card, Form, FormControl, ListGroup, ListGroupItem} from "react-bootstrap";
 import Contacts from "./Contacts";
+import Spinner from "react-bootstrap/Spinner";
 
 class User extends Component {
 
-    state={
-        users:{}
+    constructor(props) {
+        super(props);
+        this.state={
+            users:{},
+            pageNumber: 1,
+            resultPerPage: 2,
+            username: ""
+        }
+    }
+
+
+    increasePageNumber = () => {
+        this.setState({pageNumber: this.state.pageNumber + 1})
+    }
+
+    decreasePageNumber = () => {
+        if(this.state.pageNumber > 1)
+            this.setState({pageNumber: this.state.pageNumber - 1})
     }
 
     componentDidMount() {
@@ -13,8 +30,18 @@ class User extends Component {
     }
 
 
+
+    componentDidUpdate(prevProps, prevState) {
+        if(prevState.pageNumber !== this.state.pageNumber || prevState.username !== this.state.username)
+            this.getData()
+    }
+
     getData = () => {
-        fetch("https://localhost:5000/api/users", {
+        let url = new URL("https://localhost:5000/api/users"),
+            params = {pageNumber:this.state.pageNumber, resultPerPage:this.state.resultPerPage, username:this.state.username}
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+
+        fetch(url, {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -62,11 +89,25 @@ class User extends Component {
         })
     }
 
+    inputChanged = (text) => {
+        this.setState({username: text.target.value})
+        this.setState({pageNumber: 1})
+    }
+
 
     render() {
         return (
             <div>
-                {this.renderUsers()}
+                <FormControl type="text" onChange={(text) => {this.inputChanged(text)}} placeholder="Search by username" className="mx-auto mt-2" style={{width: '30rem'}}></FormControl>
+                <Suspense fallback={<Spinner />}>
+                    {this.renderUsers()}
+                </Suspense>
+                <Form className="mx-auto">
+                    <Button variant="outline-dark" onClick={() => this.decreasePageNumber()}>Previous page</Button>
+                    <Button variant="outline-dark" onClick={() => this.increasePageNumber()}>Next page</Button>
+                </Form>
+
+
             </div>
         );
     }

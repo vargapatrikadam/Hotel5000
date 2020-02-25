@@ -9,12 +9,20 @@ class Contacts extends Component {
             id: null,
             contacts: []
         }
+        this._isMounted = false;
     }
 
+
     componentDidMount() {
-        this.handleContacts(this.props.id)
+        this._isMounted = true
+        this._isMounted && this.handleContacts(this.props.id)
         this.setState({id: this.props.id})
     }
+
+    componentWillUnmount() {
+        this._isMounted = false
+    }
+
 
     handleContacts = (id) => {
         fetch("https://localhost:5000/api/users/" + id + "/contacts", {
@@ -26,8 +34,7 @@ class Contacts extends Component {
         })
             .then(response => response.json())
             .then(responsejson => {
-                this.setState({contacts: responsejson})
-                console.log(this.state.contacts)
+                this._isMounted && this.setState({contacts: responsejson})
             })
     }
 
