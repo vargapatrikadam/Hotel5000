@@ -42,24 +42,33 @@ class ApprovingData extends Component {
                         {data.identityNumber === null ? (
                             null
                         ) : (
-                            <label>Identity number:</label>
+                            <div>
+                                <label>Identity number:</label>
+                                <p>{data.identityNumber}</p>
+                            </div>
+
                         )}
-                        <p>{data.identityNumber}</p>
 
                         {data.taxNumber === null ? (
                             null
                         ) : (
-                            <label>Tax number:</label>
+                            <div>
+                                <label>Tax number:</label>
+                                <p>{data.taxNumber}</p>
+                            </div>
+
                         )}
-                        <p>{data.taxNumber}</p>
 
                         {data.registrationNumber === null ? (
                             null
                         ) : (
-                            <label>Registration number:</label>
-                        )}
-                        <p>{data.registrationNumber}</p>
+                            <div>
+                                <label>Registration number:</label>
+                                <p>{data.registrationNumber}</p>
+                            </div>
 
+                        )}
+                        
                         <Button variant="outline-dark" className="mr-3">Modify</Button>
                         <Button variant="danger">Delete</Button>
                     </div>
