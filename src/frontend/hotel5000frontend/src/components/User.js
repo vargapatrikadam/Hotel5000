@@ -2,6 +2,7 @@ import React, {Component, Suspense} from 'react';
 import {Accordion, Button, Card, Form, FormControl, ListGroup, ListGroupItem} from "react-bootstrap";
 import Contacts from "./Contacts";
 import Spinner from "react-bootstrap/Spinner";
+import "./Users.css"
 
 class User extends Component {
 
@@ -102,11 +103,10 @@ class User extends Component {
                 <Suspense fallback={<Spinner />}>
                     {this.renderUsers()}
                 </Suspense>
-                <Form className="mx-auto">
-                    <Button variant="outline-dark" onClick={() => this.decreasePageNumber()}>Previous page</Button>
-                    <Button variant="outline-dark" onClick={() => this.increasePageNumber()}>Next page</Button>
-                </Form>
-
+                <div className="buttonContainer mx-auto my-3">
+                    <Button variant="outline-dark" onClick={() => this.decreasePageNumber()} className="pageButton mr-2">Previous page</Button>
+                    <Button variant="outline-dark" onClick={() => this.increasePageNumber()} className="pageButton ml-2">Next page</Button>
+                </div>
 
             </div>
         );
