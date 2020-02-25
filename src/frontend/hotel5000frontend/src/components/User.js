@@ -3,6 +3,7 @@ import {Accordion, Button, Card, Form, FormControl, ListGroup, ListGroupItem} fr
 import Contacts from "./Contacts";
 import Spinner from "react-bootstrap/Spinner";
 import "./Users.css"
+import ApprovingData from "./ApprovingData";
 
 class User extends Component {
 
@@ -79,6 +80,22 @@ class User extends Component {
                                     <Accordion.Collapse eventKey={user.id}>
                                         <Card.Body>
                                             <Contacts id={user.id}/>
+                                        </Card.Body>
+                                    </Accordion.Collapse>
+                                </Card>
+                            </Accordion>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <Accordion>
+                                <Card>
+                                    <Card.Header>
+                                        <Accordion.Toggle as={Button} variant="outline-dark" eventKey={user.id}>
+                                            Approving data
+                                        </Accordion.Toggle>
+                                    </Card.Header>
+                                    <Accordion.Collapse eventKey={user.id}>
+                                        <Card.Body>
+                                            <ApprovingData id={user.id}/>
                                         </Card.Body>
                                     </Accordion.Collapse>
                                 </Card>
