@@ -59,7 +59,7 @@ namespace Web
             services.AddDbContext<LodgingDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("LodgingDb")));
             services.AddDbContext<LoggingDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("LoggingDb")));
+                options.UseSqlServer(Configuration.GetConnectionString("LoggingDb")), ServiceLifetime.Singleton);
 
             #region swagger settings
 
@@ -131,7 +131,7 @@ namespace Web
             #endregion
 
             #region repository registrations 
-            services.AddScoped<IAsyncRepository<Log>, LoggingDbRepository<Log>>();
+            services.AddSingleton<IAsyncRepository<Log>, LoggingDbRepository<Log>>();
 
             services.AddScoped<IAsyncRepository<Role>, LodgingDbRepository<Role>>();
             services.AddScoped<IAsyncRepository<User>, LodgingDbRepository<User>>();
@@ -155,7 +155,7 @@ namespace Web
                 (Configuration.GetSection("HashingOptions").Get<HashingOptions>()));
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
-            services.AddScoped<ILoggingService, LoggingService>();
+            services.AddSingleton<ILoggingService, LoggingService>();
 
             services.AddScoped<IUserManagementService, UserManagementService>();
             services.AddScoped<IContactService, UserManagementService>();
