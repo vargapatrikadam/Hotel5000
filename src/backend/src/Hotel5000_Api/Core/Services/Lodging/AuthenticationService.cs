@@ -52,9 +52,9 @@ namespace Core.Services.Lodging
                 .FirstOrDefault();
 
             if (user == null)
-                return new UnauthorizedResult<User>();
+                return new UnauthorizedResult<User>(Errors.USER_NOT_FOUND);
             if (!_passwordHasher.Check(user.Password, password))
-                return new UnauthorizedResult<User>();
+                return new UnauthorizedResult<User>(Errors.PASSWORD_INCORRECT);
 
             var newToken = new Token
             {
@@ -90,14 +90,14 @@ namespace Core.Services.Lodging
                         .ApplyFilter(p => p.RefreshToken == refreshToken))).FirstOrDefault();
 
             if (oldToken == null)
-                return new UnauthorizedResult<User>();
+                return new UnauthorizedResult<User>(Errors.TOKEN_NOT_FOUND);
 
             if (oldToken.UsableFrom > DateTime.Now)
-                return new UnauthorizedResult<User>();
+                return new UnauthorizedResult<User>(Errors.TOKEN_INVALID);
             else if (oldToken.ExpiresAt < DateTime.Now)
             {
                 await _tokenRepository.DeleteAsync(oldToken);
-                return new UnauthorizedResult<User>();
+                return new UnauthorizedResult<User>(Errors.TOKEN_INVALID);
             }
                 
 

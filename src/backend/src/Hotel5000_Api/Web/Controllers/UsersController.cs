@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Web.Attributes;
 using Web.DTOs;
+using Web.Helpers;
 
 namespace Web.Controllers
 {
@@ -52,7 +53,7 @@ namespace Web.Controllers
             var result = await _userManagementService.GetContacts(userId: id);
 
             if (result.ResultType != ResultType.Ok)
-                return GetError(result);
+                return this.GetError(result);
 
             return Ok(_mapper.Map<ICollection<ContactDto>>(result.Data));
         }
@@ -77,7 +78,7 @@ namespace Web.Controllers
             var result = await _userManagementService.GetApprovingData(approvingDataOwnerId: userId);
 
             if (result.ResultType != ResultType.Ok)
-                return GetError(result);
+                return this.GetError(result);
 
             return Ok(_mapper.Map<ICollection<ApprovingDataDto>>(result.Data));
         }
@@ -100,7 +101,7 @@ namespace Web.Controllers
                registrationNumber: registrationNumber);
 
             if (result.ResultType != ResultType.Ok)
-                return GetError(result);
+                return this.GetError(result);
 
             return Ok(_mapper.Map<ICollection<ApprovingDataDto>>(result.Data));
         }
@@ -114,7 +115,7 @@ namespace Web.Controllers
             var result = await _userManagementService.RemoveUser(userId, int.Parse(User.Identity.Name));
 
             if (result.ResultType != ResultType.Ok)
-                return GetError(result);
+                return this.GetError(result);
 
             return Ok();
         }
@@ -128,7 +129,7 @@ namespace Web.Controllers
             var result = await _userManagementService.RemoveApprovingData(userId, int.Parse(User.Identity.Name));
 
             if (result.ResultType != ResultType.Ok)
-                return GetError(result);
+                return this.GetError(result);
 
             return Ok();
         }
@@ -142,7 +143,7 @@ namespace Web.Controllers
             var result = await _userManagementService.RemoveContact(userId, contactId, int.Parse(User.Identity.Name));
 
             if (result.ResultType != ResultType.Ok)
-                return GetError(result);
+                return this.GetError(result);
 
             return Ok();
         }
@@ -156,7 +157,7 @@ namespace Web.Controllers
             var result = await _userManagementService.UpdateContact(_mapper.Map<Contact>(updatedContact), contactId, int.Parse(User.Identity.Name));
 
             if (result.ResultType != ResultType.Ok)
-                return GetError(result);
+                return this.GetError(result);
 
             return Ok();
         }
@@ -169,7 +170,7 @@ namespace Web.Controllers
             var result = await _userManagementService.UpdateApprovingData(_mapper.Map<ApprovingData>(updatedApprovingData), approvingDataId, int.Parse(User.Identity.Name));
 
             if (result.ResultType != ResultType.Ok)
-                return GetError(result);
+                return this.GetError(result);
 
             return Ok();
         }
@@ -182,22 +183,9 @@ namespace Web.Controllers
             var result = await _userManagementService.UpdateUser(_mapper.Map<User>(updatedUser), userId, int.Parse(User.Identity.Name));
 
             if (result.ResultType != ResultType.Ok)
-                return GetError(result);
+                return this.GetError(result);
 
             return Ok();
-        }
-
-        private IActionResult GetError<T>(Result<T> result)
-        {
-            switch (result.ResultType)
-            {
-                case ResultType.Invalid: return BadRequest(new ErrorDto(result.Errors)); 
-                case ResultType.NotFound: return NotFound(new ErrorDto(result.Errors));
-                case ResultType.Unauthorized: return Unauthorized(new ErrorDto(result.Errors));
-                case ResultType.Unexpected: return BadRequest(new ErrorDto(result.Errors));
-                case ResultType.Conflict: return Conflict(new ErrorDto(result.Errors));
-                default: return BadRequest(new ErrorDto(result.Errors));
-            }
         }
     }
 }

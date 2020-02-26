@@ -30,6 +30,8 @@ namespace Core.Enums
         EMAIL_INVALID = 10017,
 
         RESOURCE_OWNER_NOT_FOUND = 20001,
-        ACCESSING_USER_NOT_FOUND = 20002
+        ACCESSING_USER_NOT_FOUND = 20002,
+        TOKEN_NOT_FOUND = 20003,
+        TOKEN_INVALID = 20004
     }
 }

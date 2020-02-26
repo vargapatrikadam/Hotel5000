@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Web.DTOs;
+using Web.Helpers;
 
 namespace Web.Controllers
 {
@@ -71,8 +72,8 @@ namespace Web.Controllers
             Result<User> result =
                 await _authenticationService.AuthenticateAsync(loginData.Username, loginData.Password, loginData.Email);
 
-            if (result.ResultType == ResultType.Unauthorized)
-                return BadRequest(new ErrorDto("Invalid login data"));
+            if (result.ResultType != ResultType.Ok)
+                return this.GetError(result);
 
             var accessToken = GenerateToken(result.Data);
             var refreshToken = result.Data.Tokens.LastOrDefault().RefreshToken;
@@ -93,8 +94,10 @@ namespace Web.Controllers
         public async Task<IActionResult> Refresh([FromBody] RefreshDto refreshDto)
         {
             Result<User> result = await _authenticationService.RefreshAsync(refreshDto.RefreshToken);
-            if (result.ResultType == ResultType.Unauthorized)
-                return BadRequest(new ErrorDto("Invalid refresh token"));
+
+            if (result.ResultType != ResultType.Ok)
+                return this.GetError(result);
+
             var accessToken = GenerateToken(result.Data);
             var newRefreshToken = result.Data.Tokens.FirstOrDefault().RefreshToken;
             var role = result.Data.Role.Name.ToString();
@@ -115,9 +118,10 @@ namespace Web.Controllers
 
             Result<bool> result = await _userService.AddUser(newUserEntity, newUserDto.Role);
 
-            if (result.ResultType == ResultType.Ok)
-                return Ok();
-            else return BadRequest(new ErrorDto(result.Errors));
+            if (result.ResultType != ResultType.Ok)
+                return this.GetError(result);
+
+            return Ok();
         }
     }
 }
