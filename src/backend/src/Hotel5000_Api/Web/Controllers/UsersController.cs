@@ -40,6 +40,7 @@ namespace Web.Controllers
                 email, 
                 (pageNumber.HasValue && pageNumber.Value > 0) ? ((pageNumber.Value - 1) * resultPerPage) : null,
                 resultPerPage);
+
             return Ok(_mapper.Map<ICollection<UserDto>>(result.Data));
         }
         
@@ -49,12 +50,9 @@ namespace Web.Controllers
         public async Task<IActionResult> GetContactsForUser(int id)
         {
             var result = await _userManagementService.GetContacts(userId: id);
-            
-            if (result.ResultType == ResultType.Invalid)
-                return BadRequest(new ErrorDto(result.Errors));
 
-            if (result.ResultType == ResultType.NotFound)
-                return NotFound(new ErrorDto(result.Errors));
+            if (result.ResultType != ResultType.Ok)
+                return GetError(result);
 
             return Ok(_mapper.Map<ICollection<ContactDto>>(result.Data));
         }
@@ -78,11 +76,8 @@ namespace Web.Controllers
         {
             var result = await _userManagementService.GetApprovingData(approvingDataOwnerId: userId);
 
-            if (result.ResultType == ResultType.Invalid)
-                return BadRequest(new ErrorDto(result.Errors));
-
-            if (result.ResultType == ResultType.NotFound)
-                return NotFound(new ErrorDto(result.Errors));
+            if (result.ResultType != ResultType.Ok)
+                return GetError(result);
 
             return Ok(_mapper.Map<ICollection<ApprovingDataDto>>(result.Data));
         }
@@ -104,8 +99,8 @@ namespace Web.Controllers
                identityNumber: identityNumber,
                registrationNumber: registrationNumber);
 
-            if (result.ResultType == ResultType.NotFound)
-                return NotFound(new ErrorDto(result.Errors));
+            if (result.ResultType != ResultType.Ok)
+                return GetError(result);
 
             return Ok(_mapper.Map<ICollection<ApprovingDataDto>>(result.Data));
         }
@@ -118,11 +113,8 @@ namespace Web.Controllers
         {
             var result = await _userManagementService.RemoveUser(userId, int.Parse(User.Identity.Name));
 
-            if (result.ResultType == ResultType.Unauthorized)
-                return Unauthorized(new ErrorDto(result.Errors));
-
-            if (result.ResultType == ResultType.NotFound)
-                return NotFound(new ErrorDto(result.Errors));
+            if (result.ResultType != ResultType.Ok)
+                return GetError(result);
 
             return Ok();
         }
@@ -135,11 +127,8 @@ namespace Web.Controllers
         {
             var result = await _userManagementService.RemoveApprovingData(userId, int.Parse(User.Identity.Name));
 
-            if (result.ResultType == ResultType.Unauthorized)
-                return Unauthorized(new ErrorDto(result.Errors));
-
-            if (result.ResultType == ResultType.NotFound)
-                return NotFound(new ErrorDto(result.Errors));
+            if (result.ResultType != ResultType.Ok)
+                return GetError(result);
 
             return Ok();
         }
@@ -152,11 +141,8 @@ namespace Web.Controllers
         {
             var result = await _userManagementService.RemoveContact(userId, contactId, int.Parse(User.Identity.Name));
 
-            if (result.ResultType == ResultType.Unauthorized)
-                return Unauthorized(new ErrorDto(result.Errors));
-
-            if (result.ResultType == ResultType.NotFound)
-                return NotFound(new ErrorDto(result.Errors));
+            if (result.ResultType != ResultType.Ok)
+                return GetError(result);
 
             return Ok();
         }
@@ -169,11 +155,8 @@ namespace Web.Controllers
         {
             var result = await _userManagementService.UpdateContact(_mapper.Map<Contact>(updatedContact), contactId, int.Parse(User.Identity.Name));
 
-            if (result.ResultType == ResultType.Unauthorized)
-                return Unauthorized(new ErrorDto(result.Errors));
-
-            if (result.ResultType == ResultType.NotFound)
-                return NotFound(new ErrorDto(result.Errors));
+            if (result.ResultType != ResultType.Ok)
+                return GetError(result);
 
             return Ok();
         }
@@ -185,13 +168,36 @@ namespace Web.Controllers
         {
             var result = await _userManagementService.UpdateApprovingData(_mapper.Map<ApprovingData>(updatedApprovingData), approvingDataId, int.Parse(User.Identity.Name));
 
-            if (result.ResultType == ResultType.Unauthorized)
-                return Unauthorized(new ErrorDto(result.Errors));
-
-            if (result.ResultType == ResultType.NotFound)
-                return NotFound(new ErrorDto(result.Errors));
+            if (result.ResultType != ResultType.Ok)
+                return GetError(result);
 
             return Ok();
+        }
+        [HttpPut("{userId}")]
+        [ProducesResponseType(200)]
+        [ProducesErrorResponseType(typeof(ErrorDto))]
+        [AuthorizeRoles]
+        public async Task<IActionResult> UpdateUser([FromBody] UserDto updatedUser, int userId)
+        {
+            var result = await _userManagementService.UpdateUser(_mapper.Map<User>(updatedUser), userId, int.Parse(User.Identity.Name));
+
+            if (result.ResultType != ResultType.Ok)
+                return GetError(result);
+
+            return Ok();
+        }
+
+        private IActionResult GetError<T>(Result<T> result)
+        {
+            switch (result.ResultType)
+            {
+                case ResultType.Invalid: return BadRequest(new ErrorDto(result.Errors)); 
+                case ResultType.NotFound: return NotFound(new ErrorDto(result.Errors));
+                case ResultType.Unauthorized: return Unauthorized(new ErrorDto(result.Errors));
+                case ResultType.Unexpected: return BadRequest(new ErrorDto(result.Errors));
+                case ResultType.Conflict: return Conflict(new ErrorDto(result.Errors));
+                default: return BadRequest(new ErrorDto(result.Errors));
+            }
         }
     }
 }

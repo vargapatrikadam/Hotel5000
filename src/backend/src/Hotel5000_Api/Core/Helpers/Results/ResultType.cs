@@ -10,6 +10,7 @@ namespace Core.Helpers.Results
         NotFound,
         Invalid,
         Unexpected,
-        Unauthorized
+        Unauthorized,
+        Conflict
     }
 }

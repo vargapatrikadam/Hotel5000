@@ -45,12 +45,12 @@ namespace Core.Services.Lodging
                 return authenticationResult;
 
             if (await _approvingDataRepository.AnyAsync(p => p.UserId == newApprovingData.UserId))
-                return new InvalidResult<bool>("User already has approving data");
+                return new ConflictResult<bool>("User already has approving data");
 
             if (await _approvingDataRepository.AnyAsync(p => p.IdentityNumber == newApprovingData.IdentityNumber
                     || p.RegistrationNumber == newApprovingData.RegistrationNumber
                     || p.TaxNumber == newApprovingData.TaxNumber))
-                return new InvalidResult<bool>("Approving data not unique");
+                return new ConflictResult<bool>("Approving data not unique");
 
             await _approvingDataRepository.AddAsync(newApprovingData);
             return new SuccessfulResult<bool>(true);
@@ -64,7 +64,7 @@ namespace Core.Services.Lodging
                 return authenticationResult;
 
             if (await _contactRepository.AnyAsync(p => p.MobileNumber == contact.MobileNumber))
-                return new InvalidResult<bool>("Mobile number already exists");
+                return new ConflictResult<bool>("Mobile number already exists");
 
             await _contactRepository.AddAsync(contact);
             return new SuccessfulResult<bool>(true);
@@ -74,10 +74,10 @@ namespace Core.Services.Lodging
             string role)
         {
             if (await _userRepository.AnyAsync(p => p.Email == user.Email))
-                return new InvalidResult<bool>("Email not unique");
+                return new ConflictResult<bool>("Email not unique");
 
             if (await _userRepository.AnyAsync(p => p.Username == user.Username))
-                return new InvalidResult<bool>("Username not unique");
+                return new ConflictResult<bool>("Username not unique");
 
             user.Email.ValidateEmail(out var errorMessage);
             user.Password.ValidatePassword(out errorMessage);
@@ -226,6 +226,11 @@ namespace Core.Services.Lodging
             if (oldApprovingData == null)
                 return new NotFoundResult<bool>("Approving data not found");
 
+            if (await _approvingDataRepository.AnyAsync(p => p.IdentityNumber == newApprovingData.IdentityNumber
+                    || p.RegistrationNumber == newApprovingData.RegistrationNumber
+                    || p.TaxNumber == newApprovingData.TaxNumber))
+                return new ConflictResult<bool>("Approving data not unique");
+
             oldApprovingData.IdentityNumber = newApprovingData.IdentityNumber;
             oldApprovingData.RegistrationNumber = newApprovingData.RegistrationNumber;
             oldApprovingData.TaxNumber = newApprovingData.TaxNumber;
@@ -249,6 +254,9 @@ namespace Core.Services.Lodging
             if (oldContact == null)
                 return new NotFoundResult<bool>("Contact not found");
 
+            if (await _contactRepository.AnyAsync(p => p.MobileNumber == newContact.MobileNumber))
+                return new ConflictResult<bool>("Mobile number not unique");
+
             oldContact.MobileNumber = newContact.MobileNumber;
 
             await _contactRepository.UpdateAsync(oldContact);
@@ -269,6 +277,16 @@ namespace Core.Services.Lodging
 
             if (oldUser == null)
                 return new NotFoundResult<bool>("User not found");
+
+            if ((oldUser.Email != newUser.Email) && await _userRepository.AnyAsync(p => p.Email == newUser.Email))
+                return new ConflictResult<bool>("Email not unique");
+
+            if ((oldUser.Username != newUser.Username) && await _userRepository.AnyAsync(p => p.Username == newUser.Username))
+                return new ConflictResult<bool>("Username not unique");
+
+            newUser.Email.ValidateEmail(out var errorMessage);
+            if (errorMessage != null)
+                return new InvalidResult<bool>(errorMessage);
 
             oldUser.Email = newUser.Email;
             oldUser.FirstName = newUser.FirstName;
