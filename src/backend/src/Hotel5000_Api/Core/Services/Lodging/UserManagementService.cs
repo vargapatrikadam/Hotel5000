@@ -227,11 +227,6 @@ namespace Core.Services.Lodging
             if (oldApprovingData == null)
                 return new NotFoundResult<bool>(Errors.APPROVING_DATA_NOT_FOUND);
 
-            if (await _approvingDataRepository.AnyAsync(p => p.IdentityNumber == newApprovingData.IdentityNumber
-                    || p.RegistrationNumber == newApprovingData.RegistrationNumber
-                    || p.TaxNumber == newApprovingData.TaxNumber))
-                return new ConflictResult<bool>(Errors.APPROVING_DATA_NOT_UNIQUE);
-
             if ((oldApprovingData.IdentityNumber != newApprovingData.IdentityNumber && 
                     (await _approvingDataRepository.AnyAsync(p => p.IdentityNumber == newApprovingData.IdentityNumber))) ||
                 (oldApprovingData.RegistrationNumber != newApprovingData.RegistrationNumber && 
