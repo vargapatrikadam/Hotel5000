@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.Entities.LodgingEntities;
 using Core.Enums.Lodging;
 using Core.Helpers.Results;
 using Core.Interfaces.Lodging;
@@ -24,10 +25,10 @@ namespace Web.Controllers
             _mapper = mapper;
             _userManagementService = userManagementService;
         }
+        
         [HttpGet()]
         [ProducesResponseType(typeof(ICollection<UserDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
-        //[AuthorizeRoles(Roles.Admin)]
         public async Task<IActionResult> GetUsers([FromQuery] int? id = null, 
             [FromQuery] string username = null, 
             [FromQuery] string email = null,
@@ -41,6 +42,7 @@ namespace Web.Controllers
                 resultPerPage);
             return Ok(_mapper.Map<ICollection<UserDto>>(result.Data));
         }
+        
         [HttpGet("{id}/contacts")]
         [ProducesResponseType(typeof(ICollection<ContactDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -56,6 +58,7 @@ namespace Web.Controllers
 
             return Ok(_mapper.Map<ICollection<ContactDto>>(result.Data));
         }
+        
         [HttpGet("contacts")]
         [ProducesResponseType(typeof(ICollection<ContactDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -67,6 +70,7 @@ namespace Web.Controllers
 
             return Ok(_mapper.Map<ICollection<ContactDto>>(result.Data));
         }
+        
         [HttpGet("{userId}/approvingdata")]
         [ProducesResponseType(typeof(ICollection<ApprovingDataDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -82,6 +86,7 @@ namespace Web.Controllers
 
             return Ok(_mapper.Map<ICollection<ApprovingDataDto>>(result.Data));
         }
+
         [HttpGet("approvingdata")]
         [ProducesResponseType(typeof(ICollection<ApprovingDataDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -104,6 +109,7 @@ namespace Web.Controllers
 
             return Ok(_mapper.Map<ICollection<ApprovingDataDto>>(result.Data));
         }
+
         [HttpDelete("{userId}")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -120,6 +126,7 @@ namespace Web.Controllers
 
             return Ok();
         }
+
         [HttpDelete("{userId}/approvingdata")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -136,6 +143,7 @@ namespace Web.Controllers
 
             return Ok();
         }
+
         [HttpDelete("{userId}/contacts/{contactId}")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -152,6 +160,22 @@ namespace Web.Controllers
 
             return Ok();
         }
-        
+
+        [HttpPut("contacts/{contactId}")]
+        [ProducesResponseType(200)]
+        [ProducesErrorResponseType(typeof(ErrorDto))]
+        [AuthorizeRoles]
+        public async Task<IActionResult> UpdateContact([FromBody] ContactDto updatedContact, int contactId)
+        {
+            var result = await _userManagementService.UpdateContact(_mapper.Map<Contact>(updatedContact), contactId, int.Parse(User.Identity.Name));
+
+            if (result.ResultType == ResultType.Unauthorized)
+                return Unauthorized(new ErrorDto(result.Errors));
+
+            if (result.ResultType == ResultType.NotFound)
+                return NotFound(new ErrorDto(result.Errors));
+
+            return Ok();
+        }
     }
 }
