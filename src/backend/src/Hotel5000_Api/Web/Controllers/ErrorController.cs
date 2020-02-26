@@ -28,7 +28,10 @@ namespace Web.Controllers
 
             //handle internal server errors
 
-            await _logger.Log(context.Error.Message, LogLevel.Critical);
+            await _logger.Log(ex.StackTrace, LogLevel.Critical);
+            while (ex.InnerException != null) 
+                ex = ex.InnerException;
+            await _logger.Log(ex.Message, LogLevel.Critical);
 
             return Problem();
         }
@@ -45,7 +48,12 @@ namespace Web.Controllers
 
             var context = HttpContext.Features.Get<IExceptionHandlerFeature>();
 
-            await _logger.Log(context.Error.Message, LogLevel.Critical);
+            Exception ex = context.Error;
+
+            await _logger.Log(ex.StackTrace, LogLevel.Critical);
+            while (ex.InnerException != null)
+                ex = ex.InnerException;
+            await _logger.Log(ex.Message, LogLevel.Critical);
 
             return Problem(
                 detail: context.Error.StackTrace,
