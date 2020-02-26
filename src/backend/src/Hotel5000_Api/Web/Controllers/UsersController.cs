@@ -37,7 +37,7 @@ namespace Web.Controllers
             var result = await _userManagementService.GetUsers(id, 
                 username, 
                 email, 
-                pageNumber.HasValue ? ((pageNumber.Value - 1) * resultPerPage) : null,
+                (pageNumber.HasValue && pageNumber.Value > 0) ? ((pageNumber.Value - 1) * resultPerPage) : null,
                 resultPerPage);
             return Ok(_mapper.Map<ICollection<UserDto>>(result.Data));
         }
@@ -59,7 +59,9 @@ namespace Web.Controllers
         [HttpGet("contacts")]
         [ProducesResponseType(typeof(ICollection<ContactDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
-        public async Task<IActionResult> GetContacts([FromQuery] int? userId = null, [FromQuery] string phoneNumber = null, [FromQuery] string username = null)
+        public async Task<IActionResult> GetContacts([FromQuery] int? userId = null, 
+            [FromQuery] string phoneNumber = null, 
+            [FromQuery] string username = null)
         {
             var result = await _userManagementService.GetContacts(userId, phoneNumber, username);
 
@@ -150,5 +152,6 @@ namespace Web.Controllers
 
             return Ok();
         }
+        
     }
 }
