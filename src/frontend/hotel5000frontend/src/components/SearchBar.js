@@ -10,9 +10,9 @@ class SearchBar extends Component {
                 <InputGroup id="input">
                     <FormControl size="lg" placeholder="Place for holiday"></FormControl>
                     
-                    <input type="date" value="2019-01-01" as={InputGroup.Append}/>
+                    <input type="date" as={InputGroup.Append}/>
                     
-                    <input type="date" value="2020-01-01" as={InputGroup.Append}/>
+                    <input type="date" as={InputGroup.Append}/>
                     <Button variant="outline-dark" as={InputGroup.Append}><FaSearch/>Search</Button>
                 </InputGroup>
             </div>

@@ -41,9 +41,9 @@ class NavBar extends Component {
                     </Dropdown>
                 </Nav>
 
-                <a  className="mx-auto" href="/">
-                    <img src={logo} alt="logo" style={{height: 90, width: 260}}></img>
-                </a>
+                <Link  className="mx-auto" to="/">
+                    <img src={logo} alt="logo" style={{height: 90, width: 260}}/>
+                </Link>
 
 
                 <Nav>
@@ -61,7 +61,9 @@ class NavBar extends Component {
                             <Dropdown.Divider/>
                             <Dropdown.Item className="dropdownitem" disabled={!this.state.loggedin}><FaPen/>Ratings</Dropdown.Item>
                             <Dropdown.Divider/>
-                            <Dropdown.Item className="dropdownitem"><Link to="/login"><Button variant="outline-dark">Bejelentkezés</Button></Link></Dropdown.Item>
+                            <Link to="/login"><Button variant="outline-dark">Bejelentkezés</Button></Link>
+                            <Dropdown.Divider/>
+                            <Link to="/users"><Button variant="outline-dark">Felhasználók</Button></Link>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Nav>

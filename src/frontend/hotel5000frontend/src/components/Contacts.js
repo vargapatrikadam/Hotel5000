@@ -38,13 +38,24 @@ class Contacts extends Component {
             })
     }
 
+    deleteContacts = (userId, contactId) =>{
+        fetch("https://localhost:5000/api/users/" + userId + "/contacts/" + contactId, {
+            method: 'DELETE',
+            mode: 'cors',
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+            }
+        })
+            .then(resp => console.log(resp.status))
+    }
+
     renderContacts = () => {
         return this.state.contacts.map(contact => {
             return (
                 <div key={contact.id}>
                     <p>{contact.mobileNumber}</p>
                     <Button variant="outline-dark" className="mr-3">Modify</Button>
-                    <Button variant="danger">Delete</Button>
+                    <Button variant="danger" onClick={() => this.deleteContacts(this.state.id, contact.id)}>Delete</Button>
                 </div>
             )
         })
