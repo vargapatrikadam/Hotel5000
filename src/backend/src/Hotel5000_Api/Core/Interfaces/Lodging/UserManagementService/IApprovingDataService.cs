@@ -11,7 +11,7 @@ namespace Core.Interfaces.Lodging.UserManagementService
     {
         Task<Result<bool>> AddApprovingData(ApprovingData newApprovingData, int resourceAccessorId);
         Task<Result<bool>> RemoveApprovingData(int approvingDataOwnerId, int resourceAccessorId);
-        Task<Result<bool>> UpdateApprovingData(ApprovingData newApprovingData, int approvingDataOwnerId, int resourceAccessorId);
+        Task<Result<bool>> UpdateApprovingData(ApprovingData newApprovingData, int approvingDataId, int resourceAccessorId);
         Task<Result<IReadOnlyList<ApprovingData>>> GetApprovingData(int? approvingDataOwnerId = null, 
             int? approvingDataId = null, 
             string username = null,

@@ -213,11 +213,11 @@ namespace Core.Services.Lodging
         }
 
         public async Task<Result<bool>> UpdateApprovingData(ApprovingData newApprovingData, 
-            int approvingDataOwnerId, 
+            int approvingDataId, 
             int resourceAccessorId)
         {
             ApprovingData oldApprovingData = (await _approvingDataRepository.GetAsync(
-                    new Specification<ApprovingData>().ApplyFilter(p => p.Id == newApprovingData.Id))).FirstOrDefault();
+                    new Specification<ApprovingData>().ApplyFilter(p => p.Id == approvingDataId))).FirstOrDefault();
 
             Result<bool> authenticationResult = await _authenticationService.IsAuthorized(oldApprovingData.UserId, resourceAccessorId);
             if (!authenticationResult.Data)

@@ -177,5 +177,21 @@ namespace Web.Controllers
 
             return Ok();
         }
+        [HttpPut("approvingdata/{approvingDataId}")]
+        [ProducesResponseType(200)]
+        [ProducesErrorResponseType(typeof(ErrorDto))]
+        [AuthorizeRoles]
+        public async Task<IActionResult> UpdateApprovingData([FromBody] ApprovingDataDto updatedApprovingData, int approvingDataId)
+        {
+            var result = await _userManagementService.UpdateApprovingData(_mapper.Map<ApprovingData>(updatedApprovingData), approvingDataId, int.Parse(User.Identity.Name));
+
+            if (result.ResultType == ResultType.Unauthorized)
+                return Unauthorized(new ErrorDto(result.Errors));
+
+            if (result.ResultType == ResultType.NotFound)
+                return NotFound(new ErrorDto(result.Errors));
+
+            return Ok();
+        }
     }
 }
