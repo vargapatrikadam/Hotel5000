@@ -232,6 +232,14 @@ namespace Core.Services.Lodging
                     || p.TaxNumber == newApprovingData.TaxNumber))
                 return new ConflictResult<bool>(Errors.APPROVING_DATA_NOT_UNIQUE);
 
+            if ((oldApprovingData.IdentityNumber != newApprovingData.IdentityNumber && 
+                    (await _approvingDataRepository.AnyAsync(p => p.IdentityNumber == newApprovingData.IdentityNumber))) ||
+                (oldApprovingData.RegistrationNumber != newApprovingData.RegistrationNumber && 
+                    (await _approvingDataRepository.AnyAsync(p => p.RegistrationNumber == newApprovingData.RegistrationNumber))) ||
+                (oldApprovingData.TaxNumber != newApprovingData.TaxNumber &&
+                    (await _approvingDataRepository.AnyAsync(p => p.TaxNumber == newApprovingData.TaxNumber))))
+                return new ConflictResult<bool>(Errors.APPROVING_DATA_NOT_UNIQUE);
+
             oldApprovingData.IdentityNumber = newApprovingData.IdentityNumber;
             oldApprovingData.RegistrationNumber = newApprovingData.RegistrationNumber;
             oldApprovingData.TaxNumber = newApprovingData.TaxNumber;
@@ -255,7 +263,8 @@ namespace Core.Services.Lodging
             if (oldContact == null)
                 return new NotFoundResult<bool>(Errors.CONTACT_NOT_FOUND);
 
-            if (await _contactRepository.AnyAsync(p => p.MobileNumber == newContact.MobileNumber))
+            if ((oldContact.MobileNumber != newContact.MobileNumber) && 
+                (await _contactRepository.AnyAsync(p => p.MobileNumber == newContact.MobileNumber)))
                 return new ConflictResult<bool>(Errors.CONTACT_NOT_UNIQUE);
 
             oldContact.MobileNumber = newContact.MobileNumber;
