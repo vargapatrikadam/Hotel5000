@@ -61,9 +61,9 @@ class NavBar extends Component {
                             <Dropdown.Divider/>
                             <Dropdown.Item className="dropdownitem" disabled={!this.state.loggedin}><FaPen/>Ratings</Dropdown.Item>
                             <Dropdown.Divider/>
-                            <Link to="/login"><Button variant="outline-dark">Bejelentkezés</Button></Link>
+                            <Link to="/login"><Button variant="outline-dark">Sign in</Button></Link>
                             <Dropdown.Divider/>
-                            <Link to="/users"><Button variant="outline-dark">Felhasználók</Button></Link>
+                            <Link to="/users"><Button variant="outline-dark">User management</Button></Link>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Nav>
