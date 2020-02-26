@@ -7,6 +7,8 @@ class Contacts extends Component {
         super(props);
         this.state={
             id: null,
+            clickedId: null,
+            modifiedNumber: null,
             contacts: []
         }
         this._isMounted = false;
@@ -23,6 +25,9 @@ class Contacts extends Component {
         this._isMounted = false
     }
 
+    handleChange = (number) => {
+        this.setState({modifiedNumber: number.target.value});
+    }
 
     handleContacts = (id) => {
         fetch("https://localhost:5000/api/users/" + id + "/contacts", {
@@ -49,12 +54,46 @@ class Contacts extends Component {
             .then(resp => console.log(resp.status))
     }
 
+    modifyContacts = (contactId, mobileNumber) => {
+
+        const data = {
+            "id": contactId,
+            "mobileNumber": mobileNumber
+        }
+
+        console.log(this.state.modifiedNumber)
+
+        fetch("https://localhost:5000/api/users/contacts/" + contactId, {
+            method: 'PUT',
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+            },
+            body: JSON.stringify(data)
+        })
+            .then(resp => resp.status)
+            .then(responseStatus => {
+                if(responseStatus === 200){
+                    this.state.contacts.map(contact => {
+                        if(contact.id === contactId)
+                            contact.mobileNumber = this.state.modifiedNumber
+                        return contact.mobileNumber
+                    })
+                }
+            })
+    }
+
     renderContacts = () => {
         return this.state.contacts.map(contact => {
             return (
                 <div key={contact.id}>
                     <p>{contact.mobileNumber}</p>
-                    <Button variant="outline-dark" className="mr-3">Modify</Button>
+                    <div>
+                        <input type="text" hidden={this.state.clickedId !== contact.id} className="mb-3 mr-1" style={{display: 'inline-block'}} onChange={(number) => this.handleChange(number)}/>
+                        <Button variant="outline-dark" hidden={this.state.clickedId !== contact.id} onClick={() => this.modifyContacts(contact.id, this.state.modifiedNumber)}>Perform</Button>
+                    </div>
+                    <Button variant="outline-dark" className="mr-3" onClick={() => this.setState({clickedId: contact.id})}>Modify</Button>
                     <Button variant="danger" onClick={() => this.deleteContacts(this.state.id, contact.id)}>Delete</Button>
                 </div>
             )

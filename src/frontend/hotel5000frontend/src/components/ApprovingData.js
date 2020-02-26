@@ -34,6 +34,17 @@ class ApprovingData extends Component {
             })
     }
 
+    deleteApprovingData = (userId) => {
+        fetch("https://localhost:5000/api/users/" + userId + "/approvingdata", {
+            method: 'DELETE',
+            mode: "cors",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+            }
+        })
+            .then(resp => console.log(resp.status))
+    }
+
     renderApprovingData = () => {
         return this.state.approvingData.map(
             data => {
@@ -64,7 +75,7 @@ class ApprovingData extends Component {
                         )}
                         
                         <Button variant="outline-dark" className="mr-3">Modify</Button>
-                        <Button variant="danger">Delete</Button>
+                        <Button variant="danger" onClick={() => this.deleteApprovingData(data.id)}>Delete</Button>
                     </div>
                 )
             }
