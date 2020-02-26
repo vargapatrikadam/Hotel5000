@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,7 +13,7 @@ namespace Core.Helpers.Results
             _data = data;
         }
         public override ResultType ResultType => ResultType.Ok;
-        public override List<string> Errors => null;
+        public override List<Errors> Errors => null;
         public override T Data => _data;
     }
 }

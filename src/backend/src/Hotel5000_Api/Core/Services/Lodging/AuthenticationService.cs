@@ -1,4 +1,5 @@
 ﻿using Core.Entities.LodgingEntities;
+using Core.Enums;
 using Core.Enums.Lodging;
 using Core.Helpers;
 using Core.Helpers.Results;
@@ -127,15 +128,15 @@ namespace Core.Services.Lodging
             ISpecification<User> query = new Specification<User>().AddInclude(p => p.Role);
             User resourceOwner = (await _userRepository.GetAsync(query.ApplyFilter(f => f.Id == resourceOwnerId))).FirstOrDefault();
             if (resourceOwner == null)
-                return new NotFoundResult<bool>("Resource owner not found");
+                return new NotFoundResult<bool>(Errors.RESOURCE_OWNER_NOT_FOUND);
             User accessingUser = (await _userRepository.GetAsync(query.ApplyFilter(f => f.Id == accessingUserId))).FirstOrDefault();
             if (accessingUser == null)
-                return new NotFoundResult<bool>("Accessing user not found");
+                return new NotFoundResult<bool>(Errors.ACCESSING_USER_NOT_FOUND);
 
             if (accessingUser.Role.Name == Roles.Admin
                 || accessingUser.Id == resourceOwner.Id)
                 return new SuccessfulResult<bool>(true);
-            else return new UnauthorizedResult<bool>("You cannot modify this resource");
+            else return new UnauthorizedResult<bool>(Errors.UNAUTHORIZED);
         }
     }
 }

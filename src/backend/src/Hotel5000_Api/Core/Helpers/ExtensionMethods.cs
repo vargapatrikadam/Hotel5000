@@ -1,4 +1,5 @@
 ﻿using Core.Entities.LodgingEntities;
+using Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -24,14 +25,14 @@ namespace Core.Helpers
         {
             return users.Select(x => x.WithoutPassword()).ToList();
         }
-        public static bool ValidatePassword(this string password, out string errorMessage)
+        public static bool ValidatePassword(this string password, out Errors? error)
         {
             var input = password;
-            errorMessage = null;
+            error = null;
 
             if (string.IsNullOrWhiteSpace(input))
             {
-                errorMessage = "Password should not be empty";
+                error = Errors.PASSWORD_IS_EMPTY;
                 return false;
             }
 
@@ -42,22 +43,22 @@ namespace Core.Helpers
 
             if (!hasLowerChar.IsMatch(input))
             {
-                errorMessage = "Password should contain At least one lower case letter";
+                error = Errors.PASSWORD_NOT_CONTAINS_LOWERCASE;
                 return false;
             }
             else if (!hasUpperChar.IsMatch(input))
             {
-                errorMessage = "Password should contain At least one upper case letter";
+                error = Errors.PASSWORD_NOT_CONTAINS_UPPERCASE;
                 return false;
             }
             else if (!hasMiniMaxChars.IsMatch(input))
             {
-                errorMessage = "Password should not be less than 8 or greater than 40 characters";
+                error = Errors.PASSWORD_LENGTH_INCORRECT;
                 return false;
             }
             else if (!hasNumber.IsMatch(input))
             {
-                errorMessage = "Password should contain At least one numeric value";
+                error = Errors.PASSWORD_NOT_CONTAINS_NUMERIC;
                 return false;
             }
             else
@@ -66,20 +67,20 @@ namespace Core.Helpers
             }
         }
 
-        public static bool ValidateEmail(this string email, out string errorMessage)
+        public static bool ValidateEmail(this string email, out Errors? error)
         {
             var input = email;
-            errorMessage = null;
+            error = null;
 
             if (string.IsNullOrWhiteSpace(input))
             {
-                errorMessage = "Email should not be empty";
+                error = Errors.EMAIL_IS_EMPTY;
                 return false;
             }
 
             if (!new EmailAddressAttribute().IsValid(email))
             {
-                errorMessage = "Email is not valid";
+                error = Errors.EMAIL_INVALID;
                 return false;
             }
             else

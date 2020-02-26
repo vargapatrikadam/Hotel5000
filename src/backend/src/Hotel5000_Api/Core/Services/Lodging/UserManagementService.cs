@@ -11,6 +11,7 @@ using System.Linq;
 using Core.Helpers;
 using Core.Enums.Lodging;
 using Core.Interfaces.PasswordHasher;
+using Core.Enums;
 
 namespace Core.Services.Lodging
 {
@@ -45,12 +46,12 @@ namespace Core.Services.Lodging
                 return authenticationResult;
 
             if (await _approvingDataRepository.AnyAsync(p => p.UserId == newApprovingData.UserId))
-                return new ConflictResult<bool>("User already has approving data");
+                return new ConflictResult<bool>(Errors.APPROVING_DATA_ALREADY_EXISTS);
 
             if (await _approvingDataRepository.AnyAsync(p => p.IdentityNumber == newApprovingData.IdentityNumber
                     || p.RegistrationNumber == newApprovingData.RegistrationNumber
                     || p.TaxNumber == newApprovingData.TaxNumber))
-                return new ConflictResult<bool>("Approving data not unique");
+                return new ConflictResult<bool>(Errors.APPROVING_DATA_NOT_UNIQUE);
 
             await _approvingDataRepository.AddAsync(newApprovingData);
             return new SuccessfulResult<bool>(true);
@@ -64,7 +65,7 @@ namespace Core.Services.Lodging
                 return authenticationResult;
 
             if (await _contactRepository.AnyAsync(p => p.MobileNumber == contact.MobileNumber))
-                return new ConflictResult<bool>("Mobile number already exists");
+                return new ConflictResult<bool>(Errors.CONTACT_NOT_UNIQUE);
 
             await _contactRepository.AddAsync(contact);
             return new SuccessfulResult<bool>(true);
@@ -74,22 +75,22 @@ namespace Core.Services.Lodging
             string role)
         {
             if (await _userRepository.AnyAsync(p => p.Email == user.Email))
-                return new ConflictResult<bool>("Email not unique");
+                return new ConflictResult<bool>(Errors.EMAIL_NOT_UNIQUE);
 
             if (await _userRepository.AnyAsync(p => p.Username == user.Username))
-                return new ConflictResult<bool>("Username not unique");
+                return new ConflictResult<bool>(Errors.USERNAME_NOT_UNIQUE);
 
             user.Email.ValidateEmail(out var errorMessage);
             user.Password.ValidatePassword(out errorMessage);
             if (errorMessage != null)
-                return new InvalidResult<bool>(errorMessage);
+                return new InvalidResult<bool>(errorMessage.Value);
 
             user.Password = _passwordHasher.Hash(user.Password);
 
             Roles roleAsEnum;
             if (!Enum.TryParse(role, out roleAsEnum))
             {
-                return new InvalidResult<bool>("Role not found");
+                return new InvalidResult<bool>(Errors.ROLE_NOT_EXISTS);
             }
 
             var roleEntity = (await _roleRepository.GetAsync(new Specification<Role>().ApplyFilter(p => p.Name == roleAsEnum))).FirstOrDefault();
@@ -168,7 +169,7 @@ namespace Core.Services.Lodging
                 return authenticationResult;
 
             if (approvingData == null)
-                return new NotFoundResult<bool>("Approving data not found for user");
+                return new NotFoundResult<bool>(Errors.APPROVING_DATA_NOT_FOUND);
 
             await _approvingDataRepository.DeleteAsync(approvingData);
             return new SuccessfulResult<bool>(true);
@@ -189,7 +190,7 @@ namespace Core.Services.Lodging
             Contact contact = user.Contacts.Where(p => p.Id == contactId).FirstOrDefault();
 
             if (contact == null)
-                return new NotFoundResult<bool>("Contact not found");
+                return new NotFoundResult<bool>(Errors.CONTACT_NOT_FOUND);
 
             await _contactRepository.DeleteAsync(contact);
             return new SuccessfulResult<bool>(true);
@@ -206,7 +207,7 @@ namespace Core.Services.Lodging
                 return authenticationResult;
 
             if (user == null)
-                return new NotFoundResult<bool>("User not found");
+                return new NotFoundResult<bool>(Errors.USER_NOT_FOUND);
 
             await _userRepository.DeleteAsync(user);
             return new SuccessfulResult<bool>(true);
@@ -224,12 +225,12 @@ namespace Core.Services.Lodging
                 return authenticationResult;
 
             if (oldApprovingData == null)
-                return new NotFoundResult<bool>("Approving data not found");
+                return new NotFoundResult<bool>(Errors.APPROVING_DATA_NOT_FOUND);
 
             if (await _approvingDataRepository.AnyAsync(p => p.IdentityNumber == newApprovingData.IdentityNumber
                     || p.RegistrationNumber == newApprovingData.RegistrationNumber
                     || p.TaxNumber == newApprovingData.TaxNumber))
-                return new ConflictResult<bool>("Approving data not unique");
+                return new ConflictResult<bool>(Errors.APPROVING_DATA_NOT_UNIQUE);
 
             oldApprovingData.IdentityNumber = newApprovingData.IdentityNumber;
             oldApprovingData.RegistrationNumber = newApprovingData.RegistrationNumber;
@@ -252,10 +253,10 @@ namespace Core.Services.Lodging
                 return authenticationResult;
 
             if (oldContact == null)
-                return new NotFoundResult<bool>("Contact not found");
+                return new NotFoundResult<bool>(Errors.CONTACT_NOT_FOUND);
 
             if (await _contactRepository.AnyAsync(p => p.MobileNumber == newContact.MobileNumber))
-                return new ConflictResult<bool>("Mobile number not unique");
+                return new ConflictResult<bool>(Errors.CONTACT_NOT_UNIQUE);
 
             oldContact.MobileNumber = newContact.MobileNumber;
 
@@ -276,17 +277,17 @@ namespace Core.Services.Lodging
                 return authenticationResult;
 
             if (oldUser == null)
-                return new NotFoundResult<bool>("User not found");
+                return new NotFoundResult<bool>(Errors.USER_NOT_FOUND);
 
             if ((oldUser.Email != newUser.Email) && await _userRepository.AnyAsync(p => p.Email == newUser.Email))
-                return new ConflictResult<bool>("Email not unique");
+                return new ConflictResult<bool>(Errors.EMAIL_NOT_UNIQUE);
 
             if ((oldUser.Username != newUser.Username) && await _userRepository.AnyAsync(p => p.Username == newUser.Username))
-                return new ConflictResult<bool>("Username not unique");
+                return new ConflictResult<bool>(Errors.USERNAME_NOT_UNIQUE);
 
             newUser.Email.ValidateEmail(out var errorMessage);
             if (errorMessage != null)
-                return new InvalidResult<bool>(errorMessage);
+                return new InvalidResult<bool>(errorMessage.Value);
 
             oldUser.Email = newUser.Email;
             oldUser.FirstName = newUser.FirstName;
@@ -306,10 +307,10 @@ namespace Core.Services.Lodging
                 new Specification<User>().ApplyFilter(p => p.Id == userId))).FirstOrDefault();
 
             if (user == null)
-                return new NotFoundResult<bool>("User not found");
+                return new NotFoundResult<bool>(Errors.USER_NOT_FOUND);
 
             if (!_passwordHasher.Check(user.Password, oldPassword))
-                return new InvalidResult<bool>("Old password incorrect");
+                return new InvalidResult<bool>(Errors.PASSWORD_INCORRECT);
             else
             {
                 user.Password = _passwordHasher.Hash(newPassword);

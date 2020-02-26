@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,14 +8,14 @@ namespace Core.Helpers.Results
 {
     public class ConflictResult<T> : Result<T>
     {
-        private readonly string[] _messages;
-        public ConflictResult(params string[] messages)
+        private readonly Errors[] _messages;
+        public ConflictResult(params Errors[] messages)
         {
             _messages = messages;
         }
         public override ResultType ResultType => ResultType.Conflict;
 
-        public override List<string> Errors => _messages.ToList() ?? new List<string> { "Data not unique" };
+        public override List<Errors> Errors => _messages.ToList() ?? new List<Errors> { Enums.Errors.DATA_UNIQUENESS_CONFLICT };
 
         public override T Data => default;
     }
