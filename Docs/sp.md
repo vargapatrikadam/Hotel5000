@@ -400,3 +400,33 @@ HashingOptions | KeySize | 32 |
 AuthenticationOptions | RefreshTokenDuration | 60 |
 AuthenticationOptions | AccessTokenDuration | 60 |
 AuthenticationOptions | Secret | JWT AUTHENTICATION SECRET |
+
+## Hibaüzenetek
+Hibakód | Hiba üzenet | Magyarázat |
+------- | ----------- | ---------- |
+1000 | UNDEFINED | ismeretlen eredetű kivétel, vagy hiba |
+2000 | DATA_UNIQUENESS_CONFLICT | adat érték konfliktus, már létezik a perzisztenciarétegben adat ilyen értékkel |
+3000 | INVALID_PARAMETER | általános hibás paraméter |
+4000 | NOT_FOUND | adat nem található |
+5000 | UNAUTHORIZED | nincs jogosultság az erőforráshoz |
+10001 | APPROVING_DATA_ALREADY_EXISTS | a felhasználóhoz már tartozik approving data |
+10002 | APPROVING_DATA_NOT_UNIQUE | approving data nem egyedi |
+10003 | APPROVING_DATA_NOT_FOUND | felhasználóhoz nem található approving data |
+10004 | CONTACT_NOT_UNIQUE | elérhetőség nem egyedi |
+10005 | CONTACT_NOT_FOUND | elérhetőség nem található felhasználóhoz |
+10006 | EMAIL_NOT_UNIQUE | megadott emailcím nem egyedi |
+10007 | USERNAME_NOT_UNIQUE | megadott felhasználónév nem egyedi |
+10008 | ROLE_NOT_EXISTS | megadott szerepkör nem létezik |
+10009 | USER_NOT_FOUND | felhasználó nem létezik |
+10010 | PASSWORD_INCORRECT | helytelen jelszó |
+10011 | PASSWORD_IS_EMPTY | jelszó mező üres |
+10012 | PASSWORD_NOT_CONTAINS_LOWERCASE | jelszóban nincs kisbetűs karakter |
+10013 | PASSWORD_NOT_CONTAINS_UPPERCASE | jelszóban nincs nagybetűs karakter |
+10014 | PASSWORD_LENGTH_INCORRECT | jelszó nem megfelelő hosszúságú |
+10015 | PASSWORD_NOT_CONTAINS_NUMERIC | jelszóban nincs szám karakter |
+10016 | EMAIL_IS_EMPTY | email mező üres |
+10017 | EMAIL_INVALID | helytelen formátumú emailcím |
+20001 | RESOURCE_OWNER_NOT_FOUND | authentikációkor a vizsgált erőforrás tulaja (user) nem létezik |
+20002 | ACCESSING_USER_NOT_FOUND | autentikációkor az erőforráshoz hozzáférő (user) nem létezik |
+20003 | TOKEN_NOT_FOUND | refresh token nem létezik |
+20004 | TOKEN_INVALID | refresh token nem érvényes (még nem felhasználható / már lejárt)
