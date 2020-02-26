@@ -61,7 +61,6 @@ class Contacts extends Component {
             "mobileNumber": mobileNumber
         }
 
-        console.log(this.state.modifiedNumber)
 
         fetch("https://localhost:5000/api/users/contacts/" + contactId, {
             method: 'PUT',
