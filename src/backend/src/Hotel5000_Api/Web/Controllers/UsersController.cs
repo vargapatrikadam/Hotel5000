@@ -26,25 +26,25 @@ namespace Web.Controllers
             _mapper = mapper;
             _userManagementService = userManagementService;
         }
-        
+
         [HttpGet()]
         [ProducesResponseType(typeof(ICollection<UserDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
-        public async Task<IActionResult> GetUsers([FromQuery] int? id = null, 
-            [FromQuery] string username = null, 
+        public async Task<IActionResult> GetUsers([FromQuery] int? id = null,
+            [FromQuery] string username = null,
             [FromQuery] string email = null,
-            [FromQuery] int? pageNumber = null, 
+            [FromQuery] int? pageNumber = null,
             [FromQuery] int? resultPerPage = null)
         {
-            var result = await _userManagementService.GetUsers(id, 
-                username, 
-                email, 
+            var result = await _userManagementService.GetUsers(id,
+                username,
+                email,
                 (pageNumber.HasValue && pageNumber.Value > 0) ? ((pageNumber.Value - 1) * resultPerPage) : null,
                 resultPerPage);
 
             return Ok(_mapper.Map<ICollection<UserDto>>(result.Data));
         }
-        
+
         [HttpGet("{id}/contacts")]
         [ProducesResponseType(typeof(ICollection<ContactDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -57,19 +57,19 @@ namespace Web.Controllers
 
             return Ok(_mapper.Map<ICollection<ContactDto>>(result.Data));
         }
-        
+
         [HttpGet("contacts")]
         [ProducesResponseType(typeof(ICollection<ContactDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
-        public async Task<IActionResult> GetContacts([FromQuery] int? userId = null, 
-            [FromQuery] string phoneNumber = null, 
+        public async Task<IActionResult> GetContacts([FromQuery] int? userId = null,
+            [FromQuery] string phoneNumber = null,
             [FromQuery] string username = null)
         {
             var result = await _userManagementService.GetContacts(userId, phoneNumber, username);
 
             return Ok(_mapper.Map<ICollection<ContactDto>>(result.Data));
         }
-        
+
         [HttpGet("{userId}/approvingdata")]
         [ProducesResponseType(typeof(ICollection<ApprovingDataDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -181,6 +181,36 @@ namespace Web.Controllers
         public async Task<IActionResult> UpdateUser([FromBody] UserDto updatedUser, int userId)
         {
             var result = await _userManagementService.UpdateUser(_mapper.Map<User>(updatedUser), userId, int.Parse(User.Identity.Name));
+
+            if (result.ResultType != ResultType.Ok)
+                return this.GetError(result);
+
+            return Ok();
+        }
+        [HttpPost("{userId}/contacts}")]
+        [ProducesResponseType(200)]
+        [ProducesErrorResponseType(typeof(ErrorDto))]
+        [AuthorizeRoles]
+        public async Task<IActionResult> AddContact([FromBody] ContactDto newContactDto, int userId)
+        {
+            var newContact = _mapper.Map<Contact>(newContactDto);
+            newContact.UserId = userId;
+            var result = await _userManagementService.AddContact(newContact, int.Parse(User.Identity.Name));
+
+            if (result.ResultType != ResultType.Ok)
+                return this.GetError(result);
+
+            return Ok();
+        }
+        [HttpPost("{userId}/approvingdata}")]
+        [ProducesResponseType(200)]
+        [ProducesErrorResponseType(typeof(ErrorDto))]
+        [AuthorizeRoles]
+        public async Task<IActionResult> AddApprovingData([FromBody] ApprovingDataDto newApprovingDataDto, int userId)
+        {
+            var newApprovingData = _mapper.Map<ApprovingData>(newApprovingDataDto);
+            newApprovingData.UserId = userId;
+            var result = await _userManagementService.AddApprovingData(newApprovingData, int.Parse(User.Identity.Name));
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
