@@ -1,4 +1,4 @@
-export default function ErrorMessage(statusCode){
+export default function ErrorMessage(){
     var code = []
     code[1000] = "UNDEFINED"
     code[2000] = "DATA_UNIQUENESS_CONFLICT"
@@ -26,4 +26,6 @@ export default function ErrorMessage(statusCode){
     code[20002] = "ACCESSING_USER_NOT_FOUND"
     code[20003] = "TOKEN_NOT_FOUND"
     code[20004] = "TOKEN_INVALID"
+
+    return code
 } 

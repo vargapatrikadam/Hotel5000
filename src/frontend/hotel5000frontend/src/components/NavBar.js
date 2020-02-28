@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import logo from '../images/Logo.PNG';
 import {FaAlignJustify, FaUser, FaSuitcase, FaGripHorizontal, FaShoppingCart, FaClock, FaIdBadge, FaPen } from 'react-icons/fa';
 import './NavBar.css';
-
 import {Navbar, Dropdown, Nav, Button} from "react-bootstrap";
 import {Link} from "react-router-dom";
 
@@ -12,13 +11,13 @@ class NavBar extends Component {
         super(props);
 
         this.state = {
-            loggedin: false,
-            loggedinuser: {
-                username: "",
-                accessToken: "",
-                refreshToken: ""
-            }
+            loggedin: props.loggedin,
+            role: props.role,
         }
+    }
+
+    componentDidUpdate(){
+        console.log(this.state)
     }
 
     render() {
@@ -63,7 +62,7 @@ class NavBar extends Component {
                             <Dropdown.Divider/>
                             <Link to="/login"><Button variant="outline-dark">Sign in</Button></Link>
                             <Dropdown.Divider/>
-                            <Link to="/users"><Button variant="outline-dark">User management</Button></Link>
+                            <Link to="/users"><Button variant="outline-dark" disabled={!this.state.loggedin}>User management</Button></Link>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Nav>

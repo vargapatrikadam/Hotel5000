@@ -16,6 +16,10 @@ class ApprovingData extends Component {
         this._isMounted = false
     }
 
+    refreshPage(cond){
+        window.location.reload(cond)
+    }
+
     componentDidMount() {
         this._isMounted = true
         this._isMounted && this.getApprovingData(this.props.id)
@@ -137,7 +141,7 @@ class ApprovingData extends Component {
                                 <label className="mb-3 mr-2" style={{display: 'inline-block'}}>Registration number:</label>
                                 <input type="text" className="mb-3" style={{display: 'inline-block'}} onChange={this.handleRegistrationChange}/>
                             </div>
-                            <Button className="mb-3" variant="outline-dark" onClick={() => this.modifyApprovingData(data.id, this.state.modifiedIdentityNumber, this.state.modifiedTaxNumber, this.state.modifiedRegistrationNumber)}>Perform</Button>
+                            <Button className="mb-3" variant="outline-dark" onClick={() => {this.modifyApprovingData(data.id, this.state.modifiedIdentityNumber, this.state.modifiedTaxNumber, this.state.modifiedRegistrationNumber)}}>Perform</Button>
                         </div>
 
                         
