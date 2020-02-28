@@ -187,7 +187,7 @@ namespace Web.Controllers
 
             return Ok();
         }
-        [HttpPost("{userId}/contacts}")]
+        [HttpPost("{userId}/contacts")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         [AuthorizeRoles]
@@ -202,7 +202,7 @@ namespace Web.Controllers
 
             return Ok();
         }
-        [HttpPost("{userId}/approvingdata}")]
+        [HttpPost("{userId}/approvingdata")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         [AuthorizeRoles]
