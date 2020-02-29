@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Interfaces.Lodging.UserManagementService
+namespace Core.Interfaces.LodgingDomain.UserManagementService
 {
     public interface IUserService
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Services.Lodging
+namespace Core.Services.LodgingDomain
 {
     public class AuthenticationOptions
     {

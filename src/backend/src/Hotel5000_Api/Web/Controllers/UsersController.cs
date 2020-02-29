@@ -2,8 +2,8 @@
 using Core.Entities.LodgingEntities;
 using Core.Enums.Lodging;
 using Core.Helpers.Results;
-using Core.Interfaces.Lodging;
-using Core.Interfaces.Lodging.UserManagementService;
+using Core.Interfaces.LodgingDomain;
+using Core.Interfaces.LodgingDomain.UserManagementService;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;

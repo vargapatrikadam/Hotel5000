@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Interfaces.Lodging
+namespace Core.Interfaces.LodgingDomain
 {
     public interface IAuthenticationService
     {

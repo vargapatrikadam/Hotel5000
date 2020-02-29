@@ -4,8 +4,8 @@ using Core.Enums.Lodging;
 using Core.Helpers;
 using Core.Helpers.Results;
 using Core.Interfaces;
-using Core.Interfaces.Lodging;
-using Core.Interfaces.Lodging.UserManagementService;
+using Core.Interfaces.LodgingDomain;
+using Core.Interfaces.LodgingDomain.UserManagementService;
 using Core.Interfaces.PasswordHasher;
 using Core.Specifications;
 using System;
@@ -15,7 +15,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Services.Lodging
+namespace Core.Services.LodgingDomain
 {
     public class AuthenticationService : IAuthenticationService
     {

@@ -1,10 +1,10 @@
 ﻿using Core.Entities.LodgingEntities;
 using Core.Helpers.Results;
 using Core.Interfaces;
-using Core.Interfaces.Lodging;
-using Core.Interfaces.Lodging.UserManagementService;
+using Core.Interfaces.LodgingDomain;
+using Core.Interfaces.LodgingDomain.UserManagementService;
 using Core.Interfaces.PasswordHasher;
-using Core.Services.Lodging;
+using Core.Services.LodgingDomain;
 using Core.Specifications;
 using Hotel5000_Api_Tests.UnitTests.Core.Data;
 using Moq;

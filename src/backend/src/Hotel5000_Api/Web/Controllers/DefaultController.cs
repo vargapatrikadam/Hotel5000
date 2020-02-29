@@ -10,7 +10,7 @@ using Infrastructure.Lodgings;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Entities.LodgingEntities;
-using Core.Interfaces.Lodging;
+using Core.Interfaces.LodgingDomain;
 using Web.Attributes;
 using Core.Enums.Lodging;
 using AutoMapper;

@@ -1,7 +1,7 @@
 ﻿using Core.Entities.LodgingEntities;
 using Core.Helpers.Results;
 using Core.Interfaces;
-using Core.Interfaces.Lodging;
+using Core.Interfaces.LodgingDomain;
 using Core.Specifications;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using Core.Enums.Lodging;
 using Core.Interfaces.PasswordHasher;
 using Core.Enums;
 
-namespace Core.Services.Lodging
+namespace Core.Services.LodgingDomain
 {
     public class UserManagementService : IUserManagementService
     {
