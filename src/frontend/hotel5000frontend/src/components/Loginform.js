@@ -9,13 +9,8 @@ class Loginform extends Component {
         this.state={
             username:"",
             password:"",
-            role: "",
             loggedin: false
         }
-    }
-
-    sendData = (role, loggedin) => {
-        this.props.parentData(role, loggedin)
     }
 
     handleUsername = (text) => {
@@ -40,13 +35,13 @@ class Loginform extends Component {
             body: JSON.stringify(data)
         }).then(response => response.json())
         .then((responsedata) => {
-            this.setState({ loggedin: true, role: responsedata.role})
+            this.setState({ loggedin: true, role: responsedata.role })
+            localStorage.setItem('role', responsedata.role)
             localStorage.setItem('accessToken', responsedata.accessToken)
             localStorage.setItem('refreshToken', responsedata.refreshToken)
+            localStorage.setItem('loggedin', this.state.loggedin)
             console.log(localStorage.getItem('accessToken'))
             console.log(localStorage.getItem('refreshToken'))
-            //console.log(this.state.data)
-            //console.log(this.state.loggedin)
         })
         .catch(console.log)
     }
@@ -125,7 +120,7 @@ class Loginform extends Component {
                         <Form.Label>Password</Form.Label>
                         <Form.Control type="password" placeholder="Password" onChange={(text) => {this.handlePassword(text)}}/>
                     </Form.Group>
-                        <Button variant="outline-dark" block onClick={()=>{this.login(this.state.username, this.state.password); this.props.parentData(this.state.role, this.state.loggedin)}}>Log In</Button>
+                        <Button variant="outline-dark" block onClick={()=>{this.login(this.state.username, this.state.password)}}>Log In</Button>
                         <Button variant="outline-dark" block onClick={()=>{this.test()}}>Test auth</Button>
                 </Form>
             </div>

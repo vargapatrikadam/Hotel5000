@@ -93,12 +93,11 @@ class Contacts extends Component {
                         <Button variant="outline-dark" hidden={this.state.clickedId !== contact.id} onClick={() => this.modifyContacts(contact.id, this.state.modifiedNumber)}>Perform</Button>
                     </div>
                     <Button variant="outline-dark" className="mr-3" onClick={() => this.setState({clickedId: contact.id})}>Modify</Button>
-                    <Button variant="danger" onClick={() => this.deleteContacts(this.state.id, contact.id)}>Delete</Button>
+                    <Button variant="danger" onClick={() => { if (window.confirm('Are you sure you wish to delete this contact?')) this.deleteContacts(this.state.id, contact.id)}}>Delete</Button>
                 </div>
             )
         })
     }
-    /*TODO:confirmation required on delete button*/
 
     render() {
         return (

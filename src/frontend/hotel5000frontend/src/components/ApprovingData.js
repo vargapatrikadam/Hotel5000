@@ -146,13 +146,12 @@ class ApprovingData extends Component {
 
                         
                         <Button variant="outline-dark" className="mr-3" onClick={() => this.setState({isModifyClicked: true})}>Modify</Button>
-                        <Button variant="danger" onClick={() => this.deleteApprovingData(data.id)}>Delete</Button>
+                        <Button variant="danger" onClick={() => { if(window.confirm('Are you sure you wish to delete this approving data?')) this.deleteApprovingData(data.id)}}>Delete</Button>
                     </div>
                 )
             }
         )
     }
-    /*TODO:confirmation required on delete button*/
 
     render() {
         return (
