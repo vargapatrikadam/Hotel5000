@@ -26,5 +26,9 @@ namespace Core.Interfaces.LodgingDomain.LodgingManagementService
             int resourceAccessorId);
 
         Task<Result<bool>> AddLodgingAddress(LodgingAddress lodgingAddress, string countryCode, int resourceAccessorId);
+
+        Task<Result<IReadOnlyList<Country>>> GetCountry(int? id = null,
+            string name = null,
+            string code = null);
     }
 }

@@ -24,5 +24,8 @@ namespace Core.Interfaces.LodgingDomain.LodgingManagementService
             int resourceAccessorId);
 
         Task<Result<bool>> AddRoom(Room room, int resourceAccessorId);
+
+        Task<Result<IReadOnlyList<Currency>>> GetCurrency(int? id = null,
+            string name = null);
     }
 }

@@ -91,8 +91,7 @@ namespace Core.Services.LodgingDomain
             if (!authorizationResult.Data)
                 return authorizationResult;
 
-            ISpecification<Country> specification = new Specification<Country>().ApplyFilter(p => p.Code == countryCode);
-            Country country = (await _countryRepository.GetAsync(specification)).FirstOrDefault();
+            Country country = (await GetCountry(code: countryCode)).Data.FirstOrDefault();
             if (country == null) 
             {
                 try
@@ -103,9 +102,9 @@ namespace Core.Services.LodgingDomain
                         Name = new RegionInfo(countryCode).EnglishName
 
                     });
-                    country = (await _countryRepository.GetAsync(specification)).FirstOrDefault();
+                    country = (await GetCountry(code: countryCode)).Data.FirstOrDefault();
                 }
-                catch (ArgumentException e)
+                catch (ArgumentException)
                 {
                     return new InvalidResult<bool>(Errors.COUNTRY_NOT_FOUND);
                 }
@@ -147,6 +146,10 @@ namespace Core.Services.LodgingDomain
             if (lodging == null)
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
+            Currency currency = (await GetCurrency(id: room.CurrencyId)).Data.FirstOrDefault();
+            if (currency == null)
+                return new NotFoundResult<bool>(Errors.CURRENCY_NOT_FOUND);
+
             Result<bool> authorizationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
 
             if (!authorizationResult.Data)
@@ -164,7 +167,30 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
         #endregion
+
         #region get
+
+        public async Task<Result<IReadOnlyList<Country>>> GetCountry(int? id = null, string name = null, string code = null)
+        {
+            ISpecification<Country> specification = new Specification<Country>();
+            specification.ApplyFilter(p =>
+                (!id.HasValue || p.Id == id.Value) &&
+                (name == null || p.Name == name) &&
+                (code == null || p.Code == code));
+
+            return new SuccessfulResult<IReadOnlyList<Country>>(await _countryRepository.GetAsync(specification));
+        }
+
+        public async Task<Result<IReadOnlyList<Currency>>> GetCurrency(int? id = null, string name = null)
+        {
+            ISpecification<Currency> specification = new Specification<Currency>();
+            specification.ApplyFilter(p =>
+                (!id.HasValue || p.Id == id.Value) &&
+                (name == null || p.Name == name));
+
+            return new SuccessfulResult<IReadOnlyList<Currency>>(await _currencyRepository.GetAsync(specification));
+        }
+
         public async Task<Result<IReadOnlyList<Lodging>>> GetLodging(int? id = null, string name = null, LodgingTypes? lodgingType = null, int? skip = null, int? take = null)
         {
             ISpecification<Lodging> specification = new Specification<Lodging>();
@@ -295,24 +321,95 @@ namespace Core.Services.LodgingDomain
         }
         #endregion
         #region update
-        public Task<Result<bool>> UpdateLodging(Lodging newLodging, int oldLodgingId, int resourceAccessorId)
+        public async Task<Result<bool>> UpdateLodging(Lodging newLodging, int oldLodgingId, int resourceAccessorId)
         {
-            throw new NotImplementedException();
+            Lodging updateThisLodging = (await GetLodging(id: oldLodgingId)).Data.FirstOrDefault();
+            if (updateThisLodging == null)
+                return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
+
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(updateThisLodging.UserId, resourceAccessorId);
+            if (!authenticationResult.Data)
+                return authenticationResult;
+
+            updateThisLodging.Name = newLodging.Name;
+
+            await _lodgingRepository.UpdateAsync(updateThisLodging);
+            return new SuccessfulResult<bool>(true);
         }
 
-        public Task<Result<bool>> UpdateLodgingAddress(LodgingAddress newLodgingAddress, int oldLodgingAddressId, int resourceAccessorId)
+        public async Task<Result<bool>> UpdateLodgingAddress(LodgingAddress newLodgingAddress, int oldLodgingAddressId, int resourceAccessorId)
         {
-            throw new NotImplementedException();
+            LodgingAddress updateThisLodgingAddress = (await GetLodgingAddress(id: oldLodgingAddressId)).Data.FirstOrDefault();
+            if (updateThisLodgingAddress == null)
+                return new NotFoundResult<bool>(Errors.LODGING_ADDRESS_NOT_FOUND);
+
+            Lodging lodging = (await GetLodging(id: updateThisLodgingAddress.LodgingId)).Data.FirstOrDefault();
+            if (lodging == null)
+                return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
+
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
+            if (!authenticationResult.Data)
+                return authenticationResult;
+
+            updateThisLodgingAddress.CountryId = newLodgingAddress.CountryId;
+            updateThisLodgingAddress.County = newLodgingAddress.County;
+            updateThisLodgingAddress.City = newLodgingAddress.City;
+            updateThisLodgingAddress.Street = newLodgingAddress.Street;
+            updateThisLodgingAddress.PostalCode = newLodgingAddress.PostalCode;
+            updateThisLodgingAddress.HouseNumber = newLodgingAddress.HouseNumber;
+            updateThisLodgingAddress.Floor = newLodgingAddress.Floor;
+            updateThisLodgingAddress.DoorNumber = newLodgingAddress.DoorNumber;
+
+            await _lodgingAddressRepository.UpdateAsync(updateThisLodgingAddress);
+
+            return new SuccessfulResult<bool>(true);
         }
 
-        public Task<Result<bool>> UpdateReservationWindow(ReservationWindow newReservationWindow, int oldReservationWindowId, int resourceAccessorId)
+        public async Task<Result<bool>> UpdateReservationWindow(ReservationWindow newReservationWindow, int oldReservationWindowId, int resourceAccessorId)
         {
-            throw new NotImplementedException();
+            ReservationWindow updateThisReservationWindow = (await GetReservationWindow(id: oldReservationWindowId)).Data.FirstOrDefault();
+            if (updateThisReservationWindow == null)
+                return new NotFoundResult<bool>(Errors.RESERVATION_WINDOW_NOT_FOUND);
+
+            Lodging lodging = (await GetLodging(id: updateThisReservationWindow.LodgingId)).Data.FirstOrDefault();
+            if (lodging == null)
+                return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
+
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
+            if (!authenticationResult.Data)
+                return authenticationResult;
+
+            updateThisReservationWindow.From = newReservationWindow.From;
+            updateThisReservationWindow.To = newReservationWindow.To;
+
+            await _reservationWindowRepository.UpdateAsync(updateThisReservationWindow);
+
+            return new SuccessfulResult<bool>(true);
         }
 
-        public Task<Result<bool>> UpdateRoom(Room newRoom, int oldRoomId, int resourceAccessorId)
+        public async Task<Result<bool>> UpdateRoom(Room newRoom, int oldRoomId, int resourceAccessorId)
         {
-            throw new NotImplementedException();
+            Room updateThisRoom = (await GetRoom(id: oldRoomId)).Data.FirstOrDefault();
+            if (updateThisRoom == null)
+                return new NotFoundResult<bool>(Errors.ROOM_NOT_FOUND);
+
+            Lodging lodging = (await GetLodging(id: updateThisRoom.LodgingId)).Data.FirstOrDefault();
+            if (lodging == null)
+                return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
+
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
+            if (!authenticationResult.Data)
+                return authenticationResult;
+
+            updateThisRoom.CurrencyId = newRoom.CurrencyId;
+            updateThisRoom.AdultCapacity = newRoom.AdultCapacity;
+            updateThisRoom.ChildrenCapacity = newRoom.ChildrenCapacity;
+            updateThisRoom.Price = newRoom.Price;
+            updateThisRoom.CurrencyId = newRoom.CurrencyId;
+
+            await _roomRepository.UpdateAsync(updateThisRoom);
+
+            return new SuccessfulResult<bool>(true);
         }
         #endregion
     }
