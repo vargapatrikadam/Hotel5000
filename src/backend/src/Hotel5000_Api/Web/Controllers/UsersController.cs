@@ -61,11 +61,12 @@ namespace Web.Controllers
         [HttpGet("contacts")]
         [ProducesResponseType(typeof(ICollection<ContactDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
-        public async Task<IActionResult> GetContacts([FromQuery] int? userId = null,
+        public async Task<IActionResult> GetContacts([FromQuery] int? id = null,
+            [FromQuery] int? userId = null,
             [FromQuery] string phoneNumber = null,
             [FromQuery] string username = null)
         {
-            var result = await _userManagementService.GetContacts(userId, phoneNumber, username);
+            var result = await _userManagementService.GetContacts(id, userId, phoneNumber, username);
 
             return Ok(_mapper.Map<ICollection<ContactDto>>(result.Data));
         }
