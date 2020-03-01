@@ -64,7 +64,16 @@ namespace Core.Services.LodgingDomain
 
             foreach (LodgingAddress address in lodging.LodgingAddresses)
             {
-                await AddLodgingAddress(address, address.Country.Code, resourceAccessorId);
+                var result = await AddLodgingAddress(address, address.Country.Code, resourceAccessorId);
+                if (result.ResultType != ResultType.Ok)
+                    return result;
+            }
+
+            foreach (Room room in lodging.Rooms)
+            {
+                var result = await AddRoom(room, resourceAccessorId);
+                if (result.ResultType != ResultType.Ok)
+                    return result;
             }
 
             return new SuccessfulResult<bool>(true);
@@ -131,30 +140,89 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public Task<Result<bool>> AddRoom(Room room, int resourceAccessorId)
+        public async Task<Result<bool>> AddRoom(Room room, int resourceAccessorId)
         {
-            throw new NotImplementedException();
+            Lodging lodging = ((await GetLodging(id: room.LodgingId)).Data).FirstOrDefault();
+
+            if (lodging == null)
+                return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
+
+            Result<bool> authorizationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
+
+            if (!authorizationResult.Data)
+                return authorizationResult;
+
+            room.Lodging = null;
+            room.LodgingId = lodging.Id;
+
+            if (room.ChildrenCapacity < 0 ||
+                room.AdultCapacity < 0)
+                return new InvalidResult<bool>(Errors.INVALID_ROOM_CAPACITY);
+
+            await _roomRepository.AddAsync(room);
+
+            return new SuccessfulResult<bool>(true);
         }
         #endregion
         #region get
-        public Task<Result<IReadOnlyList<Lodging>>> GetLodging(int? id = null, string name = null, LodgingTypes? lodgingType = null)
+        public async Task<Result<IReadOnlyList<Lodging>>> GetLodging(int? id = null, string name = null, LodgingTypes? lodgingType = null, int? skip = null, int? take = null)
         {
-            throw new NotImplementedException();
+            ISpecification<Lodging> specification = new Specification<Lodging>();
+            specification.ApplyFilter(p =>
+                (!id.HasValue || p.Id == id.Value) &&
+                (name == null || p.Name == name) &&
+                (lodgingType == null || p.LodgingType.Name == lodgingType))
+                .AddInclude(p => p.LodgingType)
+                .AddInclude(p => p.User);
+
+            if (skip.HasValue && take.HasValue)
+                specification.ApplyPaging(skip.Value, take.Value);
+
+            return new SuccessfulResult<IReadOnlyList<Lodging>>(await _lodgingRepository.GetAsync(specification));
         }
 
-        public Task<Result<IReadOnlyList<LodgingAddress>>> GetLodgingAddress(int? id = null, string countryCode = null, string countryName = null, string county = null, string city = null, string postalCode = null, string lodgingName = null)
+        public async Task<Result<IReadOnlyList<LodgingAddress>>> GetLodgingAddress(int? id = null, int? lodgingId = null, string countryCode = null, string countryName = null, string county = null, string city = null, string postalCode = null, string lodgingName = null)
         {
-            throw new NotImplementedException();
+            ISpecification<LodgingAddress> specification = new Specification<LodgingAddress>();
+            specification.ApplyFilter(p =>
+                (!id.HasValue || p.Id == id.Value) &&
+                (!lodgingId.HasValue || p.LodgingId == lodgingId.Value) &&
+                (countryCode == null || p.Country.Code == countryCode) &&
+                (countryName == null || p.Country.Name == countryName) &&
+                (county == null || p.County == county) &&
+                (city == null || p.City == city) &&
+                (postalCode == null || p.PostalCode == postalCode) &&
+                (lodgingName == null || p.Lodging.Name == lodgingName))
+                .AddInclude(p => p.Country)
+                .AddInclude(p => p.Lodging);
+
+            return new SuccessfulResult<IReadOnlyList<LodgingAddress>>(await _lodgingAddressRepository.GetAsync(specification));
         }
 
-        public Task<Result<IReadOnlyList<ReservationWindow>>> GetReservationWindow(int? id = null, DateTime? from = null, DateTime? to = null)
+        public async Task<Result<IReadOnlyList<ReservationWindow>>> GetReservationWindow(int? id = null, int? lodgingId = null, DateTime? isAfter = null, DateTime? isBefore = null)
         {
-            throw new NotImplementedException();
+            ISpecification<ReservationWindow> specification = new Specification<ReservationWindow>();
+            specification.ApplyFilter(p =>
+                (!id.HasValue || p.Id == id.Value) &&
+                (!lodgingId.HasValue || p.LodgingId == lodgingId.Value) &&
+                (!isAfter.HasValue || p.From > isAfter.Value) &&
+                (!isBefore.HasValue || p.To < isBefore.Value));
+
+            return new SuccessfulResult<IReadOnlyList<ReservationWindow>>(await _reservationWindowRepository.GetAsync(specification));
         }
 
-        public Task<Result<IReadOnlyList<Room>>> GetRoom(int? id = null, int? adultCapacity = null, int? childrenCapacity = null, double? priceMin = null, double? priceMax = null)
+        public async Task<Result<IReadOnlyList<Room>>> GetRoom(int? id = null, int? lodgingId = null, int? adultCapacity = null, int? childrenCapacity = null, double? priceMin = null, double? priceMax = null)
         {
-            throw new NotImplementedException();
+            ISpecification<Room> specification = new Specification<Room>();
+            specification.ApplyFilter(p =>
+                (!id.HasValue || p.Id == id.Value) &&
+                (!lodgingId.HasValue || p.LodgingId == lodgingId.Value) &&
+                (!adultCapacity.HasValue || p.AdultCapacity == adultCapacity.Value) &&
+                (!childrenCapacity.HasValue || p.ChildrenCapacity == childrenCapacity.Value) &&
+                (!priceMin.HasValue || p.Price <= priceMin.Value) &&
+                (!priceMax.HasValue || p.Price >= priceMax.Value));
+
+            return new SuccessfulResult<IReadOnlyList<Room>>(await _roomRepository.GetAsync(specification));
         }
         #endregion
         #region remove

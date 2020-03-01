@@ -10,8 +10,9 @@ namespace Core.Interfaces.LodgingDomain.LodgingManagementService
     public interface IReservationWindowService
     {
         Task<Result<IReadOnlyList<ReservationWindow>>> GetReservationWindow(int? id = null,
-            DateTime? from = null,
-            DateTime? to = null);
+            int? lodgingId = null,
+            DateTime? isAfter = null,
+            DateTime? isBefore = null);
 
         Task<Result<bool>> UpdateReservationWindow(ReservationWindow newReservationWindow,
             int oldReservationWindowId,

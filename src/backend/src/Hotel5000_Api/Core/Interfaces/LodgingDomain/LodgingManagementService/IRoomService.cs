@@ -10,6 +10,7 @@ namespace Core.Interfaces.LodgingDomain.LodgingManagementService
     public interface IRoomService
     {
         Task<Result<IReadOnlyList<Room>>> GetRoom(int? id = null,
+            int? lodgingId = null,
             int? adultCapacity = null,
             int? childrenCapacity = null,
             double ? priceMin = null,

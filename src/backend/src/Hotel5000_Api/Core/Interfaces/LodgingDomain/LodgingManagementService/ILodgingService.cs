@@ -12,7 +12,9 @@ namespace Core.Interfaces.LodgingDomain.LodgingManagementService
     {
         Task<Result<IReadOnlyList<Lodging>>> GetLodging(int? id = null,
             string name = null,
-            LodgingTypes? lodgingType = null);
+            LodgingTypes? lodgingType = null,
+            int? skip = null,
+            int? take = null);
 
         Task<Result<bool>> UpdateLodging(Lodging newLodging,
             int oldLodgingId,

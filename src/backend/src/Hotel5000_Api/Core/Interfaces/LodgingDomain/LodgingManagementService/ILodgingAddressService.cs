@@ -10,6 +10,7 @@ namespace Core.Interfaces.LodgingDomain.LodgingManagementService
     public interface ILodgingAddressService
     {
         Task<Result<IReadOnlyList<LodgingAddress>>> GetLodgingAddress(int? id = null,
+            int? lodgingId = null,
             string countryCode = null,
             string countryName = null,
             string county = null,
