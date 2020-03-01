@@ -226,24 +226,72 @@ namespace Core.Services.LodgingDomain
         }
         #endregion
         #region remove
-        public Task<Result<bool>> RemoveLodging(int lodgingId, int resourceAccessorId)
+        public async Task<Result<bool>> RemoveLodging(int lodgingId, int resourceAccessorId)
         {
-            throw new NotImplementedException();
+            Lodging removeThisLodging = (await GetLodging(id: lodgingId)).Data.FirstOrDefault();
+            if (removeThisLodging == null)
+                return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
+
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(removeThisLodging.UserId, resourceAccessorId);
+            if (!authenticationResult.Data)
+                return authenticationResult;
+
+            await _lodgingRepository.DeleteAsync(removeThisLodging);
+            return new SuccessfulResult<bool>(true);
         }
 
-        public Task<Result<bool>> RemoveLodgingAddress(int lodgingAddressId, int resourceAccessorId)
+        public async Task<Result<bool>> RemoveLodgingAddress(int lodgingAddressId, int resourceAccessorId)
         {
-            throw new NotImplementedException();
+            LodgingAddress removeThisLodgingAddress = (await GetLodgingAddress(id: lodgingAddressId)).Data.FirstOrDefault();
+            if (removeThisLodgingAddress == null)
+                return new NotFoundResult<bool>(Errors.LODGING_ADDRESS_NOT_FOUND);
+
+            Lodging lodging = (await GetLodging(id: removeThisLodgingAddress.LodgingId)).Data.FirstOrDefault();
+            if (lodging == null)
+                return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
+
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
+            if (!authenticationResult.Data)
+                return authenticationResult;
+
+            await _lodgingAddressRepository.DeleteAsync(removeThisLodgingAddress);
+            return new SuccessfulResult<bool>(true);
         }
 
-        public Task<Result<bool>> RemoveReservationWindow(int reservationWindowId, int resourceAccessorId)
+        public async Task<Result<bool>> RemoveReservationWindow(int reservationWindowId, int resourceAccessorId)
         {
-            throw new NotImplementedException();
+            ReservationWindow removeThisReservationWindow = (await GetReservationWindow(id: reservationWindowId)).Data.FirstOrDefault();
+            if (removeThisReservationWindow == null)
+                return new NotFoundResult<bool>(Errors.RESERVATION_WINDOW_NOT_FOUND);
+
+            Lodging lodging = (await GetLodging(id: removeThisReservationWindow.LodgingId)).Data.FirstOrDefault();
+            if (lodging == null)
+                return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
+
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
+            if (!authenticationResult.Data)
+                return authenticationResult;
+
+            await _reservationWindowRepository.DeleteAsync(removeThisReservationWindow);
+            return new SuccessfulResult<bool>(true);
         }
 
-        public Task<Result<bool>> RemoveRoom(int roomId, int resourceAccessorId)
+        public async Task<Result<bool>> RemoveRoom(int roomId, int resourceAccessorId)
         {
-            throw new NotImplementedException();
+            Room removeThisRoom = (await GetRoom(id: roomId)).Data.FirstOrDefault();
+            if (removeThisRoom == null)
+                return new NotFoundResult<bool>(Errors.ROOM_NOT_FOUND);
+
+            Lodging lodging = (await GetLodging(id: removeThisRoom.LodgingId)).Data.FirstOrDefault();
+            if (lodging == null)
+                return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
+
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
+            if (!authenticationResult.Data)
+                return authenticationResult;
+
+            await _roomRepository.DeleteAsync(removeThisRoom);
+            return new SuccessfulResult<bool>(true);
         }
         #endregion
         #region update
