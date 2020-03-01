@@ -15,10 +15,31 @@ class User extends Component {
             nextPageData: {},
             pageNumber: 1,
             resultPerPage: 2,
-            username: ""
+            username: "",
+            newUserName: "",
+            newPassWord: "",
+            newEmail: "",
+            newFirstName: "",
+            newLastName: "",
+            newRole: ""
         }
     }
 
+    setDefaultOFNewData = (userId) => {
+        this.state.currentPageData.map(user => {
+            if(user.id === userId){
+                this.setState({
+                    newUserName: user.username,
+                    newPassWord: user.password,
+                    newEmail: user.email,
+                    newFirstName: user.firstName,
+                    newLastName: user.lastName,
+                    newRole: user.role
+                })
+            }
+            return user
+        })
+    }
 
     increasePageNumber = () => {
         if(Array.from(this.state.nextPageData).length !== 0)
@@ -97,6 +118,71 @@ class User extends Component {
             })
     }
 
+    handleUserNameChanged = (username) => {
+        this.setState({newUserName: username.trget.value})
+    }
+    
+    handlePassWordChanged = (password) => {
+        this.setState({newPassWord: password.target.value})
+    }
+
+    handleEmailChanged = (email) => {
+        this.setState({newEmail: email.target.value})
+    }
+
+    handleFirstNameChanged = (firstName) => {
+        this.setState({newFirstName: firstName})
+    }
+
+    handleLastNameChanged = (lastName) => {
+        this.setState({newLastName: lastName})
+    }
+
+    handleRoleChanged = (role) => {
+        this.setState({newRole: role.target.value})
+    }
+
+    modifyUser = (userId, username, password, email, firstName, lastName, role) => {
+
+        this.setDefaultOFNewData(userId)
+
+        const data = {
+            "id": userId,
+            "username": username,
+            "password": password,
+            "email": email,
+            "firstName": firstName,
+            "lastName": lastName,
+            "role": role
+        }
+
+        fetch("https://localhost:5000/api/users/" + userId, {
+            method: 'PUT',
+            mode: 'cors',
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+            },
+            body: JSON.stringify(data)
+        })
+            .then(resp => resp.status)
+            .then(responseStatus => {
+                if(responseStatus === 200){
+                    this.state.currentPageData.map(user => {
+                        if(user.id === userId){
+                            user.username = this.state.newUserName
+                            user.password = this.state.newPassWord
+                            user.email = this.state.newEmail
+                            user.firstName = this.state.newFirstName
+                            user.lastName = this.state.newLastName
+                            user.role = this.state.newRole
+                        }
+                        return user
+                    })
+                }
+            })
+    }
+
     renderUsers = () => {
         return Array.from(this.state.currentPageData).map((user, index, array) => {
             return (
@@ -136,6 +222,46 @@ class User extends Component {
                                     <Accordion.Collapse eventKey={user.id}>
                                         <Card.Body>
                                             <ApprovingData id={user.id}/>
+                                        </Card.Body>
+                                    </Accordion.Collapse>
+                                </Card>
+                            </Accordion>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                            <Accordion>
+                                <Card>
+                                    <Card.Header>
+                                        <Accordion.Toggle as={Button} variant="outline-dark" eventKey={user.id}>
+                                            Modify user
+                                        </Accordion.Toggle>
+                                    </Card.Header>
+                                    <Accordion.Collapse eventKey={user.id}>
+                                        <Card.Body>
+                                            <div>
+                                                <label style={{display: 'inline-block'}}>Username:</label>
+                                                <input type="text" style={{display: 'inline-block'}} onChange={this.handleUserNameChanged}/>
+                                            </div>
+                                            <div>
+                                                <label style={{display: 'inline-block'}}>Password:</label>
+                                                <input type="password" style={{display: 'inline-block'}} onChange={this.handlePasswordChanged}/>
+                                            </div>
+                                            <div>
+                                                <label style={{display: 'inline-block'}}>E-mail:</label>
+                                                <input type="text" style={{display: 'inline-block'}} onChange={this.handleEmailChanged}/>
+                                            </div>
+                                            <div>
+                                                <label style={{display: 'inline-block'}}>First name:</label>
+                                                <input type="text" style={{display: 'inline-block'}} onChange={this.handleFirstNameChanged}/>
+                                            </div>
+                                            <div>
+                                                <label style={{display: 'inline-block'}}>Last name:</label>
+                                                <input type="text" style={{display: 'inline-block'}} onChange={this.handleLastNameChanged}/>
+                                            </div>
+                                            <div>
+                                                <label style={{display: 'inline-block'}}>Role:</label>
+                                                <input type="text" style={{display: 'inline-block'}} onChange={this.handleRoleChanged}/>
+                                            </div>
+                                            <Button onClick={this.modifyUser(user.id, user.username, user.password, user.email, user.firstName, user.lastname, user.role)}>Modify</Button>
                                         </Card.Body>
                                     </Accordion.Collapse>
                                 </Card>
