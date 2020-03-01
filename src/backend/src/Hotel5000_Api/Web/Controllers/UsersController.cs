@@ -145,6 +145,21 @@ namespace Web.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Updates a contact 
+        /// </summary>
+        /// <param name="updatedContact">this contains the new data for contact</param>
+        /// <param name="contactId">this is the unique id of the contact we modify</param>
+        /// <returns></returns>
+        /// /// <remarks>
+        /// Sample request:
+        ///
+        ///     PUT api/users/contacts/2
+        ///     {
+        ///        "mobileNumber": "06 30 555 555"
+        ///     }
+        ///
+        /// </remarks>
         [HttpPut("contacts/{contactId}")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
