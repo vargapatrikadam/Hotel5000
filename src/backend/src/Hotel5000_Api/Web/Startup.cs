@@ -23,6 +23,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -87,6 +89,9 @@ namespace Web
                         Array.Empty<string>()
                     }
                 });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                s.IncludeXmlComments(xmlPath);
             });
 
             #endregion
@@ -137,9 +142,11 @@ namespace Web
             services.AddScoped<IAsyncRepository<Token>, LodgingDbRepository<Token>>();
             services.AddScoped<IAsyncRepository<ApprovingData>, LodgingDbRepository<ApprovingData>>();
             services.AddScoped<IAsyncRepository<Contact>, LodgingDbRepository<Contact>>();
+            services.AddScoped<IAsyncRepository<LodgingType>, LodgingDbRepository<LodgingType>>();
             services.AddScoped<IAsyncRepository<Lodging>, LodgingDbRepository<Lodging>>();
             services.AddScoped<IAsyncRepository<Country>, LodgingDbRepository<Country>>();
             services.AddScoped<IAsyncRepository<LodgingAddress>, LodgingDbRepository<LodgingAddress>>();
+            services.AddScoped<IAsyncRepository<Currency>, LodgingDbRepository<Currency>>();
             services.AddScoped<IAsyncRepository<Room>, LodgingDbRepository<Room>>();
             services.AddScoped<IAsyncRepository<ReservationWindow>, LodgingDbRepository<ReservationWindow>>();
             services.AddScoped<IAsyncRepository<PaymentType>, LodgingDbRepository<PaymentType>>();
