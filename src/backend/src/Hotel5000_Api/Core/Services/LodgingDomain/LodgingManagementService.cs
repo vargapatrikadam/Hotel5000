@@ -15,16 +15,16 @@ namespace Core.Services.LodgingDomain
 {
     public class LodgingManagementService : ILodgingManagementService
     {
-        private readonly IAsyncRepository<Lodging> _lodgingRepository;
         private readonly IAuthenticationService _authenticationService;
+        private readonly IAsyncRepository<Lodging> _lodgingRepository;
         private readonly IAsyncRepository<LodgingType> _lodgingTypeRepository;
         private readonly IAsyncRepository<LodgingAddress> _lodgingAddressRepository;
         private readonly IAsyncRepository<ReservationWindow> _reservationWindowRepository;
         private readonly IAsyncRepository<Room> _roomRepository;
         private readonly IAsyncRepository<Country> _countryRepository;
         private readonly IAsyncRepository<Currency> _currencyRepository;
-        public LodgingManagementService(IAsyncRepository<Lodging> lodgingRepository,
-            IAuthenticationService authenticationService,
+        public LodgingManagementService(IAuthenticationService authenticationService,
+            IAsyncRepository<Lodging> lodgingRepository,
             IAsyncRepository<LodgingType> lodgingTypeRepository,
             IAsyncRepository<LodgingAddress> lodgingAddressRepository,
             IAsyncRepository<ReservationWindow> reservationWindowRepository,
@@ -32,8 +32,8 @@ namespace Core.Services.LodgingDomain
             IAsyncRepository<Country> countryRepository,
             IAsyncRepository<Currency> currecyRepository)
         {
-            _lodgingRepository = lodgingRepository;
             _authenticationService = authenticationService;
+            _lodgingRepository = lodgingRepository;
             _lodgingTypeRepository = lodgingTypeRepository;
             _lodgingAddressRepository = lodgingAddressRepository;
             _reservationWindowRepository = reservationWindowRepository;
@@ -90,6 +90,14 @@ namespace Core.Services.LodgingDomain
 
             if (!authorizationResult.Data)
                 return authorizationResult;
+
+            if (await _lodgingAddressRepository.AnyAsync(p =>
+                 p.CountryId == lodgingAddress.CountryId &&
+                 p.County == lodgingAddress.County &&
+                 p.City == lodgingAddress.City &&
+                 p.PostalCode == lodgingAddress.PostalCode &&
+                 p.Street == lodgingAddress.Street))
+                return new ConflictResult<bool>(Errors.ADDRESS_NOT_UNIQUE);
 
             Country country = (await GetCountry(code: countryCode)).Data.FirstOrDefault();
             if (country == null) 
@@ -167,7 +175,6 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
         #endregion
-
         #region get
 
         public async Task<Result<IReadOnlyList<Country>>> GetCountry(int? id = null, string name = null, string code = null)
@@ -350,6 +357,14 @@ namespace Core.Services.LodgingDomain
             Result<bool> authenticationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
             if (!authenticationResult.Data)
                 return authenticationResult;
+
+            if (await _lodgingAddressRepository.AnyAsync(p =>
+                 p.CountryId == newLodgingAddress.CountryId &&
+                 p.County == newLodgingAddress.County &&
+                 p.City == newLodgingAddress.City &&
+                 p.PostalCode == newLodgingAddress.PostalCode &&
+                 p.Street == newLodgingAddress.Street))
+                return new ConflictResult<bool>(Errors.ADDRESS_NOT_UNIQUE);
 
             updateThisLodgingAddress.CountryId = newLodgingAddress.CountryId;
             updateThisLodgingAddress.County = newLodgingAddress.County;

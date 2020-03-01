@@ -16,7 +16,7 @@ namespace Core.Interfaces.LodgingDomain.UserManagementService
             int? skip = null,
             int? take = null);
         Task<Result<bool>> UpdateUser(User newUser,
-            int oldUserId, 
+            int userId, 
             int resourceAccessorId);
         Task<Result<bool>> RemoveUser(int userId, 
             int resourceAccessorId);

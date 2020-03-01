@@ -114,7 +114,9 @@ namespace Core.Services.LodgingDomain
                 (!id.HasValue || p.Id == id) && 
                 (username == null || p.Username.Contains(username)) && 
                 (email == null || p.Email.Contains(email)))
-                .AddInclude(p => p.Role);
+                .AddInclude(p => p.Role)
+                .AddInclude(p => p.ApprovingData)
+                .AddInclude(p => p.Contacts);
 
             if (skip.HasValue && take.HasValue)
                 specification.ApplyPaging(skip.Value, take.Value);
@@ -145,13 +147,15 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<IReadOnlyList<ApprovingData>>(approvingDatas);
         }
 
-        public async Task<Result<IReadOnlyList<Contact>>> GetContacts(int? userId = null, 
+        public async Task<Result<IReadOnlyList<Contact>>> GetContacts(int? id = null,
+            int? userId = null, 
             string phoneNumber = null, 
             string username = null)
         {
             ISpecification<Contact> specification = new Specification<Contact>();
             specification.ApplyFilter(p =>
-                (!userId.HasValue || p.UserId == userId) &&
+                (!id.HasValue || p.Id == id.Value) &&
+                (!userId.HasValue || p.UserId == userId.Value) &&
                 (phoneNumber == null || p.MobileNumber.Contains(phoneNumber)) &&
                 (username == null || p.User.Username.Contains(phoneNumber)))
                 .AddInclude(i => i.User);
@@ -161,8 +165,7 @@ namespace Core.Services.LodgingDomain
         public async Task<Result<bool>> RemoveApprovingData(int approvingDataOwnerId, 
             int resourceAccessorId)
         {
-            ApprovingData approvingData = (await _approvingDataRepository.GetAsync(
-                    new Specification<ApprovingData>().ApplyFilter(p => p.UserId == approvingDataOwnerId))).FirstOrDefault();
+            ApprovingData approvingData = (await GetApprovingData(approvingDataOwnerId: approvingDataOwnerId)).Data.FirstOrDefault();
 
             Result<bool> authenticationResult = await _authenticationService.IsAuthorized(approvingData.UserId, resourceAccessorId);
             if (!authenticationResult.Data)
@@ -178,10 +181,7 @@ namespace Core.Services.LodgingDomain
             int contactId, 
             int resourceAccessorId)
         {
-            //Contact contact = (await _contactRepository.GetAsync(
-            //        new Specification<Contact>().ApplyFilter(p => p.Id == contactId))).FirstOrDefault();
-            User user = (await _userRepository.GetAsync(
-                    new Specification<User>().ApplyFilter(p => p.Id == contactOwnerId).AddInclude(p => p.Contacts))).FirstOrDefault();
+            User user = (await GetUsers(id: contactOwnerId)).Data.FirstOrDefault();
 
             Result<bool> authenticationResult = await _authenticationService.IsAuthorized(user.Id, resourceAccessorId);
             if (!authenticationResult.Data)
@@ -199,8 +199,7 @@ namespace Core.Services.LodgingDomain
         public async Task<Result<bool>> RemoveUser(int userId, 
             int resourceAccessorId)
         {
-            User user = (await _userRepository.GetAsync(
-                    new Specification<User>().ApplyFilter(p => p.Id == userId))).FirstOrDefault();
+            User user = (await GetUsers(id: userId)).Data.FirstOrDefault();
 
             Result<bool> authenticationResult = await _authenticationService.IsAuthorized(user.Id, resourceAccessorId);
             if (!authenticationResult.Data)
@@ -217,88 +216,85 @@ namespace Core.Services.LodgingDomain
             int approvingDataId, 
             int resourceAccessorId)
         {
-            ApprovingData oldApprovingData = (await _approvingDataRepository.GetAsync(
-                    new Specification<ApprovingData>().ApplyFilter(p => p.Id == approvingDataId))).FirstOrDefault();
+            ApprovingData updateThisApprovingData = (await GetApprovingData(approvingDataId: approvingDataId)).Data.FirstOrDefault();
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(oldApprovingData.UserId, resourceAccessorId);
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(updateThisApprovingData.UserId, resourceAccessorId);
             if (!authenticationResult.Data)
                 return authenticationResult;
 
-            if (oldApprovingData == null)
+            if (updateThisApprovingData == null)
                 return new NotFoundResult<bool>(Errors.APPROVING_DATA_NOT_FOUND);
 
-            if ((oldApprovingData.IdentityNumber != newApprovingData.IdentityNumber && 
+            if ((updateThisApprovingData.IdentityNumber != newApprovingData.IdentityNumber && 
                     (await _approvingDataRepository.AnyAsync(p => p.IdentityNumber == newApprovingData.IdentityNumber))) ||
-                (oldApprovingData.RegistrationNumber != newApprovingData.RegistrationNumber && 
+                (updateThisApprovingData.RegistrationNumber != newApprovingData.RegistrationNumber && 
                     (await _approvingDataRepository.AnyAsync(p => p.RegistrationNumber == newApprovingData.RegistrationNumber))) ||
-                (oldApprovingData.TaxNumber != newApprovingData.TaxNumber &&
+                (updateThisApprovingData.TaxNumber != newApprovingData.TaxNumber &&
                     (await _approvingDataRepository.AnyAsync(p => p.TaxNumber == newApprovingData.TaxNumber))))
                 return new ConflictResult<bool>(Errors.APPROVING_DATA_NOT_UNIQUE);
 
-            oldApprovingData.IdentityNumber = newApprovingData.IdentityNumber;
-            oldApprovingData.RegistrationNumber = newApprovingData.RegistrationNumber;
-            oldApprovingData.TaxNumber = newApprovingData.TaxNumber;
+            updateThisApprovingData.IdentityNumber = newApprovingData.IdentityNumber;
+            updateThisApprovingData.RegistrationNumber = newApprovingData.RegistrationNumber;
+            updateThisApprovingData.TaxNumber = newApprovingData.TaxNumber;
 
-            await _approvingDataRepository.UpdateAsync(oldApprovingData);
+            await _approvingDataRepository.UpdateAsync(updateThisApprovingData);
 
             return new SuccessfulResult<bool>(true);
         }
 
         public async Task<Result<bool>> UpdateContact(Contact newContact, 
-            int oldContactId, 
+            int contactId, 
             int resourceAccessorId)
         {
-            Contact oldContact = (await _contactRepository.GetAsync(
-                    new Specification<Contact>().ApplyFilter(p => p.Id == oldContactId))).FirstOrDefault();
+            Contact updateThisContact = (await GetContacts(id: contactId)).Data.FirstOrDefault();
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(oldContact.UserId, resourceAccessorId);
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(updateThisContact.UserId, resourceAccessorId);
             if (!authenticationResult.Data)
                 return authenticationResult;
 
-            if (oldContact == null)
+            if (updateThisContact == null)
                 return new NotFoundResult<bool>(Errors.CONTACT_NOT_FOUND);
 
-            if ((oldContact.MobileNumber != newContact.MobileNumber) && 
+            if ((updateThisContact.MobileNumber != newContact.MobileNumber) && 
                 (await _contactRepository.AnyAsync(p => p.MobileNumber == newContact.MobileNumber)))
                 return new ConflictResult<bool>(Errors.CONTACT_NOT_UNIQUE);
 
-            oldContact.MobileNumber = newContact.MobileNumber;
+            updateThisContact.MobileNumber = newContact.MobileNumber;
 
-            await _contactRepository.UpdateAsync(oldContact);
+            await _contactRepository.UpdateAsync(updateThisContact);
 
             return new SuccessfulResult<bool>(true);
         }
 
         public async Task<Result<bool>> UpdateUser(User newUser, 
-            int oldUserId, 
+            int userId, 
             int resourceAccessorId)
         {
-            User oldUser = (await _userRepository.GetAsync(
-                new Specification<User>().ApplyFilter(p => p.Id == oldUserId))).FirstOrDefault();
+            User updateThisUser = (await GetUsers(id: userId)).Data.FirstOrDefault();
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(oldUser.Id, resourceAccessorId);
+            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(updateThisUser.Id, resourceAccessorId);
             if (!authenticationResult.Data)
                 return authenticationResult;
 
-            if (oldUser == null)
+            if (updateThisUser == null)
                 return new NotFoundResult<bool>(Errors.USER_NOT_FOUND);
 
-            if ((oldUser.Email != newUser.Email) && await _userRepository.AnyAsync(p => p.Email == newUser.Email))
+            if ((updateThisUser.Email != newUser.Email) && await _userRepository.AnyAsync(p => p.Email == newUser.Email))
                 return new ConflictResult<bool>(Errors.EMAIL_NOT_UNIQUE);
 
-            if ((oldUser.Username != newUser.Username) && await _userRepository.AnyAsync(p => p.Username == newUser.Username))
+            if ((updateThisUser.Username != newUser.Username) && await _userRepository.AnyAsync(p => p.Username == newUser.Username))
                 return new ConflictResult<bool>(Errors.USERNAME_NOT_UNIQUE);
 
             newUser.Email.ValidateEmail(out var errorMessage);
             if (errorMessage != null)
                 return new InvalidResult<bool>(errorMessage.Value);
 
-            oldUser.Email = newUser.Email;
-            oldUser.FirstName = newUser.FirstName;
-            oldUser.LastName = newUser.LastName;
-            oldUser.Username = newUser.Username;
+            updateThisUser.Email = newUser.Email;
+            updateThisUser.FirstName = newUser.FirstName;
+            updateThisUser.LastName = newUser.LastName;
+            updateThisUser.Username = newUser.Username;
 
-            await _userRepository.UpdateAsync(oldUser);
+            await _userRepository.UpdateAsync(updateThisUser);
 
             return new SuccessfulResult<bool>(true);
         }
@@ -307,8 +303,7 @@ namespace Core.Services.LodgingDomain
             string oldPassword, 
             string newPassword)
         {
-            User user = (await _userRepository.GetAsync(
-                new Specification<User>().ApplyFilter(p => p.Id == userId))).FirstOrDefault();
+            User user = (await GetUsers(id: userId)).Data.FirstOrDefault();
 
             if (user == null)
                 return new NotFoundResult<bool>(Errors.USER_NOT_FOUND);

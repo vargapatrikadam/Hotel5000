@@ -11,7 +11,7 @@ namespace Core.Interfaces.LodgingDomain.UserManagementService
     {
         Task<Result<bool>> AddContact(Contact contact, int resourceAccessorId);
         Task<Result<bool>> RemoveContact(int contactOwnerId, int contactId, int resourceAccessorId);
-        Task<Result<bool>> UpdateContact(Contact newContact, int oldContactId, int resourceAccessorId);
-        Task<Result<IReadOnlyList<Contact>>> GetContacts(int? userId = null, string phoneNumber = null, string username = null);
+        Task<Result<bool>> UpdateContact(Contact newContact, int contactId, int resourceAccessorId);
+        Task<Result<IReadOnlyList<Contact>>> GetContacts(int? id = null, int? userId = null, string phoneNumber = null, string username = null);
     }
 }
