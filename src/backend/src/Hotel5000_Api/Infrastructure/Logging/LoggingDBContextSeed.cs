@@ -9,6 +9,7 @@ namespace Infrastructure.Logging
             //if(isProduction)
             //    context.Database.Migrate();
             context.Database.Migrate();
+            context.SaveChanges();
         }
     }
 }

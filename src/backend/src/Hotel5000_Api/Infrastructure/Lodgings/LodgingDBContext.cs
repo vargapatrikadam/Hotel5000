@@ -38,7 +38,6 @@ namespace Infrastructure.Lodgings
         public override int SaveChanges()
         {
             this.UpdateSoftDeleteStatuses();
-            //this.DetachAllEntries();
             return base.SaveChanges();
         }
 
@@ -46,7 +45,7 @@ namespace Infrastructure.Lodgings
             CancellationToken cancellationToken = default)
         {
             this.UpdateSoftDeleteStatuses();
-            //this.DetachAllEntries();
+            this.UpdateBaseEntityDateColumns();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
     }

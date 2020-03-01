@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Logging.Migrations
 {
     [DbContext(typeof(LoggingDbContext))]
-    [Migration("20200210091823_init_logging")]
+    [Migration("20200301215610_init_logging")]
     partial class init_logging
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,22 +31,18 @@ namespace Infrastructure.Logging.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("Message")
                         .IsRequired()
-                        .HasColumnType("nvarchar(1000)")
-                        .HasMaxLength(1000);
+                        .HasColumnType("nvarchar(max)")
+                        .HasMaxLength(10000);
 
                     b.Property<DateTime>("ModifiedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");

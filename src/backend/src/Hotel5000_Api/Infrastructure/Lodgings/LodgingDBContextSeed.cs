@@ -19,6 +19,8 @@ namespace Infrastructure.Lodgings
             //    context.Database.Migrate();
             context.Database.Migrate();
 
+            context.SaveChanges();
+
             if (!context.Roles.Any())
             {
                 context.Roles.AddRange(

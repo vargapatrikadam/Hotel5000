@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Lodgings.Migrations
 {
     [DbContext(typeof(LodgingDbContext))]
-    [Migration("20200210093220_init_lodging")]
+    [Migration("20200301215449_init_lodging")]
     partial class init_lodging
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,9 +31,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("IdentityNumber")
                         .HasColumnType("nvarchar(8)")
@@ -43,9 +41,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("ModifiedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("RegistrationNumber")
                         .HasColumnType("nvarchar(12)")
@@ -92,9 +88,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -105,9 +99,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasMaxLength(13);
 
                     b.Property<DateTime>("ModifiedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -135,9 +127,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -148,9 +138,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("ModifiedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -173,6 +161,39 @@ namespace Infrastructure.Lodgings.Migrations
                     b.ToTable("Countries");
                 });
 
+            modelBuilder.Entity("Core.Entities.LodgingEntities.Currency", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("AddedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
+
+                    b.HasKey("Id")
+                        .HasName("Currency_PK");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasName("Currency_Name_UQ");
+
+                    b.ToTable("Currencies");
+                });
+
             modelBuilder.Entity("Core.Entities.LodgingEntities.Lodging", b =>
                 {
                     b.Property<int>("Id")
@@ -183,9 +204,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -194,9 +213,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ModifiedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -226,9 +243,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -244,12 +259,10 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasMaxLength(100);
 
                     b.Property<string>("DoorNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(10)")
                         .HasMaxLength(10);
 
                     b.Property<string>("Floor")
-                        .IsRequired()
                         .HasColumnType("nvarchar(10)")
                         .HasMaxLength(10);
 
@@ -265,9 +278,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ModifiedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PostalCode")
                         .IsRequired()
@@ -282,9 +293,12 @@ namespace Infrastructure.Lodgings.Migrations
                     b.HasKey("Id")
                         .HasName("LodgingAddress_PK");
 
-                    b.HasAlternateKey("CountryId", "County", "City", "PostalCode", "Street", "HouseNumber", "Floor", "DoorNumber");
-
                     b.HasIndex("LodgingId");
+
+                    b.HasIndex("CountryId", "County", "City", "PostalCode", "Street")
+                        .IsUnique()
+                        .HasName("LodgingAddress_UQ")
+                        .HasFilter("IsDeleted = 0");
 
                     b.ToTable("LodgingAddresses");
                 });
@@ -299,17 +313,13 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("ModifiedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -323,7 +333,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasName("LodgingType_Name_UQ")
                         .HasFilter("IsDeleted = 0");
 
-                    b.ToTable("LodgingType");
+                    b.ToTable("LodgingTypes");
                 });
 
             modelBuilder.Entity("Core.Entities.LodgingEntities.PaymentType", b =>
@@ -336,17 +346,13 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("ModifiedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -373,9 +379,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -386,9 +390,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("ModifiedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("PaymentTypeId")
                         .HasColumnType("int");
@@ -411,17 +413,13 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("ModifiedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("ReservationId")
                         .HasColumnType("int");
@@ -460,9 +458,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("From")
                         .HasColumnType("datetime2");
@@ -474,9 +470,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ModifiedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("To")
                         .HasColumnType("datetime2");
@@ -499,17 +493,13 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("ModifiedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -536,14 +526,15 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("AdultCapacity")
                         .HasColumnType("int");
 
                     b.Property<int>("ChildrenCapacity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CurrencyId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -553,15 +544,15 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ModifiedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<float>("Price")
                         .HasColumnType("real");
 
                     b.HasKey("Id")
                         .HasName("Room_PK");
+
+                    b.HasIndex("CurrencyId");
 
                     b.HasIndex("LodgingId");
 
@@ -578,9 +569,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("datetime2");
@@ -589,9 +578,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("ModifiedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("RefreshToken")
                         .HasColumnType("nvarchar(45)")
@@ -621,9 +608,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("AddedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -644,9 +629,7 @@ namespace Infrastructure.Lodgings.Migrations
                         .HasMaxLength(100);
 
                     b.Property<DateTime>("ModifiedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("getdate()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -779,6 +762,13 @@ namespace Infrastructure.Lodgings.Migrations
 
             modelBuilder.Entity("Core.Entities.LodgingEntities.Room", b =>
                 {
+                    b.HasOne("Core.Entities.LodgingEntities.Currency", "Currency")
+                        .WithMany("Rooms")
+                        .HasForeignKey("CurrencyId")
+                        .HasConstraintName("Room_Currency_FK")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("Core.Entities.LodgingEntities.Lodging", "Lodging")
                         .WithMany("Rooms")
                         .HasForeignKey("LodgingId")

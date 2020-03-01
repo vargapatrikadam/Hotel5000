@@ -62,17 +62,6 @@ namespace Infrastructure.Helpers
             builder.Property(p => p.Id)
                 .UseIdentityColumn();
 
-            builder.Property(p => p.ModifiedAt)
-                .ValueGeneratedOnAddOrUpdate()
-                .HasComputedColumnSql("getdate()");
-
-            builder.Property(p => p.AddedAt)
-                .ValueGeneratedOnAdd()
-                .HasComputedColumnSql("getdate()");
-
-            builder.Property(p => p.AddedAt)
-                .Metadata.SetAfterSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Ignore);
-
             return builder;
         }
 
@@ -96,6 +85,24 @@ namespace Infrastructure.Helpers
             {
                 dynamic configurationInstance = Activator.CreateInstance(type);
                 builder.ApplyConfiguration(configurationInstance);
+            }
+        }
+        public static void UpdateBaseEntityDateColumns(this DbContext context)
+        {
+            var entries = context.ChangeTracker
+                .Entries()
+                .Where(e => e.Entity is BaseEntity && (
+                    e.State == EntityState.Added
+                    || e.State == EntityState.Modified));
+
+            foreach (var entityEntry in entries)
+            {
+                ((BaseEntity)entityEntry.Entity).ModifiedAt = DateTime.Now;
+
+                if (entityEntry.State == EntityState.Added)
+                {
+                    ((BaseEntity)entityEntry.Entity).AddedAt = DateTime.Now;
+                }
             }
         }
     }
