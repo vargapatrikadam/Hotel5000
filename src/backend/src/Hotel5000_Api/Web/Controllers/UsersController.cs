@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Core.Entities.LodgingEntities;
+using Core.Helpers;
 using Core.Helpers.Results;
 using Core.Interfaces.LodgingDomain;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Web.Attributes;
 using Web.DTOs;
@@ -38,7 +40,7 @@ namespace Web.Controllers
                 (pageNumber.HasValue && pageNumber.Value > 0) ? ((pageNumber.Value - 1) * resultPerPage) : null,
                 resultPerPage);
 
-            return Ok(_mapper.Map<ICollection<UserDto>>(result.Data));
+            return Ok(_mapper.Map<ICollection<UserDto>>(result.Data.Select(p => p.WithoutPassword())));
         }
 
         [HttpGet("{id}/contacts")]

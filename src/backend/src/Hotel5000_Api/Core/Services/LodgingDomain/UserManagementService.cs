@@ -121,7 +121,7 @@ namespace Core.Services.LodgingDomain
                 specification.ApplyPaging(skip.Value, take.Value);
 
             return new SuccessfulResult<IReadOnlyList<User>>(
-                (await _userRepository.GetAsync(specification)).WithoutPasswords().ToList());
+                (await _userRepository.GetAsync(specification)));
         }
 
         public async Task<Result<IReadOnlyList<ApprovingData>>> GetApprovingData(int? approvingDataOwnerId = null,
