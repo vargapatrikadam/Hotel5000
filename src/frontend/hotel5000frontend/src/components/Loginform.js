@@ -60,7 +60,7 @@ class Loginform extends Component {
                     let token = response.headers.get('token-expired');
                     if(token) {
                         console.log(token);
-                        throw new Error("token needs to be refreshed") //itt ugrunk a catchbe, meghívjuk a refresht
+                        this.refresh()
                     }
                 }
                 else{
@@ -68,7 +68,7 @@ class Loginform extends Component {
                     // adatfeldolgozás tovább
                 }
             })
-            .catch(this.refresh)
+            .catch()
     }
 
     refresh = () => {

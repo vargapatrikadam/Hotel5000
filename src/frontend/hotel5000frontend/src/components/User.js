@@ -1,9 +1,12 @@
 import React, {Component, Suspense} from 'react';
-import {Accordion, Button, Card, FormControl, ListGroup, ListGroupItem} from "react-bootstrap";
+import {Accordion, Button, Card, FormControl, ListGroup, ListGroupItem, Modal} from "react-bootstrap";
 import Contacts from "./Contacts";
 import Spinner from "react-bootstrap/Spinner";
 import "./Users.css"
 import ApprovingData from "./ApprovingData";
+import {refresh} from "./RefreshHelper";
+
+
 
 class User extends Component {
 
@@ -17,29 +20,25 @@ class User extends Component {
             resultPerPage: 2,
             username: "",
             newUserName: "",
-            newPassWord: "",
             newEmail: "",
             newFirstName: "",
             newLastName: "",
-            newRole: ""
+            modalIndex: null,
+            isModified: false
         }
+
+        this.handleCloseModal = this.handleCloseModal.bind(this)
+        this.handleOpenModal = this.handleOpenModal.bind(this)
     }
 
-    setDefaultOFNewData = (userId) => {
-        this.state.currentPageData.map(user => {
-            if(user.id === userId){
-                this.setState({
-                    newUserName: user.username,
-                    newPassWord: user.password,
-                    newEmail: user.email,
-                    newFirstName: user.firstName,
-                    newLastName: user.lastName,
-                    newRole: user.role
-                })
-            }
-            return user
-        })
+    handleOpenModal(e, id){
+        this.setState({modalIndex: id});
     }
+
+    handleCloseModal(){
+        this.setState({modalIndex: null})
+    }
+
 
     increasePageNumber = () => {
         if(Array.from(this.state.nextPageData).length !== 0)
@@ -58,31 +57,11 @@ class User extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if(prevState.pageNumber !== this.state.pageNumber || prevState.username !== this.state.username){
-            if(this.state.pageNumber > 1){
-                this.getPreviousData();
-            }
             this.getCurrentData();
             this.getNextData();
         }
     }
 
-    getPreviousData = () => {
-        let url = new URL("https://localhost:5000/api/users"),
-            params = {pageNumber:this.state.pageNumber - 1, resultPerPage:this.state.resultPerPage, username:this.state.username}
-        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-
-        fetch(url, {
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem('accessToken')
-            }
-        })
-            .then(response => response.json())
-            .then(responsejson => {
-                this.setState({previousPageData: responsejson})
-            })
-    }
     getCurrentData = () => {
         let url = new URL("https://localhost:5000/api/users"),
             params = {pageNumber:this.state.pageNumber, resultPerPage:this.state.resultPerPage, username:this.state.username}
@@ -119,11 +98,7 @@ class User extends Component {
     }
 
     handleUserNameChanged = (username) => {
-        this.setState({newUserName: username.trget.value})
-    }
-    
-    handlePassWordChanged = (password) => {
-        this.setState({newPassWord: password.target.value})
+        this.setState({newUserName: username.target.value})
     }
 
     handleEmailChanged = (email) => {
@@ -131,30 +106,40 @@ class User extends Component {
     }
 
     handleFirstNameChanged = (firstName) => {
-        this.setState({newFirstName: firstName})
+        this.setState({newFirstName: firstName.target.value})
     }
 
     handleLastNameChanged = (lastName) => {
-        this.setState({newLastName: lastName})
+        this.setState({newLastName: lastName.target.value})
     }
 
-    handleRoleChanged = (role) => {
-        this.setState({newRole: role.target.value})
+    searchById = (id, array) => {
+        for (let i=0; i < array.length; i++) {
+            if (array[i].id === id) {
+                return array[i];
+            }
+        }
     }
 
-    modifyUser = (userId, username, password, email, firstName, lastName, role) => {
-
-        this.setDefaultOFNewData(userId)
+    modifyUser = (userId, username, email, firstName, lastName) => {
 
         const data = {
-            "id": userId,
             "username": username,
-            "password": password,
             "email": email,
             "firstName": firstName,
             "lastName": lastName,
-            "role": role
         }
+
+        const user = this.searchById(userId, Array.from(this.state.currentPageData))
+
+        if(!data.username)
+            data.username = user.username
+        if(!data.email)
+            data.email = user.email
+        if(!data.firstName)
+            data.firstName = user.firstName
+        if(!data.lastName)
+            data.lastName = user.lastName
 
         fetch("https://localhost:5000/api/users/" + userId, {
             method: 'PUT',
@@ -165,23 +150,24 @@ class User extends Component {
             },
             body: JSON.stringify(data)
         })
-            .then(resp => resp.status)
-            .then(responseStatus => {
-                if(responseStatus === 200){
-                    this.state.currentPageData.map(user => {
-                        if(user.id === userId){
-                            user.username = this.state.newUserName
-                            user.password = this.state.newPassWord
-                            user.email = this.state.newEmail
-                            user.firstName = this.state.newFirstName
-                            user.lastName = this.state.newLastName
-                            user.role = this.state.newRole
+            .then(function (response) {
+                if (response.status === 401) {
+                    let token = response.headers.get('token-expired');
+                    if(token) {
+                        console.log(token);
+                        refresh()
+                        if(localStorage.getItem("loggedin") === true){
+                            this.modifyUser(userId, username, email, firstName, lastName)
                         }
-                        return user
-                    })
+                    }
+                }
+                else{
+                    console.log("token not expired");
+                    // adatfeldolgozás tovább
                 }
             })
     }
+
 
     renderUsers = () => {
         return Array.from(this.state.currentPageData).map((user, index, array) => {
@@ -228,44 +214,47 @@ class User extends Component {
                             </Accordion>
                         </ListGroupItem>
                         <ListGroupItem>
-                            <Accordion>
-                                <Card>
-                                    <Card.Header>
-                                        <Accordion.Toggle as={Button} variant="outline-dark" eventKey={user.id}>
-                                            Modify user
-                                        </Accordion.Toggle>
-                                    </Card.Header>
-                                    <Accordion.Collapse eventKey={user.id}>
-                                        <Card.Body>
-                                            <div>
-                                                <label style={{display: 'inline-block'}}>Username:</label>
-                                                <input type="text" style={{display: 'inline-block'}} onChange={this.handleUserNameChanged}/>
-                                            </div>
-                                            <div>
-                                                <label style={{display: 'inline-block'}}>Password:</label>
-                                                <input type="password" style={{display: 'inline-block'}} onChange={this.handlePasswordChanged}/>
-                                            </div>
-                                            <div>
-                                                <label style={{display: 'inline-block'}}>E-mail:</label>
-                                                <input type="text" style={{display: 'inline-block'}} onChange={this.handleEmailChanged}/>
-                                            </div>
-                                            <div>
-                                                <label style={{display: 'inline-block'}}>First name:</label>
-                                                <input type="text" style={{display: 'inline-block'}} onChange={this.handleFirstNameChanged}/>
-                                            </div>
-                                            <div>
-                                                <label style={{display: 'inline-block'}}>Last name:</label>
-                                                <input type="text" style={{display: 'inline-block'}} onChange={this.handleLastNameChanged}/>
-                                            </div>
-                                            <div>
-                                                <label style={{display: 'inline-block'}}>Role:</label>
-                                                <input type="text" style={{display: 'inline-block'}} onChange={this.handleRoleChanged}/>
-                                            </div>
-                                            <Button onClick={this.modifyUser(user.id, user.username, user.password, user.email, user.firstName, user.lastname, user.role)}>Modify</Button>
-                                        </Card.Body>
-                                    </Accordion.Collapse>
-                                </Card>
-                            </Accordion>
+                            <Button variant="outline-dark" onClick={e => this.handleOpenModal(e, user.id)}>
+                                Modify user
+                            </Button>
+                            <Modal show={this.state.modalIndex === user.id} onHide={() => this.handleCloseModal()}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>{user.username}</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+
+                                    <div>
+                                        <label style={{display: 'inline-block'}} className="mr-3">Username:</label>
+                                        <input type="text" style={{display: 'inline-block'}} onChange={this.handleUserNameChanged}
+                                               defaultValue={user.username}/>
+                                    </div>
+                                    <div>
+                                        <label style={{display: 'inline-block'}} className="mr-3">E-mail:</label>
+                                        <input type="text" style={{display: 'inline-block'}} onChange={this.handleEmailChanged}
+                                               defaultValue={user.email}/>
+                                    </div>
+                                    <div>
+                                        <label style={{display: 'inline-block'}} className="mr-3">First name:</label>
+                                        <input type="text" style={{display: 'inline-block'}} onChange={this.handleFirstNameChanged}
+                                               defaultValue={user.firstName}/>
+                                    </div>
+                                    <div>
+                                        <label style={{display: 'inline-block'}} className="mr-3">Last name:</label>
+                                        <input type="text" style={{display: 'inline-block'}} onChange={this.handleLastNameChanged}
+                                               defaultValue={user.lastName}/>
+                                    </div>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button variant="secondary" onClick={() => this.handleCloseModal()}>
+                                        Close
+                                    </Button>
+                                    <Button variant="primary" onClick={ () => {this.handleCloseModal(); this.modifyUser(user.id, this.state.newUserName, this.state.newEmail, this.state.newFirstName, this.state.newLastName); this.forceUpdate()}}>
+                                        Save Changes
+                                    </Button>
+                                </Modal.Footer>
+                            </Modal>
+
+
                         </ListGroupItem>
                     </ListGroup>
                 </Card>
