@@ -1,13 +1,9 @@
 ﻿using AutoMapper;
 using Core.Entities.LodgingEntities;
-using Core.Enums.Lodging;
 using Core.Helpers.Results;
 using Core.Interfaces.LodgingDomain;
-using Core.Interfaces.LodgingDomain.UserManagementService;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Web.Attributes;
 using Web.DTOs;

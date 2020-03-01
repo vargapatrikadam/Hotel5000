@@ -1,18 +1,14 @@
 ﻿using Core.Entities.LodgingEntities;
 using Core.Enums;
 using Core.Enums.Lodging;
-using Core.Helpers;
 using Core.Helpers.Results;
 using Core.Interfaces;
 using Core.Interfaces.LodgingDomain;
-using Core.Interfaces.LodgingDomain.UserManagementService;
 using Core.Interfaces.PasswordHasher;
 using Core.Specifications;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Core.Services.LodgingDomain
@@ -99,7 +95,7 @@ namespace Core.Services.LodgingDomain
                 await _tokenRepository.DeleteAsync(oldToken);
                 return new UnauthorizedResult<User>(Errors.TOKEN_INVALID);
             }
-                
+
 
             var newToken = new Token
             {

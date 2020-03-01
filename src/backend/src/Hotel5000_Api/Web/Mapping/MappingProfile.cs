@@ -1,9 +1,5 @@
 ﻿using AutoMapper;
 using Core.Entities.LodgingEntities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Web.DTOs;
 
 namespace Web.Mapping
@@ -23,7 +19,7 @@ namespace Web.Mapping
 
 
             CreateMap<UserDto, User>()
-                .ForMember(dest => dest.Id, o => o.MapFrom(src =>src.Id))
+                .ForMember(dest => dest.Id, o => o.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Username, o => o.MapFrom(src => src.Username))
                 .ForMember(dest => dest.Password, o => o.MapFrom(src => src.Password))
                 .ForMember(dest => dest.Email, o => o.MapFrom(src => src.Email))

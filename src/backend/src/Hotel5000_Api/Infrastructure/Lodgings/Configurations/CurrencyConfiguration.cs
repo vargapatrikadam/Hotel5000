@@ -1,10 +1,7 @@
 ﻿using Core.Entities.LodgingEntities;
+using Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Infrastructure.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Infrastructure.Lodgings.Configurations
 {

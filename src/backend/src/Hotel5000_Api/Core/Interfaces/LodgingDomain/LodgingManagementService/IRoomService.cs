@@ -1,8 +1,6 @@
 ﻿using Core.Entities.LodgingEntities;
 using Core.Helpers.Results;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Core.Interfaces.LodgingDomain.LodgingManagementService
@@ -13,7 +11,7 @@ namespace Core.Interfaces.LodgingDomain.LodgingManagementService
             int? lodgingId = null,
             int? adultCapacity = null,
             int? childrenCapacity = null,
-            double ? priceMin = null,
+            double? priceMin = null,
             double? priceMax = null);
 
         Task<Result<bool>> UpdateRoom(Room newRoom,

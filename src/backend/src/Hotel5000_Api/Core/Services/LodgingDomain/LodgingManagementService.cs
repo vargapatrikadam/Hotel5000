@@ -100,7 +100,7 @@ namespace Core.Services.LodgingDomain
                 return new ConflictResult<bool>(Errors.ADDRESS_NOT_UNIQUE);
 
             Country country = (await GetCountry(code: countryCode)).Data.FirstOrDefault();
-            if (country == null) 
+            if (country == null)
             {
                 try
                 {
@@ -138,7 +138,7 @@ namespace Core.Services.LodgingDomain
             reservationWindow.Lodging = null;
             reservationWindow.LodgingId = lodging.Id;
 
-            if (reservationWindow.To < reservationWindow.From || 
+            if (reservationWindow.To < reservationWindow.From ||
                 reservationWindow.From < DateTime.Now)
                 return new InvalidResult<bool>(Errors.INVALID_RESERVATION_WINDOW_DATES);
 

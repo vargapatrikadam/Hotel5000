@@ -23,10 +23,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Web.Mapping;
 
 namespace Web
 {
@@ -66,7 +64,7 @@ namespace Web
 
             services.AddSwaggerGen(s =>
             {
-                s.SwaggerDoc("v1", new OpenApiInfo() {Title = "Hotel5000 Api", Version = "v0.1"});
+                s.SwaggerDoc("v1", new OpenApiInfo() { Title = "Hotel5000 Api", Version = "v0.1" });
                 var securityScheme = new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -183,7 +181,7 @@ namespace Web
                 app.UseExceptionHandler("/api/error");
 
             app.UseHttpsRedirection();
-            
+
             app.UseSwagger();
 
             app.UseSwaggerUI(s =>

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Core.Enums.Logging;
+﻿using Core.Enums.Logging;
 using Core.Interfaces.Logging;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace Web.Controllers
 {
@@ -29,7 +27,7 @@ namespace Web.Controllers
             //handle internal server errors
 
             await _logger.Log(ex.StackTrace, LogLevel.Critical);
-            while (ex.InnerException != null) 
+            while (ex.InnerException != null)
                 ex = ex.InnerException;
             await _logger.Log(ex.Message, LogLevel.Critical);
 

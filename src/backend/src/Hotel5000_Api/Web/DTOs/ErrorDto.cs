@@ -1,8 +1,6 @@
 ﻿using Core.Enums;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Web.DTOs
 {
@@ -27,7 +25,7 @@ namespace Web.DTOs
                 Messages.Add(error.ToString());
             }
         }
-        public ErrorDto(Errors error) : this(new Errors[] { error})
+        public ErrorDto(Errors error) : this(new Errors[] { error })
         {
 
         }

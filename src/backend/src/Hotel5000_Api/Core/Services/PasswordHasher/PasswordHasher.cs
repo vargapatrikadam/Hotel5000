@@ -1,10 +1,8 @@
 ﻿using Core.Interfaces;
 using Core.Interfaces.PasswordHasher;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Core.Services.PasswordHasher
 {

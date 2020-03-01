@@ -2,15 +2,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Web.Attributes
 {
     public class AuthorizeRoles : AuthorizeAttribute
     {
-        public AuthorizeRoles() : this(new Roles[] { Core.Enums.Lodging.Roles.Company, Core.Enums.Lodging.Roles.ApprovedUser, Core.Enums.Lodging.Roles.Admin})
+        public AuthorizeRoles() : this(new Roles[] { Core.Enums.Lodging.Roles.Company, Core.Enums.Lodging.Roles.ApprovedUser, Core.Enums.Lodging.Roles.Admin })
         {
 
         }

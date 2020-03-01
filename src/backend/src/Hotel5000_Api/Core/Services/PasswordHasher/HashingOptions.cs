@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Core.Services.PasswordHasher
+﻿namespace Core.Services.PasswordHasher
 {
     public class HashingOptions
     {

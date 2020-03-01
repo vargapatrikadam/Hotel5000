@@ -5,7 +5,6 @@ using Core.Interfaces.Logging;
 using Core.Specifications;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Core.Services.Logging
@@ -36,7 +35,7 @@ namespace Core.Services.Logging
 
         public async Task Log(string message, LogLevel type)
         {
-            await _logRepository.AddAsync(new Log() {Message = message, Timestamp = DateTime.Now, Type = type});
+            await _logRepository.AddAsync(new Log() { Message = message, Timestamp = DateTime.Now, Type = type });
         }
     }
 }

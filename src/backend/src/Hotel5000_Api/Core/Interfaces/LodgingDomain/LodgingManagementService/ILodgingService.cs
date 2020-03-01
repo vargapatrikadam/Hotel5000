@@ -1,10 +1,8 @@
-﻿using Core.Helpers.Results;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Core.Entities.LodgingEntities;
+﻿using Core.Entities.LodgingEntities;
 using Core.Enums.Lodging;
+using Core.Helpers.Results;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Core.Interfaces.LodgingDomain.LodgingManagementService
 {

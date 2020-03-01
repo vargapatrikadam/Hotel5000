@@ -1,17 +1,16 @@
 ﻿using Core.Entities.LodgingEntities;
+using Core.Enums;
+using Core.Enums.Lodging;
+using Core.Helpers;
 using Core.Helpers.Results;
 using Core.Interfaces;
 using Core.Interfaces.LodgingDomain;
+using Core.Interfaces.PasswordHasher;
 using Core.Specifications;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using System.Linq;
-using Core.Helpers;
-using Core.Enums.Lodging;
-using Core.Interfaces.PasswordHasher;
-using Core.Enums;
+using System.Threading.Tasks;
 
 namespace Core.Services.LodgingDomain
 {
@@ -23,10 +22,10 @@ namespace Core.Services.LodgingDomain
         private readonly IPasswordHasher _passwordHasher;
         private readonly IAsyncRepository<Role> _roleRepository;
         private readonly IAuthenticationService _authenticationService;
-        public UserManagementService(IAsyncRepository<Contact> contactRepository, 
-            IAsyncRepository<ApprovingData> approvingDataRepository, 
-            IAsyncRepository<User> userRepository, 
-            IPasswordHasher passwordHasher, 
+        public UserManagementService(IAsyncRepository<Contact> contactRepository,
+            IAsyncRepository<ApprovingData> approvingDataRepository,
+            IAsyncRepository<User> userRepository,
+            IPasswordHasher passwordHasher,
             IAsyncRepository<Role> roleRepository,
             IAuthenticationService authenticationService)
         {
@@ -38,7 +37,7 @@ namespace Core.Services.LodgingDomain
             _authenticationService = authenticationService;
         }
 
-        public async Task<Result<bool>> AddApprovingData(ApprovingData newApprovingData, 
+        public async Task<Result<bool>> AddApprovingData(ApprovingData newApprovingData,
             int resourceAccessorId)
         {
             Result<bool> authenticationResult = await _authenticationService.IsAuthorized(newApprovingData.UserId, resourceAccessorId);
@@ -57,7 +56,7 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> AddContact(Contact contact, 
+        public async Task<Result<bool>> AddContact(Contact contact,
             int resourceAccessorId)
         {
             Result<bool> authenticationResult = await _authenticationService.IsAuthorized(contact.UserId, resourceAccessorId);
@@ -71,7 +70,7 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> AddUser(User user, 
+        public async Task<Result<bool>> AddUser(User user,
             string role)
         {
             if (await _userRepository.AnyAsync(p => p.Email == user.Email))
@@ -103,16 +102,16 @@ namespace Core.Services.LodgingDomain
 
             return new SuccessfulResult<bool>(true);
         }
-        public async Task<Result<IReadOnlyList<User>>> GetUsers(int? id = null, 
-            string username = null, 
+        public async Task<Result<IReadOnlyList<User>>> GetUsers(int? id = null,
+            string username = null,
             string email = null,
             int? skip = null,
             int? take = null)
         {
             ISpecification<User> specification = new Specification<User>();
-            specification.ApplyFilter(p => 
-                (!id.HasValue || p.Id == id) && 
-                (username == null || p.Username.Contains(username)) && 
+            specification.ApplyFilter(p =>
+                (!id.HasValue || p.Id == id) &&
+                (username == null || p.Username.Contains(username)) &&
                 (email == null || p.Email.Contains(email)))
                 .AddInclude(p => p.Role)
                 .AddInclude(p => p.ApprovingData)
@@ -137,7 +136,7 @@ namespace Core.Services.LodgingDomain
                 (!approvingDataOwnerId.HasValue || p.UserId == approvingDataOwnerId) &&
                 (!approvingDataId.HasValue || p.Id == approvingDataId) &&
                 (username == null || p.User.Username.Contains(username)) &&
-                (taxNumber == null || p.TaxNumber.Contains(taxNumber)) && 
+                (taxNumber == null || p.TaxNumber.Contains(taxNumber)) &&
                 (identityNumber == null || p.IdentityNumber.Contains(identityNumber)) &&
                 (registrationNumber == null || p.RegistrationNumber.Contains(registrationNumber)))
                 .AddInclude(i => i.User);
@@ -148,8 +147,8 @@ namespace Core.Services.LodgingDomain
         }
 
         public async Task<Result<IReadOnlyList<Contact>>> GetContacts(int? id = null,
-            int? userId = null, 
-            string phoneNumber = null, 
+            int? userId = null,
+            string phoneNumber = null,
             string username = null)
         {
             ISpecification<Contact> specification = new Specification<Contact>();
@@ -162,7 +161,7 @@ namespace Core.Services.LodgingDomain
 
             return new SuccessfulResult<IReadOnlyList<Contact>>(await _contactRepository.GetAsync(specification));
         }
-        public async Task<Result<bool>> RemoveApprovingData(int approvingDataOwnerId, 
+        public async Task<Result<bool>> RemoveApprovingData(int approvingDataOwnerId,
             int resourceAccessorId)
         {
             ApprovingData approvingData = (await GetApprovingData(approvingDataOwnerId: approvingDataOwnerId)).Data.FirstOrDefault();
@@ -177,8 +176,8 @@ namespace Core.Services.LodgingDomain
             await _approvingDataRepository.DeleteAsync(approvingData);
             return new SuccessfulResult<bool>(true);
         }
-        public async Task<Result<bool>> RemoveContact(int contactOwnerId, 
-            int contactId, 
+        public async Task<Result<bool>> RemoveContact(int contactOwnerId,
+            int contactId,
             int resourceAccessorId)
         {
             User user = (await GetUsers(id: contactOwnerId)).Data.FirstOrDefault();
@@ -196,7 +195,7 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> RemoveUser(int userId, 
+        public async Task<Result<bool>> RemoveUser(int userId,
             int resourceAccessorId)
         {
             User user = (await GetUsers(id: userId)).Data.FirstOrDefault();
@@ -212,8 +211,8 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> UpdateApprovingData(ApprovingData newApprovingData, 
-            int approvingDataId, 
+        public async Task<Result<bool>> UpdateApprovingData(ApprovingData newApprovingData,
+            int approvingDataId,
             int resourceAccessorId)
         {
             ApprovingData updateThisApprovingData = (await GetApprovingData(approvingDataId: approvingDataId)).Data.FirstOrDefault();
@@ -225,9 +224,9 @@ namespace Core.Services.LodgingDomain
             if (updateThisApprovingData == null)
                 return new NotFoundResult<bool>(Errors.APPROVING_DATA_NOT_FOUND);
 
-            if ((updateThisApprovingData.IdentityNumber != newApprovingData.IdentityNumber && 
+            if ((updateThisApprovingData.IdentityNumber != newApprovingData.IdentityNumber &&
                     (await _approvingDataRepository.AnyAsync(p => p.IdentityNumber == newApprovingData.IdentityNumber))) ||
-                (updateThisApprovingData.RegistrationNumber != newApprovingData.RegistrationNumber && 
+                (updateThisApprovingData.RegistrationNumber != newApprovingData.RegistrationNumber &&
                     (await _approvingDataRepository.AnyAsync(p => p.RegistrationNumber == newApprovingData.RegistrationNumber))) ||
                 (updateThisApprovingData.TaxNumber != newApprovingData.TaxNumber &&
                     (await _approvingDataRepository.AnyAsync(p => p.TaxNumber == newApprovingData.TaxNumber))))
@@ -242,8 +241,8 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> UpdateContact(Contact newContact, 
-            int contactId, 
+        public async Task<Result<bool>> UpdateContact(Contact newContact,
+            int contactId,
             int resourceAccessorId)
         {
             Contact updateThisContact = (await GetContacts(id: contactId)).Data.FirstOrDefault();
@@ -255,7 +254,7 @@ namespace Core.Services.LodgingDomain
             if (updateThisContact == null)
                 return new NotFoundResult<bool>(Errors.CONTACT_NOT_FOUND);
 
-            if ((updateThisContact.MobileNumber != newContact.MobileNumber) && 
+            if ((updateThisContact.MobileNumber != newContact.MobileNumber) &&
                 (await _contactRepository.AnyAsync(p => p.MobileNumber == newContact.MobileNumber)))
                 return new ConflictResult<bool>(Errors.CONTACT_NOT_UNIQUE);
 
@@ -266,8 +265,8 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> UpdateUser(User newUser, 
-            int userId, 
+        public async Task<Result<bool>> UpdateUser(User newUser,
+            int userId,
             int resourceAccessorId)
         {
             User updateThisUser = (await GetUsers(id: userId)).Data.FirstOrDefault();
@@ -299,8 +298,8 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> ChangePassword(int userId, 
-            string oldPassword, 
+        public async Task<Result<bool>> ChangePassword(int userId,
+            string oldPassword,
             string newPassword)
         {
             User user = (await GetUsers(id: userId)).Data.FirstOrDefault();

@@ -1,10 +1,7 @@
 ﻿using Core.Entities.LoggingEntities;
+using Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Infrastructure.Helpers;
 
 namespace Infrastructure.Logging
 {

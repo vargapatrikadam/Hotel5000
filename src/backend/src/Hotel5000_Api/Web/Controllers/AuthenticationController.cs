@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Core.Entities.LodgingEntities;
 using Core.Helpers.Results;
 using Core.Interfaces;
@@ -13,9 +6,14 @@ using Core.Interfaces.LodgingDomain;
 using Core.Interfaces.LodgingDomain.UserManagementService;
 using Core.Services.LodgingDomain;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 using Web.DTOs;
 using Web.Helpers;
 
