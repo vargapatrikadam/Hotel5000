@@ -102,7 +102,17 @@ namespace Web.Controllers
 
             return Ok(_mapper.Map<ICollection<ApprovingDataDto>>(result.Data));
         }
-
+        /// <summary>
+        /// Deletes an user
+        /// </summary>
+        /// <param name="userId">the id of the user who we want to delete</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     DELETE api/users/2
+        ///
+        /// </remarks>
         [HttpDelete("{userId}")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -116,7 +126,17 @@ namespace Web.Controllers
 
             return Ok();
         }
-
+        /// <summary>
+        /// Deletes the approving data for an user
+        /// </summary>
+        /// <param name="userId">the id of the user from which we'll delete the approving data</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     DELETE /api/users/2/approvingdata
+        ///
+        /// </remarks>
         [HttpDelete("{userId}/approvingdata")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -130,7 +150,18 @@ namespace Web.Controllers
 
             return Ok();
         }
-
+        /// <summary>
+        /// Delete a contatct from an user
+        /// </summary>
+        /// <param name="userId">the id of the user who has the contact</param>
+        /// <param name="contactId">the id of the contact</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     DELETE api/users/2/contacts/3
+        ///
+        /// </remarks>
         [HttpDelete("{userId}/contacts/{contactId}")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -151,12 +182,12 @@ namespace Web.Controllers
         /// <param name="updatedContact">this contains the new data for contact</param>
         /// <param name="contactId">this is the unique id of the contact we modify</param>
         /// <returns></returns>
-        /// /// <remarks>
+        /// <remarks>
         /// Sample request:
         ///
         ///     PUT api/users/contacts/2
         ///     {
-        ///        "mobileNumber": "06 30 555 555"
+        ///        "mobileNumber": "06 30 555 555" //unique
         ///     }
         ///
         /// </remarks>
@@ -173,6 +204,24 @@ namespace Web.Controllers
 
             return Ok();
         }
+
+        /// <summary>
+        /// Updates the only approving data for an user
+        /// </summary>
+        /// <param name="updatedApprovingData">this contains the new approving data</param>
+        /// <param name="approvingDataId">this is the unique id of the approving data we modify</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     PUT api/users/approvingdata/2
+        ///     {
+        ///        "identityNumber": "12345678", //unique, 8 digits, nullable
+        ///        "taxNumber" : "1234567891234", //unique, 13 digits, nullable
+        ///        "registrationNumber" : "123456789123", //unique, 12 digits, nullable
+        ///     }
+        ///
+        /// </remarks>
         [HttpPut("approvingdata/{approvingDataId}")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -186,6 +235,25 @@ namespace Web.Controllers
 
             return Ok();
         }
+
+        /// <summary>
+        /// Updates an user
+        /// </summary>
+        /// <param name="updatedUser">this contains the data for the new user data</param>
+        /// <param name="userId">this is the unique id of the user we modify</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     PUT api/users/2
+        ///     {
+        ///        "email": "test@email.com", //unique
+        ///        "firstName" : "new firstname", 
+        ///        "lastName" : "new lastname",
+        ///        "username" : "new username" //unique
+        ///     }
+        ///
+        /// </remarks>
         [HttpPut("{userId}")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -199,6 +267,22 @@ namespace Web.Controllers
 
             return Ok();
         }
+
+        /// <summary>
+        /// Adds a new contact for an user
+        /// </summary>
+        /// <param name="newContactDto">this contains the data for a new contact</param>
+        /// <param name="userId">unique id of the user we wan to add the contact to</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST api/users/2/contacts
+        ///     {
+        ///        "mobileNumber": "06 30 555 555"
+        ///     }
+        ///
+        /// </remarks>
         [HttpPost("{userId}/contacts")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -214,6 +298,24 @@ namespace Web.Controllers
 
             return Ok();
         }
+
+        /// <summary>
+        /// Adds a new approving data for an user, only one can exists at a time for any user
+        /// </summary>
+        /// <param name="newApprovingDataDto">this contains the data for a new approving data</param>
+        /// <param name="userId">unique id of the user we'll add the approving data to</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST api/users/2/approvingdata
+        ///     {
+        ///        "identityNumber": "12345678", //unique, 8 digits, nullable
+        ///        "taxNumber" : "1234567891234", //unique, 13 digits, nullable
+        ///        "registrationNumber" : "123456789123", //unique, 12 digits, nullable
+        ///     }
+        ///
+        /// </remarks>
         [HttpPost("{userId}/approvingdata")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
