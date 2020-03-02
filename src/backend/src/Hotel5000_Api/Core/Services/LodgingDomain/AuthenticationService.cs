@@ -31,7 +31,7 @@ namespace Core.Services.LodgingDomain
             _options = settings.Option;
         }
 
-        public async Task<Result<User>> AuthenticateAsync(string username, string password, string email)
+        public async Task<Result<User>> AuthenticateAsync(string identifier, string password)
         {
             //This way we don't need to implement a replica of ThenInclude from EF Core, because we cause eager loading on entities from the context.
             //Specification<User> spec = new Specification<User>()
@@ -41,7 +41,7 @@ namespace Core.Services.LodgingDomain
             //return user.WithoutPassword();
 
             var specification = new Specification<User>()
-                .ApplyFilter(p => p.Email == email || p.Username == username)
+                .ApplyFilter(p => p.Email == identifier || p.Username == identifier)
                 .AddInclude(p => p.Role);
 
             var user = (await _userRepository.GetAsync(specification))
