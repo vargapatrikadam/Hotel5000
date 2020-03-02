@@ -4,14 +4,16 @@ using Infrastructure.Lodgings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Lodgings.Migrations
 {
     [DbContext(typeof(LodgingDbContext))]
-    partial class LodgingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200302184920_extended_uq_index_on_lodging_address")]
+    partial class extended_uq_index_on_lodging_address
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

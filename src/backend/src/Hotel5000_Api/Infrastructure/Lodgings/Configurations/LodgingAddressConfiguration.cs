@@ -57,7 +57,10 @@ namespace Infrastructure.Lodgings.Configurations
                 k.County,
                 k.City,
                 k.PostalCode,
-                k.Street
+                k.Street,
+                k.HouseNumber,
+                k.Floor,
+                k.DoorNumber
             }).IsUnique()
               .HasName("LodgingAddress_UQ")
               .IsSoftDeleteable();
