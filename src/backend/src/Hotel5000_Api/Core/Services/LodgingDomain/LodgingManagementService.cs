@@ -363,6 +363,7 @@ namespace Core.Services.LodgingDomain
             if (!authenticationResult.Data)
                 return authenticationResult;
 
+            updateThisLodging.LodgingAddresses = null;
             updateThisLodging.Name = newLodging.Name;
 
             await _lodgingRepository.UpdateAsync(updateThisLodging);
