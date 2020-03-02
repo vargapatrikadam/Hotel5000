@@ -27,6 +27,8 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Web.DTOs;
+using Web.Helpers;
 
 namespace Web
 {
@@ -204,7 +206,6 @@ namespace Web
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => endpoints.MapControllers());
-
         }
 
         //This method is only called when the project's enviroment variable 'ASPNETCORE_ENVIRONMENT' is set to 'Development'
