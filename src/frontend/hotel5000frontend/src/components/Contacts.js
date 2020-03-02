@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Button} from "react-bootstrap";
+import {refresh} from "./RefreshHelper";
 
 class Contacts extends Component {
 
@@ -17,7 +18,7 @@ class Contacts extends Component {
 
     componentDidMount() {
         this._isMounted = true
-        this._isMounted && this.handleContacts(this.props.id)
+        this._isMounted && this.getContacts(this.props.id)
         this.setState({id: this.props.id})
     }
 
@@ -29,7 +30,7 @@ class Contacts extends Component {
         this.setState({modifiedNumber: number.target.value});
     }
 
-    handleContacts = (id) => {
+    getContacts = (id) => {
         fetch("https://localhost:5000/api/users/" + id + "/contacts", {
             method: 'GET',
             mode: 'cors',
@@ -51,7 +52,20 @@ class Contacts extends Component {
                 "Authorization": "Bearer " + localStorage.getItem('accessToken')
             }
         })
-            .then(resp => console.log(resp.status))
+            .then(function (response) {
+                if (response.status === 401) {
+                    let token = response.headers.get('token-expired');
+                    if(token) {
+                        console.log(token);
+                        refresh()
+                        this.deleteContacts(userId, contactId)
+                    }
+                }
+                else{
+                    console.log("token not expired");
+                    // adatfeldolgozás tovább
+                }
+            })
     }
 
     modifyContacts = (contactId, mobileNumber) => {
@@ -71,16 +85,28 @@ class Contacts extends Component {
             },
             body: JSON.stringify(data)
         })
-            .then(resp => resp.status)
-            .then(responseStatus => {
-                if(responseStatus === 200){
+            .then(function (response) {
+                if(response.status === 200){
                     this.state.contacts.map(contact => {
                         if(contact.id === contactId)
                             contact.mobileNumber = this.state.modifiedNumber
                         return contact.mobileNumber
                     })
                 }
+                if(response.status === 401){
+                    let token = response.headers.get('token-expired');
+                    if(token) {
+                        console.log(token);
+                        refresh()
+                        this.modifyContacts(contactId, mobileNumber)
+                    }
+                }else{
+                    console.log("token not expired")
+                }
+
+
             })
+
     }
 
     renderContacts = () => {

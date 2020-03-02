@@ -150,20 +150,20 @@ class User extends Component {
             },
             body: JSON.stringify(data)
         })
-            .then(function (response) {
-                if (response.status === 401) {
-                    let token = response.headers.get('token-expired');
+            .then(resp => {
+                if(resp.status === 401) {
+                    let token = resp.headers.get('token-expired')
                     if(token) {
-                        console.log(token);
+                        console.log(token)
                         refresh()
-                        if(localStorage.getItem("loggedin") === true){
+                        if(localStorage.getItem('loggedin') === true) {
+                            console.log(localStorage.getItem('loggedin'))
                             this.modifyUser(userId, username, email, firstName, lastName)
                         }
                     }
                 }
                 else{
-                    console.log("token not expired");
-                    // adatfeldolgozás tovább
+                    console.log("token not expired")
                 }
             })
     }

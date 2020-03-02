@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Button} from "react-bootstrap";
+import {refresh} from "./RefreshHelper";
 
 class ApprovingData extends Component {
 
@@ -14,10 +15,6 @@ class ApprovingData extends Component {
             approvingData: []
         }
         this._isMounted = false
-    }
-
-    refreshPage(cond){
-        window.location.reload(cond)
     }
 
     componentDidMount() {
@@ -62,7 +59,16 @@ class ApprovingData extends Component {
                 "Authorization": "Bearer " + localStorage.getItem('accessToken')
             }
         })
-            .then(resp => console.log(resp.status))
+            .then(function(response) {
+                if(response.status === 401){
+                    let token = response.headers.get('token-expired')
+                    if(token){
+                        console.log(token)
+                        refresh()
+                        this.deleteApprovingData(userId)
+                    }
+                }
+            })
     }
 
     modifyApprovingData = (approvingDataId, identityNumber, taxNumber, registrationNumber) => {
@@ -83,9 +89,8 @@ class ApprovingData extends Component {
             },
             body: JSON.stringify(data)
         })
-            .then(resp => resp.status)
-            .then(responseStatus => {
-                if(responseStatus === 200){
+            .then(function(response) {
+                if(response.status === 200){
                     this.state.approvingData.map(data => {
                         if(data.id === approvingDataId){
                             data.identityNumber = this.state.modifiedIdentityNumber
@@ -95,8 +100,15 @@ class ApprovingData extends Component {
                         return data
                     })
                 }
+                if(response.status === 401){
+                    let token = response.headers.get('token-expired')
+                    if(token){
+                        console.log(token)
+                        refresh()
+                        this.modifyApprovingData(approvingDataId, identityNumber, taxNumber, registrationNumber)
+                    }
+                }
             })
-
     }
 
     renderApprovingData = () => {
