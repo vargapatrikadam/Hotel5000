@@ -383,12 +383,18 @@ namespace Core.Services.LodgingDomain
             if (!authenticationResult.Data)
                 return authenticationResult;
 
-            if (await _lodgingAddressRepository.AnyAsync(p =>
+            bool exists = await _lodgingAddressRepository.AnyAsync(p =>
+                 p.Id != lodging.Id &&
                  p.CountryId == newLodgingAddress.CountryId &&
                  p.County == newLodgingAddress.County &&
                  p.City == newLodgingAddress.City &&
                  p.PostalCode == newLodgingAddress.PostalCode &&
-                 p.Street == newLodgingAddress.Street))
+                 p.Street == newLodgingAddress.Street &&
+                 p.HouseNumber == newLodgingAddress.HouseNumber &&
+                 p.Floor == newLodgingAddress.Floor &&
+                 p.DoorNumber == newLodgingAddress.DoorNumber);
+
+            if (exists)
                 return new ConflictResult<bool>(Errors.ADDRESS_NOT_UNIQUE);
 
             updateThisLodgingAddress.CountryId = newLodgingAddress.CountryId;
