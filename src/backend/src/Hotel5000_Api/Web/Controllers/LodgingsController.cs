@@ -267,6 +267,17 @@ namespace Web.Controllers
         }
         #endregion
         #region delete
+        /// <summary>
+        /// Deletes a room from a lodging
+        /// </summary>
+        /// <param name="roomId">id of the room we want to delete</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///     
+        ///     DELETE api/lodgings/rooms/2
+        ///     
+        /// </remarks>
         [HttpDelete("rooms/{roomId}")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
