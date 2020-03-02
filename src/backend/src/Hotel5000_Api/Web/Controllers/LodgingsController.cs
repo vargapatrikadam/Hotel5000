@@ -336,6 +336,24 @@ namespace Web.Controllers
 
             return Ok();
         }
+        /// <summary>
+        /// Updates a room for a lodging
+        /// </summary>
+        /// <param name="newRoomDataDto">contains the data for an updated room</param>
+        /// <param name="updateThisRoom">id of the room we update</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     PUT api/lodgings/rooms/2
+        ///     {
+        ///         "adultCapacity" : 3,
+        ///         "childrenCapacity" : 2,
+        ///         "price" : 10,
+        ///         "currency": "Euro"
+        ///     }
+        ///     
+        /// </remarks>
         [HttpPut("rooms/{updateThisRoom}")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
