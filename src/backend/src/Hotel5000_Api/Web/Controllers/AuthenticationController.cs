@@ -97,7 +97,7 @@ namespace Web.Controllers
                 return this.GetError(result);
 
             var accessToken = GenerateToken(result.Data);
-            var newRefreshToken = result.Data.Tokens.FirstOrDefault().RefreshToken;
+            var newRefreshToken = result.Data.Tokens.LastOrDefault().RefreshToken;
             var role = result.Data.Role.Name.ToString();
             return Ok(new AuthenticationDto
             {
