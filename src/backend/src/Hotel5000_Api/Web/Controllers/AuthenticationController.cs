@@ -68,7 +68,7 @@ namespace Web.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto loginData)
         {
             Result<User> result =
-                await _authenticationService.AuthenticateAsync(loginData.Username, loginData.Password, loginData.Email);
+                await _authenticationService.AuthenticateAsync(loginData.Identifier, loginData.Password);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
