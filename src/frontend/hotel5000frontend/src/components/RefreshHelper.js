@@ -25,6 +25,7 @@ export function refresh() {
                 console.log(data)
                 localStorage.setItem('accessToken', data.accessToken)
                 localStorage.setItem('refreshToken', data.refreshToken)
+                localStorage.setItem('loggedin', true)
                 console.log(localStorage.getItem('accessToken'))
                 console.log(localStorage.getItem('refreshToken'))
             })
