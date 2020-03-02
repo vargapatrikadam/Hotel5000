@@ -321,6 +321,21 @@ namespace Web.Controllers
         }
         #endregion
         #region put
+        /// <summary>
+        /// Updates a lodging
+        /// </summary>
+        /// <param name="newLodgingDataDto">contains the data for an updated lodging</param>
+        /// <param name="updateThisLodging">id of the lodging we update</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     PUT api/lodgings/2
+        ///     {
+        ///         "name": "updated lodging name"
+        ///     }
+        ///     
+        /// </remarks>
         [HttpPut("lodgings/{updateThisLodging}")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
