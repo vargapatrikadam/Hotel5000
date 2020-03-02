@@ -291,6 +291,17 @@ namespace Web.Controllers
 
             return Ok();
         }
+        /// <summary>
+        /// Deletes a lodging
+        /// </summary>
+        /// <param name="lodgingId">id of the lodging we want to delete</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///     
+        ///     DELETE api/lodgings/2
+        ///     
+        /// </remarks>
         [HttpDelete("lodgings/{lodgingId}")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
