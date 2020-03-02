@@ -1,4 +1,3 @@
-
 export function refresh() {
         const data = {
             "refreshToken": localStorage.getItem('refreshToken')
@@ -34,3 +33,6 @@ export function refresh() {
             }) //rossz refresh token esetén kijelentkeztetjük a felhasználót
 
 }
+
+
+

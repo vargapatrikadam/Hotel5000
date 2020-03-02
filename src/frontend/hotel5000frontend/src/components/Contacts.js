@@ -58,12 +58,14 @@ class Contacts extends Component {
                     if(token) {
                         console.log(token);
                         refresh()
-                        this.deleteContacts(userId, contactId)
+                        if(localStorage.getItem('loggedin') === "true") {
+                            this.deleteContacts(userId, contactId)
+                        }
                     }
                 }
-                else{
-                    console.log("token not expired");
-                    // adatfeldolgozás tovább
+                else if(response.status === 200){
+                    console.log("token not expired")
+                    window.location.reload(false)
                 }
             })
     }
@@ -98,10 +100,14 @@ class Contacts extends Component {
                     if(token) {
                         console.log(token);
                         refresh()
-                        this.modifyContacts(contactId, mobileNumber)
+                        if(localStorage.getItem('loggedin') === "true") {
+                            this.modifyContacts(contactId, mobileNumber)
+                        }
                     }
-                }else{
+                }
+                else if(response.status === 200){
                     console.log("token not expired")
+                    window.location.reload(false)
                 }
 
 
