@@ -339,6 +339,17 @@ namespace Web.Controllers
 
             return Ok();
         }
+        /// <summary>
+        /// Deletes a reservation window
+        /// </summary>
+        /// <param name="reservationWindowId">id of the reservation window we want to delete</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///     
+        ///     DELETE api/lodgings/reservationwindows/2
+        ///     
+        /// </remarks>
         [HttpDelete("reservationwindows/{reservationWindowId}")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
