@@ -366,15 +366,37 @@ namespace Web.Controllers
 
             return Ok();
         }
+        /// <summary>
+        /// Updates an address for a lodging
+        /// </summary>
+        /// <param name="newLodgingAddressDataDto">This contains the data for an updated lodging address</param>
+        /// <param name="updateThisAddress">id of the lodging address we want to update</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     PUT api/lodgings/addresses/18
+        ///     {
+        ///         "countryCode": "HU",
+        ///         "county": "Nógrád",
+        ///         "city": "Balassagyarmat",
+        ///         "postalCode": "2660",
+        ///         "street": "Bajcsy-Zsilinszki utca",
+        ///         "houseNumber": "2",
+        ///         "floor": "3", //optional
+        ///         "doorNumber": "22" //optional
+        ///     }
+        ///
+        /// </remarks>
         [HttpPut("addresses/{updateThisAddress}")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         [AuthorizeRoles]
-        public async Task<IActionResult> UpdateAddress([FromBody] LodgingAddressDto newLodgingAddressDataDto, int updateThisLodgingAddress)
+        public async Task<IActionResult> UpdateAddress([FromBody] LodgingAddressDto newLodgingAddressDataDto, int updateThisAddress)
         {
             var newLodgingAddressData = _mapper.Map<LodgingAddress>(newLodgingAddressDataDto);
 
-            var result = await _lodgingManagementService.UpdateLodgingAddress(newLodgingAddressData, updateThisLodgingAddress, int.Parse(User.Identity.Name));
+            var result = await _lodgingManagementService.UpdateLodgingAddress(newLodgingAddressData, updateThisAddress, int.Parse(User.Identity.Name));
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
