@@ -198,15 +198,21 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<IReadOnlyList<Currency>>(await _currencyRepository.GetAsync(specification));
         }
 
-        public async Task<Result<IReadOnlyList<Lodging>>> GetLodging(int? id = null, string name = null, LodgingTypes? lodgingType = null, int? skip = null, int? take = null)
+        public async Task<Result<IReadOnlyList<Lodging>>> GetLodging(int? id = null, string name = null, string lodgingType = null, int? skip = null, int? take = null)
         {
+            LodgingTypes lodgingTypeAsEnum;
+            Enum.TryParse(lodgingType, out lodgingTypeAsEnum);
+
             ISpecification<Lodging> specification = new Specification<Lodging>();
             specification.ApplyFilter(p =>
                 (!id.HasValue || p.Id == id.Value) &&
                 (name == null || p.Name == name) &&
-                (lodgingType == null || p.LodgingType.Name == lodgingType))
+                (lodgingType == null || p.LodgingType.Name == lodgingTypeAsEnum))
                 .AddInclude(p => p.LodgingType)
-                .AddInclude(p => p.User);
+                .AddInclude(p => p.User)
+                .AddInclude(p => p.LodgingAddresses)
+                .AddInclude(p => (p.Rooms as Room).Currency)
+                .AddInclude(p => p.ReservationWindows);
 
             if (skip.HasValue && take.HasValue)
                 specification.ApplyPaging(skip.Value, take.Value);
@@ -253,7 +259,8 @@ namespace Core.Services.LodgingDomain
                 (!adultCapacity.HasValue || p.AdultCapacity == adultCapacity.Value) &&
                 (!childrenCapacity.HasValue || p.ChildrenCapacity == childrenCapacity.Value) &&
                 (!priceMin.HasValue || p.Price <= priceMin.Value) &&
-                (!priceMax.HasValue || p.Price >= priceMax.Value));
+                (!priceMax.HasValue || p.Price >= priceMax.Value))
+                .AddInclude(p => p.Currency);
 
             return new SuccessfulResult<IReadOnlyList<Room>>(await _roomRepository.GetAsync(specification));
         }

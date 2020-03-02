@@ -35,6 +35,24 @@ namespace Web.Mapping
             CreateMap<ApprovingData, ApprovingDataDto>();
 
             CreateMap<ApprovingDataDto, ApprovingData>();
+
+            CreateMap<Lodging, LodgingDto>()
+                .ForMember(dest => dest.LodgingType, o => o.MapFrom(src => src.LodgingType.Name));
+            CreateMap<LodgingDto, Lodging>();
+
+            CreateMap<Room, RoomDto>()
+                .ForMember(dest => dest.Currency, o => o.MapFrom(src => src.Currency.Name));
+            CreateMap<RoomDto, Room>();
+
+            CreateMap<LodgingAddress, LodgingAddressDto>()
+                .ForMember(dest => dest.CountryCode, o => o.MapFrom(src => src.Country.Code));
+            CreateMap<LodgingAddressDto, LodgingAddress>();
+
+            CreateMap<ReservationWindow, ReservationWindowDto>();
+            CreateMap<ReservationWindowDto, ReservationWindow>();
+
+            CreateMap<Currency, CurrencyDto>();
+            CreateMap<CurrencyDto, Currency>();
         }
     }
 }

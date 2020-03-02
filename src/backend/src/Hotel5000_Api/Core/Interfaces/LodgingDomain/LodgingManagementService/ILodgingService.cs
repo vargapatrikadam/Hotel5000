@@ -10,7 +10,7 @@ namespace Core.Interfaces.LodgingDomain.LodgingManagementService
     {
         Task<Result<IReadOnlyList<Lodging>>> GetLodging(int? id = null,
             string name = null,
-            LodgingTypes? lodgingType = null,
+            string lodgingType = null,
             int? skip = null,
             int? take = null);
 
