@@ -351,6 +351,22 @@ namespace Web.Controllers
 
             return Ok();
         }
+        /// <summary>
+        /// Updates a reservation window for a lodging
+        /// </summary>
+        /// <param name="newReservationWindowDataDto">contains the data for an updated reservation window</param>
+        /// <param name="updateThisReservationWindow">id of the reservation window we update</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     PUT api/lodgings/reservationwindows/2
+        ///     {
+        ///         "from": "2020-4-1",
+        ///         "to": "2020-5-1"
+        ///     }
+        /// 
+        /// </remarks>
         [HttpPut("reservationwindows/{updateThisReservationWindow}")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
