@@ -425,6 +425,10 @@ namespace Core.Services.LodgingDomain
             if (!authenticationResult.Data)
                 return authenticationResult;
 
+            if (newReservationWindow.To < newReservationWindow.From ||
+                newReservationWindow.From < DateTime.Now)
+                return new InvalidResult<bool>(Errors.INVALID_RESERVATION_WINDOW_DATES);
+
             updateThisReservationWindow.From = newReservationWindow.From;
             updateThisReservationWindow.To = newReservationWindow.To;
 
