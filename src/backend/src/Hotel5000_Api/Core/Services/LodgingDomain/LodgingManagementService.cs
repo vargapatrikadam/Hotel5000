@@ -451,7 +451,11 @@ namespace Core.Services.LodgingDomain
             if (!authenticationResult.Data)
                 return authenticationResult;
 
-            updateThisRoom.CurrencyId = newRoom.CurrencyId;
+            Currency currency = (await GetCurrency(name: newRoom.Currency.Name)).Data.FirstOrDefault();
+            if (currency == null)
+                return new NotFoundResult<bool>(Errors.CURRENCY_NOT_FOUND);
+
+            updateThisRoom.CurrencyId = currency.Id;
             updateThisRoom.AdultCapacity = newRoom.AdultCapacity;
             updateThisRoom.ChildrenCapacity = newRoom.ChildrenCapacity;
             updateThisRoom.Price = newRoom.Price;
