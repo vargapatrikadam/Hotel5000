@@ -315,7 +315,18 @@ namespace Web.Controllers
 
             return Ok();
         }
-        [HttpDelete("lodgingaddresses/{lodgingAddressId}")]
+        /// <summary>
+        /// Deletes a lodging address
+        /// </summary>
+        /// <param name="lodgingAddressId">id of the lodging address we want to delete</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///     
+        ///     DELETE api/lodgings/addresses/2
+        ///     
+        /// </remarks>
+        [HttpDelete("addresses/{lodgingAddressId}")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         [AuthorizeRoles]
