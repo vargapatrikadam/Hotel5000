@@ -65,8 +65,14 @@ class ApprovingData extends Component {
                     if(token){
                         console.log(token)
                         refresh()
-                        this.deleteApprovingData(userId)
+                        if(localStorage.getItem('loggedin') === "true") {
+                            this.deleteApprovingData(userId)
+                        }
                     }
+                }
+                else if(response.status === 200){
+                    console.log("token not expired")
+                    window.location.reload(false)
                 }
             })
     }
@@ -105,8 +111,14 @@ class ApprovingData extends Component {
                     if(token){
                         console.log(token)
                         refresh()
-                        this.modifyApprovingData(approvingDataId, identityNumber, taxNumber, registrationNumber)
+                        if(localStorage.getItem('loggedin') === "true") {
+                            this.modifyApprovingData(approvingDataId, identityNumber, taxNumber, registrationNumber)
+                        }
                     }
+                }
+                else if(response.status === 200){
+                    console.log("token not expired")
+                    window.location.reload(false)
                 }
             })
     }

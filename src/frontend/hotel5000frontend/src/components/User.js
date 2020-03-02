@@ -154,17 +154,19 @@ class User extends Component {
                 if(resp.status === 401) {
                     let token = resp.headers.get('token-expired')
                     if(token) {
-                        console.log(token)
                         refresh()
-                        if(localStorage.getItem('loggedin') === true) {
-                            console.log(localStorage.getItem('loggedin'))
+                        if(localStorage.getItem('loggedin') === "true") {
                             this.modifyUser(userId, username, email, firstName, lastName)
+                            //window.location.reload(true)
+
                         }
                     }
                 }
-                else{
+                else if(resp.status === 200){
                     console.log("token not expired")
+                    window.location.reload(false)
                 }
+
             })
     }
 
