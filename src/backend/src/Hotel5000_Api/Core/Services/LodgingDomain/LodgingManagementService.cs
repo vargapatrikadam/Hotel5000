@@ -100,14 +100,6 @@ namespace Core.Services.LodgingDomain
             if (!authorizationResult.Data)
                 return authorizationResult;
 
-            if (await _lodgingAddressRepository.AnyAsync(p =>
-                 p.CountryId == lodgingAddress.CountryId &&
-                 p.County == lodgingAddress.County &&
-                 p.City == lodgingAddress.City &&
-                 p.PostalCode == lodgingAddress.PostalCode &&
-                 p.Street == lodgingAddress.Street))
-                return new ConflictResult<bool>(Errors.ADDRESS_NOT_UNIQUE);
-
             Country country = (await GetCountry(code: countryCode)).Data.FirstOrDefault();
             if (country == null)
             {
@@ -128,6 +120,19 @@ namespace Core.Services.LodgingDomain
             }
             lodgingAddress.Country = null;
             lodgingAddress.CountryId = country.Id;
+
+            bool exists = await _lodgingAddressRepository.AnyAsync(p =>
+                 (p.CountryId == lodgingAddress.CountryId &&
+                 p.County == lodgingAddress.County &&
+                 p.City == lodgingAddress.City &&
+                 p.PostalCode == lodgingAddress.PostalCode &&
+                 p.Street == lodgingAddress.Street &&
+                 p.HouseNumber == lodgingAddress.HouseNumber &&
+                 p.Floor == lodgingAddress.Floor &&
+                 p.DoorNumber == lodgingAddress.DoorNumber));
+
+            if (exists)
+                return new ConflictResult<bool>(Errors.ADDRESS_NOT_UNIQUE);
 
             await _lodgingAddressRepository.AddAsync(lodgingAddress);
 
@@ -223,7 +228,7 @@ namespace Core.Services.LodgingDomain
                 (lodgingType == null || p.LodgingType.Name == lodgingTypeAsEnum))
                 .AddInclude(p => p.LodgingType)
                 .AddInclude(p => p.User)
-                .AddInclude(p => p.LodgingAddresses)
+                .AddInclude(p => (p.LodgingAddresses as LodgingAddress).Country)
                 .AddInclude(p => (p.Rooms as Room).Currency)
                 .AddInclude(p => p.ReservationWindows);
 
