@@ -73,8 +73,8 @@ namespace Web.Controllers
         [HttpGet("reservationwindows")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
-        public async Task<IActionResult> GetActiveReservationWindows([FromQuery] int? id = null, 
-            [FromQuery] int? lodgingId = null, 
+        public async Task<IActionResult> GetActiveReservationWindows([FromQuery] int? id = null,
+            [FromQuery] int? lodgingId = null,
             [FromQuery] DateTime? isBefore = null)
         {
             return Ok(_mapper.Map<ICollection<ReservationWindowDto>>((await _lodgingManagementService.GetReservationWindow(id, lodgingId, DateTime.Now, isBefore)).Data));
@@ -105,12 +105,62 @@ namespace Web.Controllers
         }
         #endregion
         #region post
+        /// <summary>
+        /// Add a new lodging
+        /// </summary>
+        /// <param name="newLodgingDto">this contains the data for a new lodging</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST api/lodgings
+        ///     {
+        ///        "name": "name of the new lodging",
+        ///        "lodgingType" : "type of the new lodging", //Private or Company 
+        ///        "rooms" : [                        // optional
+        ///             {
+        ///                 "adultCapacity" : 2,
+        ///                 "childrenCapacity" : 0,
+        ///                 "price" : 200,
+        ///                 "currency": "Forint"
+        ///             },
+        ///             {
+        ///                 "adultCapacity" : 0,
+        ///                 "childrenCapacity" : 2,
+        ///                 "price" : 1,
+        ///                 "currency": "Euro"
+        ///             }
+        ///        ],
+        ///        "lodgingAddresses": [             // optional
+        ///             {
+        ///                 "countryCode": "HU",
+        ///                 "county": "Nógrád",
+        ///                 "city": "Balassagyarmat",
+        ///                 "postalCode" : 2660,
+        ///                 "street": "Bajcsy-Zsilinszki utca",
+        ///                 "houseNumber": "1"
+        ///             },
+        ///             {
+        ///                 "countryCode": "HU",
+        ///                 "county": "Nógrád",
+        ///                 "city": "Balassagyarmat",
+        ///                 "postalCode" : 2660,
+        ///                 "street": "Bajcsy-Zsilinszki utca",
+        ///                 "houseNumber": "2",
+        ///                 "floor": "3",
+        ///                 "doorNumber": "4"
+        ///             }
+        ///         ]
+        ///     }
+        ///
+        /// </remarks>
         [HttpPost()]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         [AuthorizeRoles]
         public async Task<IActionResult> AddLodging([FromBody] LodgingDto newLodgingDto)
         {
+            newLodgingDto.UserId = int.Parse(User.Identity.Name);
             var newLodging = _mapper.Map<Lodging>(newLodgingDto);
             var result = await _lodgingManagementService.AddLodging(newLodging, newLodgingDto.LodgingType, int.Parse(User.Identity.Name));
 
@@ -119,6 +169,26 @@ namespace Web.Controllers
 
             return Ok();
         }
+        /// <summary>
+        /// Adds a new lodging address to a lodging
+        /// </summary>
+        /// <param name="newLodgingAddressDto">This contains the data for a new lodging address</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST api/lodgings/addresses
+        ///     {
+        ///         "lodgingId" : 1
+        ///         "countryCode": "HU",
+        ///         "county": "Nógrád",
+        ///         "city": "Balassagyarmat",
+        ///         "postalCode" : 2660,
+        ///         "street": "Bajcsy-Zsilinszki utca",
+        ///         "houseNumber": "1"
+        ///      }
+        ///      
+        /// </remarks>
         [HttpPost("addresses")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -133,6 +203,22 @@ namespace Web.Controllers
 
             return Ok();
         }
+        /// <summary>
+        /// Adds a new reservation window to a lodging
+        /// </summary>
+        /// <param name="newReservationWindowDto">This contains the data for a new reservation window</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST api/lodgings/reservationwindows
+        ///     {
+        ///         "lodgingId" : 1
+        ///         "From": "2020-9-1"
+        ///         "To": "2020-10-1"
+        ///      }
+        ///      
+        /// </remarks>
         [HttpPost("reservationwindows")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -147,6 +233,24 @@ namespace Web.Controllers
 
             return Ok();
         }
+        /// <summary>
+        /// Adds a new room to a lodging
+        /// </summary>
+        /// <param name="newRoomDto">This contains the data for a new room</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST api/lodgings/rooms
+        ///     {
+        ///         "lodgingId" : 1
+        ///         "adultCapacity" : 0,
+        ///         "childrenCapacity" : 2,
+        ///         "price" : 1,
+        ///         "currency": "Euro"
+        ///      }
+        ///      
+        /// </remarks>
         [HttpPost("rooms")]
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
@@ -154,7 +258,7 @@ namespace Web.Controllers
         public async Task<IActionResult> AddRoom([FromBody] RoomDto newRoomDto)
         {
             var newRoom = _mapper.Map<Room>(newRoomDto);
-            var result = await _lodgingManagementService.AddRoom(newRoom, int.Parse(User.Identity.Name));
+            var result = await _lodgingManagementService.AddRoom(newRoom, newRoomDto.Currency,int.Parse(User.Identity.Name));
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);

@@ -21,7 +21,7 @@ namespace Core.Interfaces.LodgingDomain.LodgingManagementService
         Task<Result<bool>> RemoveRoom(int roomId,
             int resourceAccessorId);
 
-        Task<Result<bool>> AddRoom(Room room, int resourceAccessorId);
+        Task<Result<bool>> AddRoom(Room room, string currencyName, int resourceAccessorId);
 
         Task<Result<IReadOnlyList<Currency>>> GetCurrency(int? id = null,
             string name = null);

@@ -60,18 +60,27 @@ namespace Core.Services.LodgingDomain
             lodging.LodgingType = null;
             lodging.LodgingTypeId = lodgingTypeEntity.Id;
 
+            //does it get the id of the new record?
+            //if so, set the value into the addresses & rooms
+            List<LodgingAddress> lodgingAddresses = lodging.LodgingAddresses.ToList();
+            List<Room> rooms = lodging.Rooms.ToList();
+            lodging.Rooms = null;
+            lodging.LodgingAddresses = null;
             await _lodgingRepository.AddAsync(lodging);
 
-            foreach (LodgingAddress address in lodging.LodgingAddresses)
+            lodgingAddresses.ForEach(p => p.LodgingId = lodging.Id);
+            rooms.ForEach(p => p.LodgingId = lodging.Id);
+
+            foreach (LodgingAddress address in lodgingAddresses)
             {
                 var result = await AddLodgingAddress(address, address.Country.Code, resourceAccessorId);
                 if (result.ResultType != ResultType.Ok)
                     return result;
             }
 
-            foreach (Room room in lodging.Rooms)
+            foreach (Room room in rooms)
             {
-                var result = await AddRoom(room, resourceAccessorId);
+                var result = await AddRoom(room, room.Currency.Name, resourceAccessorId);
                 if (result.ResultType != ResultType.Ok)
                     return result;
             }
@@ -117,6 +126,8 @@ namespace Core.Services.LodgingDomain
                     return new InvalidResult<bool>(Errors.COUNTRY_NOT_FOUND);
                 }
             }
+            lodgingAddress.Country = null;
+            lodgingAddress.CountryId = country.Id;
 
             await _lodgingAddressRepository.AddAsync(lodgingAddress);
 
@@ -147,14 +158,14 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> AddRoom(Room room, int resourceAccessorId)
+        public async Task<Result<bool>> AddRoom(Room room, string currencyName, int resourceAccessorId)
         {
             Lodging lodging = ((await GetLodging(id: room.LodgingId)).Data).FirstOrDefault();
 
             if (lodging == null)
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
-            Currency currency = (await GetCurrency(id: room.CurrencyId)).Data.FirstOrDefault();
+            Currency currency = (await GetCurrency(name: currencyName)).Data.FirstOrDefault();
             if (currency == null)
                 return new NotFoundResult<bool>(Errors.CURRENCY_NOT_FOUND);
 
@@ -165,6 +176,8 @@ namespace Core.Services.LodgingDomain
 
             room.Lodging = null;
             room.LodgingId = lodging.Id;
+            room.Currency = null;
+            room.CurrencyId = currency.Id;
 
             if (room.ChildrenCapacity < 0 ||
                 room.AdultCapacity < 0)

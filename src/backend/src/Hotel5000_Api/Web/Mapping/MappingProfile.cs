@@ -38,15 +38,20 @@ namespace Web.Mapping
 
             CreateMap<Lodging, LodgingDto>()
                 .ForMember(dest => dest.LodgingType, o => o.MapFrom(src => src.LodgingType.Name));
-            CreateMap<LodgingDto, Lodging>();
+            CreateMap<LodgingDto, Lodging>()
+                .ForMember(dest => dest.LodgingType, o => o.Ignore())
+                .ForMember(dest => dest.Rooms, o => o.MapFrom(src => src.Rooms))
+                .ForMember(dest => dest.LodgingAddresses, o => o.MapFrom(src =>src.LodgingAddresses));
 
             CreateMap<Room, RoomDto>()
                 .ForMember(dest => dest.Currency, o => o.MapFrom(src => src.Currency.Name));
-            CreateMap<RoomDto, Room>();
+            CreateMap<RoomDto, Room>()
+                .ForPath(dest => dest.Currency.Name, o => o.MapFrom(src => src.Currency));
 
             CreateMap<LodgingAddress, LodgingAddressDto>()
                 .ForMember(dest => dest.CountryCode, o => o.MapFrom(src => src.Country.Code));
-            CreateMap<LodgingAddressDto, LodgingAddress>();
+            CreateMap<LodgingAddressDto, LodgingAddress>()
+                .ForPath(dest => dest.Country.Code, o => o.MapFrom(src => src.CountryCode));
 
             CreateMap<ReservationWindow, ReservationWindowDto>();
             CreateMap<ReservationWindowDto, ReservationWindow>();
