@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Card} from "react-bootstrap";
 
 class Lodging extends Component {
 
@@ -8,7 +9,7 @@ class Lodging extends Component {
         this.state = {
             pageNumber: 1,
             resultPerPage: 8,
-            data: {}
+            data: []
         }
     }
 
@@ -28,14 +29,30 @@ class Lodging extends Component {
 
             }
         })
-            .then(resp => console.log(resp.status))
+            .then(resp => resp.json())
+            .then(responseJson => {
+                console.log(responseJson)
+                this.setState({data: responseJson})
+            })
+    }
+
+    renderLodgings = () => {
+        return this.state.data.map(lodging => {
+            return (
+                <Card style={{width: '20rem'}} key={lodging.id}>
+                    <Card.Body>
+                        <Card.Title>{lodging.name}</Card.Title>
+                    </Card.Body>
+                </Card>
+            )
+        })
     }
 
 
     render() {
         return (
             <div>
-
+                {this.renderLodgings()}
             </div>
         );
     }
