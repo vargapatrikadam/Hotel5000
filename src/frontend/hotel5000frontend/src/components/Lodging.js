@@ -37,15 +37,44 @@ class Lodging extends Component {
     }
 
     renderLodgings = () => {
-        return this.state.data.map(lodging => {
+
+        const rows = [...Array(Math.ceil(this.state.data.length / 3))]
+
+        const lodgingRows = rows.map((row, index) => this.state.data.slice(index * 3, index * 3 + 3))
+
+        const content = lodgingRows.map((row, index) => {
+            return(
+                <div className="row" key={index}>
+                    {row.map(lodging => {
+                        return (
+                            <Card style={{width: '25rem'}} key={lodging.id} className="mx-auto my-3">
+                                <Card.Body>
+                                    <Card.Title>{lodging.name}</Card.Title>
+                                </Card.Body>
+                            </Card>
+
+                        )
+                    })}
+                </div>
+            )
+        })
+
+        return(
+            <div>
+                {content}
+            </div>
+        )
+
+        /*return this.state.data.map(lodging => {
             return (
                 <Card style={{width: '20rem'}} key={lodging.id}>
                     <Card.Body>
                         <Card.Title>{lodging.name}</Card.Title>
                     </Card.Body>
                 </Card>
+
             )
-        })
+        })*/
     }
 
 
