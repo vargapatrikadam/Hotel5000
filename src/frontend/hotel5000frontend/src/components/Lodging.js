@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Card} from "react-bootstrap";
+import {Accordion, Button, Card, ListGroup, ListGroupItem} from "react-bootstrap";
+
 
 class Lodging extends Component {
 
@@ -9,7 +10,8 @@ class Lodging extends Component {
         this.state = {
             pageNumber: 1,
             resultPerPage: 8,
-            data: []
+            data: [],
+            rooms: []
         }
     }
 
@@ -50,7 +52,46 @@ class Lodging extends Component {
                             <Card style={{width: '25rem'}} key={lodging.id} className="mx-auto my-3">
                                 <Card.Body>
                                     <Card.Title>{lodging.name}</Card.Title>
+                                    <Card.Subtitle>{lodging.lodgingType}</Card.Subtitle>
                                 </Card.Body>
+                                <ListGroup className="list-group-flush">
+                                    <ListGroupItem>
+                                        <Accordion>
+                                            <Card>
+                                                <Card.Header>
+                                                    <Accordion.Toggle as={Button} variant="outline-dark" eventKey={lodging.id}>
+                                                        Rooms
+                                                    </Accordion.Toggle>
+                                                </Card.Header>
+                                                <Accordion.Collapse eventKey={lodging.id}>
+                                                    <Card.Body>
+                                                        {lodging.rooms.map(room => {
+                                                            return(
+                                                                <Card key={room.id}>
+                                                                    <Card.Body>
+                                                                        <ListGroup className="list-group-flush">
+                                                                            <ListGroupItem>
+                                                                                <label>Adult capacity:</label>
+                                                                                {room.adultCapacity}
+                                                                            </ListGroupItem>
+                                                                            <ListGroupItem>
+                                                                                <label>Children capacity:</label>
+                                                                                {room.childrenCapacity}
+                                                                            </ListGroupItem>
+                                                                        </ListGroup>
+
+
+                                                                    </Card.Body>
+                                                                </Card>
+                                                            )
+                                                        })}
+                                                    </Card.Body>
+                                                </Accordion.Collapse>
+                                            </Card>
+                                        </Accordion>
+
+                                    </ListGroupItem>
+                                </ListGroup>
                             </Card>
 
                         )
