@@ -216,16 +216,30 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<IReadOnlyList<Currency>>(await _currencyRepository.GetAsync(specification));
         }
 
-        public async Task<Result<IReadOnlyList<Lodging>>> GetLodging(int? id = null, string name = null, string lodgingType = null, int? skip = null, int? take = null)
+        public async Task<Result<IReadOnlyList<Lodging>>> GetLodging(int? id = null, 
+            string name = null, 
+            string lodgingType = null,
+            DateTime? reservableFrom = null,
+            DateTime? reservableTo = null,
+            string countryCode = null, 
+            int? skip = null, 
+            int? take = null)
         {
             LodgingTypes lodgingTypeAsEnum;
             Enum.TryParse(lodgingType, out lodgingTypeAsEnum);
+
+            Country country = null;
+            if (countryCode != null)
+                country = (await GetCountry(code: countryCode)).Data.FirstOrDefault();
 
             ISpecification<Lodging> specification = new Specification<Lodging>();
             specification.ApplyFilter(p =>
                 (!id.HasValue || p.Id == id.Value) &&
                 (name == null || p.Name == name) &&
-                (lodgingType == null || p.LodgingType.Name == lodgingTypeAsEnum))
+                (lodgingType == null || p.LodgingType.Name == lodgingTypeAsEnum) &&
+                (!reservableFrom.HasValue || p.ReservationWindows.Any(p => reservableFrom >= p.From && p.To > reservableFrom )) &&
+                (!reservableTo.HasValue || p.ReservationWindows.Any(p => reservableTo >= p.From && p.To > reservableTo)) &&
+                (country == null || p.LodgingAddresses.Any(p => p.CountryId == country.Id)))
                 .AddInclude(p => p.LodgingType)
                 .AddInclude(p => p.User)
                 .AddInclude(p => (p.LodgingAddresses as LodgingAddress).Country)

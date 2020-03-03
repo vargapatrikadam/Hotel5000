@@ -1,6 +1,7 @@
 ﻿using Core.Entities.LodgingEntities;
 using Core.Enums.Lodging;
 using Core.Helpers.Results;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,6 +12,9 @@ namespace Core.Interfaces.LodgingDomain.LodgingManagementService
         Task<Result<IReadOnlyList<Lodging>>> GetLodging(int? id = null,
             string name = null,
             string lodgingType = null,
+            DateTime? reservableFrom = null,
+            DateTime? reservableTo = null,
+            string countryCode = null,
             int? skip = null,
             int? take = null);
 

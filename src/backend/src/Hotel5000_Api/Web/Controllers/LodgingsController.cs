@@ -38,12 +38,18 @@ namespace Web.Controllers
         public async Task<IActionResult> GetLodgings([FromQuery] int? id = null,
             [FromQuery] string name = null,
             [FromQuery] string lodgingType = null,
+            [FromQuery] DateTime? reservableFrom = null,
+            [FromQuery] DateTime? reservableTo = null,
+            [FromQuery] string countryCode = null,
             [FromQuery] int? pageNumber = null,
             [FromQuery] int? resultPerPage = null)
         {
             var result = await _lodgingManagementService.GetLodging(id,
                 name,
                 lodgingType,
+                reservableFrom,
+                reservableTo,
+                countryCode,
                 (pageNumber.HasValue && pageNumber.Value > 0) ? ((pageNumber.Value - 1) * resultPerPage) : null,
                 resultPerPage);
 
