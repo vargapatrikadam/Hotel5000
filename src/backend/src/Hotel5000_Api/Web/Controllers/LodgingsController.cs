@@ -26,14 +26,14 @@ namespace Web.Controllers
         }
         #region get
         [HttpGet("currencies")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ICollection<CurrencyDto>),200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetAvailableCurrencies()
         {
             return Ok(_mapper.Map<ICollection<CurrencyDto>>((await _lodgingManagementService.GetCurrency()).Data));
         }
         [HttpGet()]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ICollection<LodgingDto>),200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetLodgings([FromQuery] int? id = null,
             [FromQuery] string name = null,
@@ -56,7 +56,7 @@ namespace Web.Controllers
             return Ok(_mapper.Map<ICollection<LodgingDto>>(result.Data));
         }
         [HttpGet("{lodgingId}/addresses")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ICollection<LodgingAddressDto>),200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetAddressesForLodging(int lodgingId,
             [FromQuery] int? id = null,
@@ -70,14 +70,14 @@ namespace Web.Controllers
             return Ok(_mapper.Map<ICollection<LodgingAddressDto>>((await _lodgingManagementService.GetLodgingAddress(id, lodgingId, countryCode, countryName, county, city, postalCode, lodgingName)).Data));
         }
         [HttpGet("{lodgingId}/reservationwindows")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ICollection<ReservationWindowDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetActiveReservationWindowForLodging(int lodgingId)
         {
             return Ok(_mapper.Map<ICollection<ReservationWindowDto>>((await _lodgingManagementService.GetReservationWindow(isAfter: DateTime.Now, lodgingId: lodgingId)).Data));
         }
         [HttpGet("reservationwindows")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ICollection<ReservationWindowDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetActiveReservationWindows([FromQuery] int? id = null,
             [FromQuery] int? lodgingId = null,
@@ -86,7 +86,7 @@ namespace Web.Controllers
             return Ok(_mapper.Map<ICollection<ReservationWindowDto>>((await _lodgingManagementService.GetReservationWindow(id, lodgingId, DateTime.Now, isBefore)).Data));
         }
         [HttpGet("rooms")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ICollection<RoomDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetRoom([FromQuery] int? id = null,
             [FromQuery] int? lodgingId = null,
@@ -98,7 +98,7 @@ namespace Web.Controllers
             return Ok(_mapper.Map<ICollection<RoomDto>>((await _lodgingManagementService.GetRoom(id, lodgingId, adultCapacity, childrenCapacity, priceMin, priceMax)).Data));
         }
         [HttpGet("{lodgingId}/rooms")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ICollection<RoomDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetRoomsForLodging(int lodgingId,
             [FromQuery] int? id = null,
