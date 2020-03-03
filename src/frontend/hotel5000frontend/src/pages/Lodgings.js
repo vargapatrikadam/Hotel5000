@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import NavBar from '../components/NavBar';
+import Lodging from "../components/Lodging";
 
 class Lodgings extends Component {
     render() {
         return (
             <div>
                 <NavBar/>
-                <h2>Lodgings</h2>
+                <Lodging/>
             </div>
         );
     }
