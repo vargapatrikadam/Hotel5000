@@ -16,6 +16,7 @@ namespace Core.Services.LodgingDomain
     public class LodgingManagementService : ILodgingManagementService
     {
         private readonly IAuthenticationService _authenticationService;
+        private readonly IUserManagementService _userManagementService;
         private readonly IAsyncRepository<Lodging> _lodgingRepository;
         private readonly IAsyncRepository<LodgingType> _lodgingTypeRepository;
         private readonly IAsyncRepository<LodgingAddress> _lodgingAddressRepository;
@@ -24,6 +25,7 @@ namespace Core.Services.LodgingDomain
         private readonly IAsyncRepository<Country> _countryRepository;
         private readonly IAsyncRepository<Currency> _currencyRepository;
         public LodgingManagementService(IAuthenticationService authenticationService,
+            IUserManagementService userManagementService,
             IAsyncRepository<Lodging> lodgingRepository,
             IAsyncRepository<LodgingType> lodgingTypeRepository,
             IAsyncRepository<LodgingAddress> lodgingAddressRepository,
@@ -33,6 +35,7 @@ namespace Core.Services.LodgingDomain
             IAsyncRepository<Currency> currecyRepository)
         {
             _authenticationService = authenticationService;
+            _userManagementService = userManagementService;
             _lodgingRepository = lodgingRepository;
             _lodgingTypeRepository = lodgingTypeRepository;
             _lodgingAddressRepository = lodgingAddressRepository;
@@ -60,8 +63,16 @@ namespace Core.Services.LodgingDomain
             lodging.LodgingType = null;
             lodging.LodgingTypeId = lodgingTypeEntity.Id;
 
-            //does it get the id of the new record?
-            //if so, set the value into the addresses & rooms
+
+            ApprovingData userData = (await _userManagementService.GetApprovingData(approvingDataOwnerId: resourceAccessorId)).Data.FirstOrDefault();
+            if (userData == null ||
+                (lodgingTypeAsEnum == LodgingTypes.Company &&
+                userData.RegistrationNumber == null) ||
+                (lodgingTypeAsEnum == LodgingTypes.Private &&
+                (userData.IdentityNumber == null || userData.TaxNumber == null)))
+                return new UnauthorizedResult<bool>(Errors.APPROVING_DATA_NOT_VALID);
+
+
             List<LodgingAddress> lodgingAddresses = lodging.LodgingAddresses.ToList();
             List<Room> rooms = lodging.Rooms.ToList();
             lodging.Rooms = null;
