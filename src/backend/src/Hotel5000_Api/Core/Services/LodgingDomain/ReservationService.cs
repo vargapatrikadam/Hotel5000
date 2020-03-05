@@ -77,6 +77,7 @@ namespace Core.Services.LodgingDomain
             if (reservationItems.Any(p => p.ReservedFrom > p.ReservedTo))
                 return new InvalidResult<bool>(Errors.RESERVATION_DATE_INVALID);
 
+            ISpecification<ReservationItem> specification = new Specification<ReservationItem>();
             foreach (ReservationItem newItem in reservationItems)
             {
                 Room reservedRoom = (await _lodgingManagementService.GetRoom(id: newItem.RoomId)).Data.FirstOrDefault();
@@ -89,9 +90,11 @@ namespace Core.Services.LodgingDomain
 
                 newItem.ReservationWindowId = activeReservationWindow.Id;
 
-                if (await _reservationItemRepository.AnyAsync(existing => (existing.RoomId == newItem.RoomId) &&
-                    (existing.ReservedFrom < newItem.ReservedTo && newItem.ReservedFrom < existing.ReservedTo)))
-                    return new InvalidResult<bool>(Errors.RESERVATION_DATE_TAKEN);
+                specification.ApplyFilter(existing => (existing.RoomId == newItem.RoomId) &&
+                    (existing.ReservedFrom < newItem.ReservedTo && newItem.ReservedFrom < existing.ReservedTo));
+                ReservationItem existingReservation = (await _reservationItemRepository.GetAsync(specification)).FirstOrDefault();
+                if (existingReservation != null)
+                    return new InvalidResult<bool>(Errors.RESERVATION_DATE_TAKEN, $"This room is already reserved from {existingReservation.ReservedFrom.ToShortDateString()} to {existingReservation.ReservedTo.ToShortDateString()}");
             }
 
             await _reservationRepository.AddAsync(newReservation);
