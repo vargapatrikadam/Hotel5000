@@ -175,6 +175,7 @@ namespace Web
             services.AddScoped<ILodgingAddressService, LodgingManagementService>();
             services.AddScoped<IReservationWindowService, LodgingManagementService>();
             services.AddScoped<IRoomService, LodgingManagementService>();
+            services.AddScoped<IReservationService, ReservationService>();
 
             services.AddSingleton<ISetting<AuthenticationOptions>>(new Setting<AuthenticationOptions>
                 (authenticationOptions));
