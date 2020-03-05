@@ -22,7 +22,7 @@ class Loginform extends Component {
 
     login = (username, password) =>{
         const data = {
-            "username": username,
+            "identifier": username,
             "password": password
         };
 

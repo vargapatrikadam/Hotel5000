@@ -93,7 +93,7 @@ class User extends Component {
         })
             .then(response => response.json())
             .then(responsejson => {
-                this.setState({nextPageData: responsejson})
+
             })
     }
 

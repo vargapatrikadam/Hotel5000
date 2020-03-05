@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Accordion, Button, Card, FormControl, InputGroup, ListGroup, ListGroupItem} from "react-bootstrap";
+import {Accordion, Button, Card, FormControl, InputGroup, ListGroup, ListGroupItem, Modal} from "react-bootstrap";
 import {FaSearch} from "react-icons/fa";
 
 
@@ -16,7 +16,8 @@ class Lodging extends Component {
             rooms: [],
             fromDateFilter: "",
             toDateFilter: "",
-            isSearchClicked: false
+            isSearchClicked: false,
+            modalIndex: null
         }
     }
 
@@ -83,6 +84,14 @@ class Lodging extends Component {
             })
     }
 
+    handleOpenModal(e, id){
+        this.setState({modalIndex: id});
+    }
+
+    handleCloseModal(){
+        this.setState({modalIndex: null})
+    }
+
     renderLodgings = () => {
 
         const rows = [...Array(Math.ceil(this.state.data.length / 3))]
@@ -102,40 +111,39 @@ class Lodging extends Component {
                                     </Card.Body>
                                     <ListGroup className="list-group-flush">
                                         <ListGroupItem>
-                                            <Accordion>
-                                                <Card>
-                                                    <Card.Header>
-                                                        <Accordion.Toggle as={Button} variant="outline-dark" eventKey={lodging.id}>
-                                                            Rooms
-                                                        </Accordion.Toggle>
-                                                    </Card.Header>
-                                                    <Accordion.Collapse eventKey={lodging.id}>
-                                                        <Card.Body>
-                                                            {lodging.rooms.map(room => {
-                                                                return(
-                                                                    <Card key={room.id}>
-                                                                        <Card.Body>
-                                                                            <ListGroup className="list-group-flush">
-                                                                                <ListGroupItem>
-                                                                                    <label>Adult capacity:</label>
-                                                                                    {room.adultCapacity}
-                                                                                </ListGroupItem>
-                                                                                <ListGroupItem>
-                                                                                    <label>Children capacity:</label>
-                                                                                    {room.childrenCapacity}
-                                                                                </ListGroupItem>
+                                            <Button variant="outline-dark" onClick={e => this.handleOpenModal(e, lodging.id)}>
+                                                Details
+                                            </Button>
+                                            <Modal show={this.state.modalIndex === lodging.id} onHide={() => this.handleCloseModal()}>
+                                                <Modal.Header closeButton>
+                                                    <Modal.Title>{lodging.name}</Modal.Title>
+                                                </Modal.Header>
+                                                <Modal.Body>
+                                                    {lodging.rooms.map( room => {
+                                                        return(
+                                                            <div key={room.id}>
+                                                                <Accordion>
+                                                                    <Card>
+                                                                        <Card.Header>
+                                                                            <Accordion.Toggle as={Button} variant="outline-dark" eventKey={room.id}>
+                                                                                {room.adultCapacity + room.childrenCapacity} capacity room
+                                                                            </Accordion.Toggle>
+                                                                        </Card.Header>
+                                                                        <Accordion.Collapse eventKey={room.id}>
+                                                                            <ListGroup>
+                                                                                <ListGroupItem>Adult capacity: {room.adultCapacity}</ListGroupItem>
+                                                                                <ListGroupItem>Children capacity: {room.childrenCapacity}</ListGroupItem>
+                                                                                <ListGroupItem>Price: {room.price} {room.currency}</ListGroupItem>
                                                                             </ListGroup>
-
-
-                                                                        </Card.Body>
+                                                                        </Accordion.Collapse>
                                                                     </Card>
-                                                                )
-                                                            })}
-                                                        </Card.Body>
-                                                    </Accordion.Collapse>
-                                                </Card>
-                                            </Accordion>
-
+                                                                </Accordion>
+                                                            </div>
+                                                        )}
+                                                    )}
+                                                </Modal.Body>
+                                            </Modal>
+                                            
                                         </ListGroupItem>
                                     </ListGroup>
                                 </Card>
@@ -153,17 +161,6 @@ class Lodging extends Component {
                 {content}
             </div>
         )
-
-        /*return this.state.data.map(lodging => {
-            return (
-                <Card style={{width: '20rem'}} key={lodging.id}>
-                    <Card.Body>
-                        <Card.Title>{lodging.name}</Card.Title>
-                    </Card.Body>
-                </Card>
-
-            )
-        })*/
     }
 
     handleFromDateChanged = (from) => {

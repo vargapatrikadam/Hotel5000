@@ -61,13 +61,13 @@ class NavBar extends Component {
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
                                 <h3 align="center" className="usernameh2">Username</h3>
-                                <Dropdown.Item className="dropdownitem" disabled={!this.state.loggedin}> <FaShoppingCart/>Cart</Dropdown.Item>
+                                <Dropdown.Item className="dropdownitem" disabled={this.state.loggedin !== true}> <FaShoppingCart/>Cart</Dropdown.Item>
                                 <Dropdown.Divider/>
-                                <Dropdown.Item className="dropdownitem" disabled={!this.state.loggedin}><FaClock/>Reservations</Dropdown.Item>
+                                <Dropdown.Item className="dropdownitem" disabled={this.state.loggedin !== true}><FaClock/>Reservations</Dropdown.Item>
                                 <Dropdown.Divider/>
-                                <Dropdown.Item className="dropdownitem" disabled={!this.state.loggedin}><FaIdBadge/>Personal data</Dropdown.Item>
+                                <Dropdown.Item className="dropdownitem" disabled={this.state.loggedin !== true}><FaIdBadge/>Personal data</Dropdown.Item>
                                 <Dropdown.Divider/>
-                                <Dropdown.Item className="dropdownitem" disabled={!this.state.loggedin}><FaPen/>Ratings</Dropdown.Item>
+                                <Dropdown.Item className="dropdownitem" disabled={this.state.loggedin !== true}><FaPen/>Ratings</Dropdown.Item>
                                 <Dropdown.Divider/>
                                 <Link to="/login"><Button variant="outline-dark" style={{width: '10rem'}}>Sign in</Button></Link>
                                 <Dropdown.Divider/>
