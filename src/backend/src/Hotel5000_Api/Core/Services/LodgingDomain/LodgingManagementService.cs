@@ -232,7 +232,7 @@ namespace Core.Services.LodgingDomain
             string lodgingType = null,
             DateTime? reservableFrom = null,
             DateTime? reservableTo = null,
-            string countryCode = null, 
+            string address = null, 
             int? skip = null, 
             int? take = null)
         {
@@ -240,8 +240,8 @@ namespace Core.Services.LodgingDomain
             Enum.TryParse(lodgingType, out lodgingTypeAsEnum);
 
             Country country = null;
-            if (countryCode != null)
-                country = (await GetCountry(code: countryCode)).Data.FirstOrDefault();
+            if (address != null)
+                country = (await GetCountry(name: address)).Data.FirstOrDefault();
 
             ISpecification<Lodging> specification = new Specification<Lodging>();
             specification.ApplyFilter(p =>
@@ -250,7 +250,12 @@ namespace Core.Services.LodgingDomain
                 (lodgingType == null || p.LodgingType.Name == lodgingTypeAsEnum) &&
                 (!reservableFrom.HasValue || p.ReservationWindows.Any(p => reservableFrom >= p.From && p.To > reservableFrom )) &&
                 (!reservableTo.HasValue || p.ReservationWindows.Any(p => reservableTo >= p.From && p.To > reservableTo)) &&
-                (country == null || p.LodgingAddresses.Any(p => p.CountryId == country.Id)))
+                (address == null || p.LodgingAddresses.Any(p => p.County.StartsWith(address) ||
+                                   p.City.StartsWith(address) || 
+                                   p.PostalCode.StartsWith(address) || 
+                                   p.Street.StartsWith(address)) || 
+                                   (country != null &&
+                                   p.LodgingAddresses.Any(p => p.CountryId == country.Id))))
                 .AddInclude(p => p.LodgingType)
                 .AddInclude(p => p.User)
                 .AddInclude(p => (p.LodgingAddresses as LodgingAddress).Country)
@@ -260,7 +265,9 @@ namespace Core.Services.LodgingDomain
             if (skip.HasValue && take.HasValue)
                 specification.ApplyPaging(skip.Value, take.Value);
 
-            return new SuccessfulResult<IReadOnlyList<Lodging>>(await _lodgingRepository.GetAsync(specification));
+            var data = await _lodgingRepository.GetAsync(specification);
+
+            return new SuccessfulResult<IReadOnlyList<Lodging>>(data);
         }
 
         public async Task<Result<IReadOnlyList<LodgingAddress>>> GetLodgingAddress(int? id = null, int? lodgingId = null, string countryCode = null, string countryName = null, string county = null, string city = null, string postalCode = null, string lodgingName = null)

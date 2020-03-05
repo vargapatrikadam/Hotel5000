@@ -40,7 +40,7 @@ namespace Web.Controllers
             [FromQuery] string lodgingType = null,
             [FromQuery] DateTime? reservableFrom = null,
             [FromQuery] DateTime? reservableTo = null,
-            [FromQuery] string countryCode = null,
+            [FromQuery] string address = null,
             [FromQuery] int? pageNumber = null,
             [FromQuery] int? resultPerPage = null)
         {
@@ -49,7 +49,7 @@ namespace Web.Controllers
                 lodgingType,
                 reservableFrom,
                 reservableTo,
-                countryCode,
+                address,
                 (pageNumber.HasValue && pageNumber.Value > 0) ? ((pageNumber.Value - 1) * resultPerPage) : null,
                 resultPerPage);
 
