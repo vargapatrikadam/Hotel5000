@@ -289,7 +289,7 @@ namespace Infrastructure.Lodgings
             {
                 new LodgingAddress()
                 {
-                    CountryId = 2,
+                    CountryId = 1,
                     County = "Banská Bystrica Region",
                     City = "Banská Bystrica",
                     PostalCode = "97401",
@@ -299,7 +299,7 @@ namespace Infrastructure.Lodgings
                 },
                 new LodgingAddress()
                 {
-                    CountryId = 2,
+                    CountryId = 1,
                     County = "Nitra Region",
                     City = "Nitra",
                     PostalCode = "94901",
@@ -309,7 +309,7 @@ namespace Infrastructure.Lodgings
                 },
                 new LodgingAddress()
                 {
-                    CountryId = 1,
+                    CountryId = 2,
                     County = "Nógrád",
                     City = "Balassagyarmat",
                     PostalCode = "2660",
@@ -358,7 +358,7 @@ namespace Infrastructure.Lodgings
                     AdultCapacity = 2,
                     ChildrenCapacity = 0,
                     Price = 5000,
-                    CurrencyId = 1,
+                    CurrencyId = 2,
                     LodgingId = 1
                 },
                 new Room()
@@ -366,7 +366,7 @@ namespace Infrastructure.Lodgings
                     AdultCapacity = 2,
                     ChildrenCapacity = 2,
                     Price = 20,
-                    CurrencyId = 2,
+                    CurrencyId = 1,
                     LodgingId = 2
                 },
                 new Room()
@@ -374,7 +374,7 @@ namespace Infrastructure.Lodgings
                     AdultCapacity = 2,
                     ChildrenCapacity = 0,
                     Price = 15,
-                    CurrencyId = 2,
+                    CurrencyId = 1,
                     LodgingId = 2
                 },
                 new Room()
@@ -382,7 +382,7 @@ namespace Infrastructure.Lodgings
                     AdultCapacity = 4,
                     ChildrenCapacity = 2,
                     Price = 40,
-                    CurrencyId = 2,
+                    CurrencyId = 1,
                     LodgingId = 3
                 },
                 new Room()
@@ -390,7 +390,7 @@ namespace Infrastructure.Lodgings
                     AdultCapacity = 2,
                     ChildrenCapacity = 0,
                     Price = 20,
-                    CurrencyId = 2,
+                    CurrencyId = 1,
                     LodgingId = 3
                 },
                 new Room()
@@ -398,7 +398,7 @@ namespace Infrastructure.Lodgings
                     AdultCapacity = 2,
                     ChildrenCapacity = 1,
                     Price = 25,
-                    CurrencyId = 2,
+                    CurrencyId = 1,
                     LodgingId = 3
                 }
             };
