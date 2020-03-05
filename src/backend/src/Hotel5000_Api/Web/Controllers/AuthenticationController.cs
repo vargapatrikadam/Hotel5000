@@ -76,12 +76,14 @@ namespace Web.Controllers
             var accessToken = GenerateToken(result.Data);
             var refreshToken = result.Data.Tokens.LastOrDefault().RefreshToken;
             var role = result.Data.Role.Name.ToString();
+            var username = result.Data.Username;
 
             return Ok(new AuthenticationDto
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
-                Role = role
+                Role = role,
+                Username = username
             });
         }
 
