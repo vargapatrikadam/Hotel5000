@@ -81,9 +81,10 @@ namespace Web.Controllers
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetActiveReservationWindows([FromQuery] int? id = null,
             [FromQuery] int? lodgingId = null,
-            [FromQuery] DateTime? isBefore = null)
+            [FromQuery] DateTime? isBefore = null,
+            [FromQuery] DateTime? isAfter = null)
         {
-            return Ok(_mapper.Map<ICollection<ReservationWindowDto>>((await _lodgingManagementService.GetReservationWindow(id, lodgingId, DateTime.Now, isBefore)).Data));
+            return Ok(_mapper.Map<ICollection<ReservationWindowDto>>((await _lodgingManagementService.GetReservationWindow(id, lodgingId, isAfter == null ? DateTime.Now : isAfter, isBefore)).Data));
         }
         [HttpGet("rooms")]
         [ProducesResponseType(typeof(ICollection<RoomDto>), 200)]

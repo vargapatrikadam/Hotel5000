@@ -294,8 +294,8 @@ namespace Core.Services.LodgingDomain
             specification.ApplyFilter(p =>
                 (!id.HasValue || p.Id == id.Value) &&
                 (!lodgingId.HasValue || p.LodgingId == lodgingId.Value) &&
-                (!isAfter.HasValue || p.From > isAfter.Value) &&
-                (!isBefore.HasValue || p.To < isBefore.Value));
+                ((!isAfter.HasValue || p.From >= isAfter.Value) ||
+                (!isBefore.HasValue || p.To <= isBefore.Value)));
 
             return new SuccessfulResult<IReadOnlyList<ReservationWindow>>(await _reservationWindowRepository.GetAsync(specification));
         }

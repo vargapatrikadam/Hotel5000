@@ -1,5 +1,6 @@
 ﻿using Core.Entities.LodgingEntities;
 using Core.Enums;
+using Core.Enums.Lodging;
 using Core.Helpers.Results;
 using Core.Interfaces;
 using Core.Interfaces.LodgingDomain;
@@ -28,6 +29,8 @@ namespace Core.Services.LodgingDomain
             _reservationItemRepository = reservationItemRepository;
             _reservationRepository = reservationRepository;
         }
+
+
         public async Task<Result<bool>> DeleteReservation(int reservationId)
         {
             Reservation deleteThis = (await _reservationRepository.GetAsync(new Specification<Reservation>().ApplyFilter(p => p.Id == reservationId))).FirstOrDefault();
@@ -58,10 +61,47 @@ namespace Core.Services.LodgingDomain
 
             return new SuccessfulResult<IReadOnlyList<Reservation>>(await _reservationRepository.GetAsync(specification));
         }
-
-        public Task<Result<bool>> Reserve(Reservation newReservation)
+        public async Task<Result<bool>> Reserve(Reservation newReservation, string paymentType)
         {
-            throw new NotImplementedException();
+            List<ReservationItem> reservationItems = newReservation.ReservationItems.ToList();
+            newReservation.ReservationItems = null;
+
+            PaymentTypes paymentTypeAsEnum;
+            if (!Enum.TryParse(paymentType, out paymentTypeAsEnum))
+            {
+                return new InvalidResult<bool>(Errors.LODGING_TYPE_NOT_FOUND);
+            }
+            PaymentType paymentTypeEntity = (await _paymentTypeRepository.GetAsync(new Specification<PaymentType>().ApplyFilter(p => p.Name == paymentTypeAsEnum))).FirstOrDefault();
+            newReservation.PaymentTypeId = paymentTypeEntity.Id;
+
+            if (reservationItems.Any(p => p.ReservedFrom > p.ReservedTo))
+                return new InvalidResult<bool>(Errors.RESERVATION_DATE_INVALID);
+
+            foreach (ReservationItem newItem in reservationItems)
+            {
+                Room reservedRoom = (await _lodgingManagementService.GetRoom(id: newItem.RoomId)).Data.FirstOrDefault();
+                if (reservedRoom == null)
+                    return new NotFoundResult<bool>(Errors.ROOM_NOT_FOUND);
+
+                var activeReservationWindow = (await _lodgingManagementService.GetReservationWindow(lodgingId: reservedRoom.LodgingId)).Data.LastOrDefault();
+                if (activeReservationWindow == null || !(newItem.ReservedFrom >= activeReservationWindow.From && newItem.ReservedTo <= activeReservationWindow.To))
+                    return new InvalidResult<bool>(Errors.RESERVATION_DATE_INVALID);
+
+                newItem.ReservationWindowId = activeReservationWindow.Id;
+
+                if (await _reservationItemRepository.AnyAsync(existing => (existing.RoomId == newItem.RoomId) &&
+                    (existing.ReservedFrom < newItem.ReservedTo && newItem.ReservedFrom < existing.ReservedTo)))
+                    return new InvalidResult<bool>(Errors.RESERVATION_DATE_TAKEN);
+            }
+
+            await _reservationRepository.AddAsync(newReservation);
+            foreach (ReservationItem newItem in reservationItems)
+            {
+                newItem.ReservationId = newReservation.Id;
+                await _reservationItemRepository.AddAsync(newItem);
+            }
+
+            return new SuccessfulResult<bool>(true);
         }
     }
 }

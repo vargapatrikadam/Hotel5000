@@ -62,14 +62,13 @@ namespace Web.Mapping
             CreateMap<Reservation, ReservationDto>()
                 .ForMember(dest => dest.PaymentType, o => o.MapFrom(src => src.PaymentType.Name));
             CreateMap<ReservationDto, Reservation>()
-                .ForPath(dest => dest.PaymentType.Name, o => o.MapFrom(src => src.PaymentType));
+                .ForMember(dest => dest.PaymentType, o => o.Ignore());
 
             CreateMap<ReservationItem, ReservationItemDto>()
                 .ForMember(dest => dest.Currency, o => o.MapFrom(src => src.Room.Currency.Name))
                 .ForMember(dest => dest.LodgingName, o => o.MapFrom(src => src.Room.Lodging.Name))
                 .ForMember(dest => dest.Price, o => o.MapFrom(src => src.Room.Price));
-            CreateMap<ReservationItemDto, ReservationItem>()
-                .ForPath(dest => dest.Room.Currency.Name, o => o.MapFrom(src => src.Currency));
+            CreateMap<ReservationItemDto, ReservationItem>();
         }
     }
 }
