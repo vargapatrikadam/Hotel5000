@@ -1,4 +1,5 @@
 ﻿using Core.Entities.LodgingEntities;
+using Core.Enums;
 using Core.Helpers.Results;
 using Core.Interfaces;
 using Core.Interfaces.LodgingDomain;
@@ -27,9 +28,13 @@ namespace Core.Services.LodgingDomain
             _reservationItemRepository = reservationItemRepository;
             _reservationRepository = reservationRepository;
         }
-        public Task<Result<bool>> DeleteReservation(int reservationId)
+        public async Task<Result<bool>> DeleteReservation(int reservationId)
         {
-            throw new NotImplementedException();
+            Reservation deleteThis = (await _reservationRepository.GetAsync(new Specification<Reservation>().ApplyFilter(p => p.Id == reservationId))).FirstOrDefault();
+            if (deleteThis == null)
+                return new NotFoundResult<bool>(Errors.RESERVATION_NOT_FOUND);
+            await _reservationRepository.DeleteAsync(deleteThis);
+            return new SuccessfulResult<bool>(true);
         }
 
         public async Task<Result<IReadOnlyList<Reservation>>> GetReservation(int? id = null,
