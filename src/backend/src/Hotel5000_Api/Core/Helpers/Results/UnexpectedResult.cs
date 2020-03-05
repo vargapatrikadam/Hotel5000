@@ -6,13 +6,14 @@ namespace Core.Helpers.Results
 {
     public class UnexpectedResult<T> : Result<T>
     {
-        private readonly Errors[] _messages;
-        public UnexpectedResult(params Errors[] messages)
-        {
-            _messages = messages;
-        }
+        public UnexpectedResult(params string[] messages) :base(messages)
+        { }
+        public UnexpectedResult(params Errors[] messages) : base(messages)
+        { }
+        public UnexpectedResult(Errors error, params string[] messages) : base(error, messages)
+        { }
         public override ResultType ResultType => ResultType.Unexpected;
-        public override List<Errors> Errors => _messages.ToList() ?? new List<Errors> { Enums.Errors.UNDEFINED };
+        public override List<string> Errors => _messages.ToList() ?? new List<string> { Enums.Errors.UNDEFINED.ToString() };
         public override T Data => default;
     }
 }

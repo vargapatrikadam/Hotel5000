@@ -6,14 +6,15 @@ namespace Core.Helpers.Results
 {
     public class InvalidResult<T> : Result<T>
     {
-        private readonly Errors[] _messages;
-        public InvalidResult(params Errors[] messages)
-        {
-            _messages = messages;
-        }
+        public InvalidResult(params string[] messages) : base(messages)
+        { }
+        public InvalidResult(params Errors[] messages) : base(messages)
+        { }
+        public InvalidResult(Errors error, params string[] messages) : base(error, messages)
+        { }
         public override ResultType ResultType => ResultType.Invalid;
 
-        public override List<Errors> Errors => _messages.ToList() ?? new List<Errors> { Enums.Errors.INVALID_PARAMETER };
+        public override List<string> Errors => _messages.ToList() ?? new List<string> { Enums.Errors.INVALID_PARAMETER.ToString() };
 
         public override T Data => default;
     }

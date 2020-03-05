@@ -6,14 +6,15 @@ namespace Core.Helpers.Results
 {
     public class ConflictResult<T> : Result<T>
     {
-        private readonly Errors[] _messages;
-        public ConflictResult(params Errors[] messages)
-        {
-            _messages = messages;
-        }
+        public ConflictResult(params string[] messages) : base(messages)
+        { }
+        public ConflictResult(params Errors[] messages) : base(messages)
+        { }
+        public ConflictResult(Errors error, params string[] messages) : base(error, messages)
+        { }
         public override ResultType ResultType => ResultType.Conflict;
 
-        public override List<Errors> Errors => _messages.ToList() ?? new List<Errors> { Enums.Errors.DATA_UNIQUENESS_CONFLICT };
+        public override List<string> Errors => _messages.ToList() ?? new List<string> { Enums.Errors.DATA_UNIQUENESS_CONFLICT.ToString() };
 
         public override T Data => default;
     }

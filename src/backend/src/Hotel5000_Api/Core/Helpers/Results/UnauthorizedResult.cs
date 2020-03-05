@@ -6,14 +6,15 @@ namespace Core.Helpers.Results
 {
     public class UnauthorizedResult<T> : Result<T>
     {
-        private readonly Errors[] _messages;
-        public UnauthorizedResult(params Errors[] messages)
-        {
-            _messages = messages;
-        }
+        public UnauthorizedResult(params string[] messages) : base(messages)
+        { }
+        public UnauthorizedResult(params Errors[] messages) : base(messages)
+        { }
+        public UnauthorizedResult(Errors error, params string[] messages) : base(error, messages)
+        { }
         public override ResultType ResultType => ResultType.Unauthorized;
 
-        public override List<Errors> Errors => _messages.ToList() ?? new List<Errors> { Enums.Errors.UNAUTHORIZED };
+        public override List<string> Errors => _messages.ToList() ?? new List<string> { Enums.Errors.UNAUTHORIZED.ToString() };
 
         public override T Data => default;
     }

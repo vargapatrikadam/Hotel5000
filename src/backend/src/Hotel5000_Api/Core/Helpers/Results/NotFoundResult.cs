@@ -6,13 +6,14 @@ namespace Core.Helpers.Results
 {
     public class NotFoundResult<T> : Result<T>
     {
-        private readonly Errors[] _messages;
-        public NotFoundResult(params Errors[] messages)
-        {
-            _messages = messages;
-        }
+        public NotFoundResult(params string[] messages) : base(messages)
+        { }
+        public NotFoundResult(params Errors[] messages) : base(messages)
+        { }
+        public NotFoundResult(Errors error, params string[] messages) : base(error, messages)
+        { }
         public override ResultType ResultType => ResultType.NotFound;
-        public override List<Errors> Errors => _messages.ToList() ?? new List<Errors> { Enums.Errors.NOT_FOUND };
+        public override List<string> Errors => _messages.ToList() ?? new List<string> { Enums.Errors.NOT_FOUND.ToString() };
         public override T Data => default;
     }
 }
