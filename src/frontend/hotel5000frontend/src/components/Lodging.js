@@ -92,6 +92,11 @@ class Lodging extends Component {
         this.setState({modalIndex: null})
     }
 
+    formatDate = (dateString) => {
+        let options = {year: 'numeric', month: 'numeric', day: 'numeric'}
+        return new Date(dateString).toLocaleDateString([], options)
+    }
+
     renderLodgings = () => {
 
         const rows = [...Array(Math.ceil(this.state.data.length / 3))]
@@ -119,6 +124,7 @@ class Lodging extends Component {
                                                     <Modal.Title>{lodging.name}</Modal.Title>
                                                 </Modal.Header>
                                                 <Modal.Body>
+                                                    <h5 className="mt-3">Rooms</h5>
                                                     {lodging.rooms.map( room => {
                                                         return(
                                                             <div key={room.id}>
@@ -131,9 +137,15 @@ class Lodging extends Component {
                                                                         </Card.Header>
                                                                         <Accordion.Collapse eventKey={room.id}>
                                                                             <ListGroup>
-                                                                                <ListGroupItem>Adult capacity: {room.adultCapacity}</ListGroupItem>
-                                                                                <ListGroupItem>Children capacity: {room.childrenCapacity}</ListGroupItem>
-                                                                                <ListGroupItem>Price: {room.price} {room.currency}</ListGroupItem>
+                                                                                <ListGroupItem>
+                                                                                    Adult capacity: {room.adultCapacity}
+                                                                                </ListGroupItem>
+                                                                                <ListGroupItem>
+                                                                                    Children capacity: {room.childrenCapacity}
+                                                                                </ListGroupItem>
+                                                                                <ListGroupItem>
+                                                                                    Price: {room.price} {room.currency}
+                                                                                </ListGroupItem>
                                                                             </ListGroup>
                                                                         </Accordion.Collapse>
                                                                     </Card>
@@ -141,9 +153,36 @@ class Lodging extends Component {
                                                             </div>
                                                         )}
                                                     )}
+                                                    <h5 className="mt-3">Address</h5>
+                                                    {lodging.lodgingAddresses.map( address => {
+                                                        return(
+                                                          <div key={address.id}>
+                                                              <ListGroup>
+                                                                  <ListGroupItem>
+                                                                      {address.countryCode}, {address.county}, {address.postalCode},
+                                                                      {address.city}, {address.street}, {address.houseNumber}
+                                                                  </ListGroupItem>
+                                                                  <ListGroupItem hidden={address.floor === null}>
+                                                                      Floor: {address.floor}
+                                                                  </ListGroupItem>
+                                                                  <ListGroupItem hidden={address.doorNumber === null}>
+                                                                      Door number: {address.doorNumber}
+                                                                  </ListGroupItem>
+                                                              </ListGroup>
+                                                          </div>
+                                                        )}
+                                                    )}
+                                                    <h5 className="mt-3">Free</h5>
+                                                    {lodging.reservationWindows.map( resWindow => {
+                                                        return(
+                                                          <div key={resWindow.id} className="mx-auto" style={{textAlign: 'center'}}>
+                                                              <p>From: {this.formatDate(resWindow.from)} &emsp; To: {this.formatDate(resWindow.to)}</p>
+                                                          </div>
+                                                        )}
+                                                    )}
                                                 </Modal.Body>
                                             </Modal>
-                                            
+
                                         </ListGroupItem>
                                     </ListGroup>
                                 </Card>
