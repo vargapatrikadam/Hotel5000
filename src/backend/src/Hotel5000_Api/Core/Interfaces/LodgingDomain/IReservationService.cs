@@ -16,5 +16,7 @@ namespace Core.Interfaces.LodgingDomain
             int? reservationWindowId = null, 
             string email = null, 
             int? lodgingId = null);
+        Task<Result<IReadOnlyList<ReservationWindow>>> GetAvailableReservationWindowsForRoom(int roomId);
+
     }
 }

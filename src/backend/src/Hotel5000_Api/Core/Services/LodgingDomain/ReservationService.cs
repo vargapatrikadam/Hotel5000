@@ -54,10 +54,10 @@ namespace Core.Services.LodgingDomain
                 .AddInclude(p => (p.ReservationItems as ReservationItem).Room.Lodging);
             specification.ApplyFilter(p =>
                 (!id.HasValue || p.Id == id) &&
-                (!roomId.HasValue || p.ReservationItems.Any(p => p.RoomId == roomId)) &&
-                (!reservationWindowId.HasValue || p.ReservationItems.Any(p => p.ReservationWindowId == reservationWindowId)) &&
-                (email == null || p.Email == email) ||
-                (!lodgingId.HasValue || p.ReservationItems.Any(p => p.Room.LodgingId == lodgingId)));
+                (!roomId.HasValue || p.ReservationItems.Any(o => o.RoomId == roomId && o.ReservationId == p.Id)) &&
+                (!reservationWindowId.HasValue || p.ReservationItems.Any(o => o.ReservationWindowId == reservationWindowId && o.ReservationId == p.Id)) &&
+                (email == null || p.Email == email) &&
+                (!lodgingId.HasValue || p.ReservationItems.Any(o => o.Room.LodgingId == lodgingId && o.ReservationId == p.Id)));
 
             return new SuccessfulResult<IReadOnlyList<Reservation>>(await _reservationRepository.GetAsync(specification));
         }
@@ -105,6 +105,47 @@ namespace Core.Services.LodgingDomain
             }
 
             return new SuccessfulResult<bool>(true);
+        }
+
+        public async Task<Result<IReadOnlyList<ReservationWindow>>> GetAvailableReservationWindowsForRoom(int roomId)
+        {
+            Room room = (await _lodgingManagementService.GetRoom(id: roomId)).Data.FirstOrDefault();
+            if (room == null)
+                return new NotFoundResult<IReadOnlyList<ReservationWindow>>(Errors.ROOM_NOT_FOUND);
+
+            ReservationWindow reservationWindowForLodging = (await _lodgingManagementService.GetReservationWindow(lodgingId: room.LodgingId, isAfter: DateTime.Now)).Data.LastOrDefault();
+            if (reservationWindowForLodging == null)
+                return new NotFoundResult<IReadOnlyList<ReservationWindow>>(Errors.RESERVATION_WINDOW_NOT_FOUND);
+
+            List<ReservationItem> reservationItems = (await _reservationItemRepository.GetAsync(
+                new Specification<ReservationItem>().ApplyFilter(
+                    p => p.ReservationWindowId == reservationWindowForLodging.Id &&
+                         p.RoomId == roomId))).ToList();
+
+            List<ReservationWindow> freeReservationWindows = new List<ReservationWindow>();
+
+            freeReservationWindows.Add(reservationWindowForLodging);
+            foreach (ReservationItem item in reservationItems)
+            {
+                ReservationWindow sliceThis = freeReservationWindows.Where(p => item.ReservedFrom >= p.From && item.ReservedTo <= p.To).FirstOrDefault();
+                freeReservationWindows.Remove(sliceThis);
+                ReservationWindow before = new ReservationWindow
+                {
+                    From = sliceThis.From,
+                    To = item.ReservedFrom
+                };
+                ReservationWindow after = new ReservationWindow
+                {
+                    From = item.ReservedTo,
+                    To = sliceThis.To
+                };
+                freeReservationWindows.Add(before);
+                freeReservationWindows.Add(after);
+            }
+
+
+
+            return new SuccessfulResult<IReadOnlyList<ReservationWindow>>(freeReservationWindows);
         }
     }
 }

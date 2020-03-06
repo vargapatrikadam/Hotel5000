@@ -44,7 +44,8 @@ namespace Web.Mapping
                 .ForMember(dest => dest.LodgingAddresses, o => o.MapFrom(src =>src.LodgingAddresses));
 
             CreateMap<Room, RoomDto>()
-                .ForMember(dest => dest.Currency, o => o.MapFrom(src => src.Currency.Name));
+                .ForMember(dest => dest.Currency, o => o.MapFrom(src => src.Currency.Name))
+                .ForMember(dest => dest.ReservationWindows, o => o.Ignore());
             CreateMap<RoomDto, Room>()
                 .ForPath(dest => dest.Currency.Name, o => o.MapFrom(src => src.Currency));
 

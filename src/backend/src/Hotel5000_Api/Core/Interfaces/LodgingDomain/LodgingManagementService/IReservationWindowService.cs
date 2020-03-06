@@ -12,10 +12,9 @@ namespace Core.Interfaces.LodgingDomain.LodgingManagementService
             int? lodgingId = null,
             DateTime? isAfter = null,
             DateTime? isBefore = null);
-
         Task<Result<bool>> UpdateReservationWindow(ReservationWindow newReservationWindow,
-            int oldReservationWindowId,
-            int resourceAccessorId);
+        int oldReservationWindowId,
+        int resourceAccessorId);
 
         Task<Result<bool>> RemoveReservationWindow(int reservationWindowId,
             int resourceAccessorId);

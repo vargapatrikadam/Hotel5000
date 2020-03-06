@@ -17,6 +17,6 @@ namespace Web.DTOs
         public int UserId{ get; set; }
         public ICollection<RoomDto> Rooms { get; set; }
         public ICollection<LodgingAddressDto> LodgingAddresses { get; set; }
-        public ICollection<ReservationWindowDto> ReservationWindows { get; set; }
+        public ICollection<ReservationWindowDto> ReservationWindows{ get; set; }
     }
 }

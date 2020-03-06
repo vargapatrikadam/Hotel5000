@@ -90,5 +90,17 @@ namespace Web.Controllers
 
             return Ok();
         }
+        [HttpGet("rooms/{roomId}")]
+        [ProducesResponseType(typeof(ReservationWindowDto), 200)]
+        [ProducesErrorResponseType(typeof(ErrorDto))]
+        public async Task<IActionResult> GetFreeReservationWindows(int roomId)
+        {
+            var result = await _reservationService.GetAvailableReservationWindowsForRoom(roomId);
+
+            if (result.ResultType != ResultType.Ok)
+                return this.GetError(result);
+
+            return Ok(_mapper.Map<ICollection<ReservationWindowDto>>(result.Data));
+        }
     }
 }

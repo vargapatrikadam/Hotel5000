@@ -288,19 +288,27 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<IReadOnlyList<LodgingAddress>>(await _lodgingAddressRepository.GetAsync(specification));
         }
 
-        public async Task<Result<IReadOnlyList<ReservationWindow>>> GetReservationWindow(int? id = null, int? lodgingId = null, DateTime? isAfter = null, DateTime? isBefore = null)
+        public async Task<Result<IReadOnlyList<ReservationWindow>>> GetReservationWindow(int? id = null, 
+            int? lodgingId = null,
+            DateTime? isAfter = null, 
+            DateTime? isBefore = null)
         {
             ISpecification<ReservationWindow> specification = new Specification<ReservationWindow>();
             specification.ApplyFilter(p =>
                 (!id.HasValue || p.Id == id.Value) &&
                 (!lodgingId.HasValue || p.LodgingId == lodgingId.Value) &&
-                ((!isAfter.HasValue || p.From >= isAfter.Value) ||
-                (!isBefore.HasValue || p.To <= isBefore.Value)));
+                (!isAfter.HasValue || p.From >= isAfter.Value) &&
+                (!isBefore.HasValue || p.To <= isBefore.Value))
+                .AddInclude(p => (p.ReservationItems as ReservationItem).Room);
 
             return new SuccessfulResult<IReadOnlyList<ReservationWindow>>(await _reservationWindowRepository.GetAsync(specification));
         }
-
-        public async Task<Result<IReadOnlyList<Room>>> GetRoom(int? id = null, int? lodgingId = null, int? adultCapacity = null, int? childrenCapacity = null, double? priceMin = null, double? priceMax = null)
+        public async Task<Result<IReadOnlyList<Room>>> GetRoom(int? id = null, 
+            int? lodgingId = null, 
+            int? adultCapacity = null, 
+            int? childrenCapacity = null, 
+            double? priceMin = null, 
+            double? priceMax = null)
         {
             ISpecification<Room> specification = new Specification<Room>();
             specification.ApplyFilter(p =>
@@ -310,7 +318,8 @@ namespace Core.Services.LodgingDomain
                 (!childrenCapacity.HasValue || p.ChildrenCapacity == childrenCapacity.Value) &&
                 (!priceMin.HasValue || p.Price <= priceMin.Value) &&
                 (!priceMax.HasValue || p.Price >= priceMax.Value))
-                .AddInclude(p => p.Currency);
+                .AddInclude(p => p.Currency)
+                .AddInclude(p => p.ReservationItems);
 
             return new SuccessfulResult<IReadOnlyList<Room>>(await _roomRepository.GetAsync(specification));
         }
