@@ -31,7 +31,7 @@ namespace Hotel5000_Api_Tests.UnitTests.Core
                 });
             var service = new AuthenticationService(mockUserRepo.Object, mockTokenRepo.Object, mockPasswordHasher.Object, mockAuthenticationOptions.Object);
 
-            var result = await service.AuthenticateAsync("asd", "asd", "asd");
+            var result = await service.AuthenticateAsync("asd", "asd");
 
             Assert.IsType<UnauthorizedResult<User>>(result);
         }
@@ -56,7 +56,7 @@ namespace Hotel5000_Api_Tests.UnitTests.Core
                 });
             var service = new AuthenticationService(mockUserRepo.Object, mockTokenRepo.Object, mockPasswordHasher.Object, mockAuthenticationOptions.Object);
 
-            var result = await service.AuthenticateAsync("testusername", "badpassword", "testemail");
+            var result = await service.AuthenticateAsync("testusername", "badpassword");
 
             Assert.IsType<UnauthorizedResult<User>>(result);
         }
@@ -83,7 +83,7 @@ namespace Hotel5000_Api_Tests.UnitTests.Core
                 });
             var service = new AuthenticationService(mockUserRepo.Object, mockTokenRepo.Object, mockPasswordHasher.Object, mockAuthenticationOptions.Object);
 
-            var result = await service.AuthenticateAsync("testusername", "testpassword", "testemail");
+            var result = await service.AuthenticateAsync("testemail", "testpassword");
 
             Assert.IsType<SuccessfulResult<User>>(result);
             Assert.True(insertedToken.UserId == 1);
