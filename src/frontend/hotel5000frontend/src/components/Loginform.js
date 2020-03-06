@@ -33,13 +33,16 @@ class Loginform extends Component {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(data)
-        }).then(response => response.json())
+        }).then(response =>
+            response.json()
+        )
         .then((responsedata) => {
             this.setState({ loggedin: true, role: responsedata.role })
             localStorage.setItem('role', responsedata.role)
             localStorage.setItem('accessToken', responsedata.accessToken)
             localStorage.setItem('refreshToken', responsedata.refreshToken)
             localStorage.setItem('loggedin', this.state.loggedin)
+            alert("Successful login")
             console.log(localStorage.getItem('accessToken'))
             console.log(localStorage.getItem('refreshToken'))
         })

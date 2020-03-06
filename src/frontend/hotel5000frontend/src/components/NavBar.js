@@ -40,7 +40,7 @@ class NavBar extends Component {
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
                                 <h3 align="center" className="usernameh2">Username</h3>
-                                <Dropdown.Item className="dropdownitem"><FaSuitcase/>Post new lodging</Dropdown.Item>
+                                <Link to="/postLodging"><Button variant="outline-dark" style={{width: '15rem'}}><FaSuitcase/>Post new lodging</Button></Link>
                                 <Dropdown.Divider/>
                                 <Dropdown.Item className="dropdownitem"><FaGripHorizontal/>Manage existing lodging</Dropdown.Item>
                                 <Dropdown.Divider/>
