@@ -436,10 +436,10 @@ namespace Infrastructure.Lodgings
             return new List<Reservation>()
             {
                 new Reservation()
-                {
+                { //id: 1
                     Email = "test1@test.com",
                     PaymentTypeId = 3
-                },
+                }, //id: 2
                 new Reservation()
                 {
                     Email = "test2@test.com",
@@ -663,25 +663,25 @@ namespace Infrastructure.Lodgings
                 {
                     ReservationId = 1,
                     ReservationWindowId = 3,
-                    RoomId = 1,
-                    ReservedFrom = new DateTime(2020, 4, 2),
-                    ReservedTo = new DateTime(2020, 4,30)
+                    RoomId = 13,
+                    ReservedFrom = new DateTime(2020, 12, 25),
+                    ReservedTo = new DateTime(2021, 4,30)
                 },
                 new ReservationItem()
                 {
                     ReservationId = 2,
                     ReservationWindowId = 2,
-                    RoomId = 3,
-                    ReservedFrom = new DateTime(2020, 5, 3),
-                    ReservedTo = new DateTime(2020, 5, 10)
+                    RoomId = 14,
+                    ReservedFrom = new DateTime(2021, 2, 6),
+                    ReservedTo = new DateTime(2021, 7, 10)
                 },
                 new ReservationItem()
                 {
                     ReservationId = 2,
                     ReservationWindowId = 1,
-                    RoomId = 6,
-                    ReservedFrom = new DateTime(2020, 5,20),
-                    ReservedTo = new DateTime(2020,6,1)
+                    RoomId = 15,
+                    ReservedFrom = new DateTime(2020, 6,20),
+                    ReservedTo = new DateTime(2020,11,1)
                 }
             };
         }
