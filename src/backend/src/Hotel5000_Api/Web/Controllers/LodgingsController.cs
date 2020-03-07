@@ -158,6 +158,12 @@ namespace Web.Controllers
         ///                 "doorNumber": "4"
         ///             }
         ///         ]
+        ///         "reservationWindows": [           //optional
+        ///             {
+        ///                 "from" : "2020-04-01",
+        ///                 "to" : "2020-05-01
+        ///             }
+        ///         ]
         ///     }
         ///
         /// </remarks>

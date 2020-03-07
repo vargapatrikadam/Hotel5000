@@ -90,6 +90,11 @@ namespace Web.Controllers
 
             return Ok();
         }
+        /// <summary>
+        /// Gets free reservation periods for a room
+        /// </summary>
+        /// <param name="roomId">id of the room we want to get the free reservation dates</param>
+        /// <returns></returns>
         [HttpGet("rooms/{roomId}")]
         [ProducesResponseType(typeof(ReservationWindowDto), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
