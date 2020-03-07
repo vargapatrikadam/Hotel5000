@@ -7,7 +7,6 @@ namespace Web.DTOs
         public int Id { get; set; }
         [Required]
         public string Username { get; set; }
-        [Required]
         public string Password { get; set; }
         [Required]
         public string Email { get; set; }
@@ -15,7 +14,6 @@ namespace Web.DTOs
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
-        [Required]
         public string Role { get; set; }
     }
 }
