@@ -4,8 +4,8 @@ import './RegisterForm.css';
 
 class RegisterForm extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.setSelectedRole = this.setSelectedRole.bind(this);
 

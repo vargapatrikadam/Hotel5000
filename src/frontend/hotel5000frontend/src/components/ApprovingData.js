@@ -59,15 +59,17 @@ class ApprovingData extends Component {
                 "Authorization": "Bearer " + localStorage.getItem('accessToken')
             }
         })
-            .then(function(response) {
-                if(response.status === 401){
+            .then(response => {
+                if(response.status === 401) {
                     let token = response.headers.get('token-expired')
-                    if(token){
-                        console.log(token)
-                        refresh()
-                        if(localStorage.getItem('loggedin') === "true") {
+                    if(token) {
+                        refresh().then(() =>{
                             this.deleteApprovingData(userId)
-                        }
+                        })
+                            .catch((error) => {
+                                console.log(error)
+                            })
+
                     }
                 }
                 else if(response.status === 200){
@@ -95,7 +97,7 @@ class ApprovingData extends Component {
             },
             body: JSON.stringify(data)
         })
-            .then(function(response) {
+            .then(response => {
                 if(response.status === 200){
                     this.state.approvingData.map(data => {
                         if(data.id === approvingDataId){
@@ -106,19 +108,17 @@ class ApprovingData extends Component {
                         return data
                     })
                 }
-                if(response.status === 401){
+                else if(response.status === 401) {
                     let token = response.headers.get('token-expired')
-                    if(token){
-                        console.log(token)
-                        refresh()
-                        if(localStorage.getItem('loggedin') === "true") {
+                    if(token) {
+                        refresh().then(() =>{
                             this.modifyApprovingData(approvingDataId, identityNumber, taxNumber, registrationNumber)
-                        }
+                        })
+                            .catch((error) => {
+                                console.log(error)
+                            })
+
                     }
-                }
-                else if(response.status === 200){
-                    console.log("token not expired")
-                    window.location.reload(false)
                 }
             })
     }

@@ -93,7 +93,7 @@ class User extends Component {
         })
             .then(response => response.json())
             .then(responsejson => {
-
+                this.setState({nextPageData: responsejson})
             })
     }
 
@@ -154,17 +154,19 @@ class User extends Component {
                 if(resp.status === 401) {
                     let token = resp.headers.get('token-expired')
                     if(token) {
-                        refresh()
-                        if(localStorage.getItem('loggedin') === "true") {
+                        refresh().then(() =>{
                             this.modifyUser(userId, username, email, firstName, lastName)
-                            //window.location.reload(true)
+                        })
+                            .catch((error) => {
+                                console.log(error)
+                            })
 
-                        }
                     }
                 }
                 else if(resp.status === 200){
                     console.log("token not expired")
                     window.location.reload(false)
+
                 }
 
             })

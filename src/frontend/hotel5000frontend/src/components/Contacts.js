@@ -52,15 +52,16 @@ class Contacts extends Component {
                 "Authorization": "Bearer " + localStorage.getItem('accessToken')
             }
         })
-            .then(function (response) {
+            .then(response => {
                 if (response.status === 401) {
                     let token = response.headers.get('token-expired');
                     if(token) {
-                        console.log(token);
-                        refresh()
-                        if(localStorage.getItem('loggedin') === "true") {
+                        refresh().then(() => {
                             this.deleteContacts(userId, contactId)
-                        }
+                        })
+                            .catch((error) => {
+                                console.log(error)
+                            })
                     }
                 }
                 else if(response.status === 200){
@@ -87,7 +88,7 @@ class Contacts extends Component {
             },
             body: JSON.stringify(data)
         })
-            .then(function (response) {
+            .then(response =>  {
                 if(response.status === 200){
                     this.state.contacts.map(contact => {
                         if(contact.id === contactId)
@@ -95,19 +96,16 @@ class Contacts extends Component {
                         return contact.mobileNumber
                     })
                 }
-                if(response.status === 401){
+                else if (response.status === 401) {
                     let token = response.headers.get('token-expired');
                     if(token) {
-                        console.log(token);
-                        refresh()
-                        if(localStorage.getItem('loggedin') === "true") {
+                        refresh().then(() => {
                             this.modifyContacts(contactId, mobileNumber)
-                        }
+                        })
+                            .catch((error) => {
+                                console.log(error)
+                            })
                     }
-                }
-                else if(response.status === 200){
-                    console.log("token not expired")
-                    window.location.reload(false)
                 }
 
 
