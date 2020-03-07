@@ -9,7 +9,6 @@ namespace Web.DTOs
     public class RoomDto
     {
         public int Id { get; set; }
-        [Required]
         public int LodgingId { get; set; }
         [Required]
         public int AdultCapacity { get; set; }

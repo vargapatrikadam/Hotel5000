@@ -13,7 +13,6 @@ namespace Web.DTOs
         public DateTime From { get; set; }
         [Required]
         public DateTime To { get; set; }
-        [Required]
         public int LodgingId { get; set; }
 
     }
