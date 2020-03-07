@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Entities.LodgingEntities;
+using System.Globalization;
 using Web.DTOs;
 
 namespace Web.Mapping
@@ -50,7 +51,8 @@ namespace Web.Mapping
                 .ForPath(dest => dest.Currency.Name, o => o.MapFrom(src => src.Currency));
 
             CreateMap<LodgingAddress, LodgingAddressDto>()
-                .ForMember(dest => dest.CountryCode, o => o.MapFrom(src => src.Country.Code));
+                .ForMember(dest => dest.CountryCode, o => o.MapFrom(src => src.Country.Code))
+                .ForMember(dest => dest.Country, o => o.MapFrom(src => new RegionInfo(src.Country.Code).EnglishName));
             CreateMap<LodgingAddressDto, LodgingAddress>()
                 .ForPath(dest => dest.Country.Code, o => o.MapFrom(src => src.CountryCode));
 

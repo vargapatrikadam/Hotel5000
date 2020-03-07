@@ -11,6 +11,7 @@ namespace Web.DTOs
         public int Id { get; set; }
         [Required]
         public int LodgingId { get; set; }
+        public string Country { get; set; }
         [Required]
         public string CountryCode { get; set; }
         [Required]
