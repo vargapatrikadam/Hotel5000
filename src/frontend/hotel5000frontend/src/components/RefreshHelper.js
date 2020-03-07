@@ -3,7 +3,7 @@ export function refresh() {
             "refreshToken": localStorage.getItem('refreshToken')
         }
 
-        fetch("https://localhost:5000/api/auth/refresh", {
+        return fetch("https://localhost:5000/api/auth/refresh", {
             method: 'POST',
             mode: 'cors',
             headers: {
@@ -13,12 +13,13 @@ export function refresh() {
         })
             .then(function (response) {
                 console.log(response)
-                if (response.status === 401) {
+                if (response.status === 200) {
+                    return response.json();
+                }
+                else{
                     console.log('Bad refresh token')
                     throw new Error('refresh token invalid');
                 }
-                else
-                    return response.json();
             })
             .then(data => {
                 console.log(data)
@@ -28,8 +29,9 @@ export function refresh() {
                 console.log(localStorage.getItem('accessToken'))
                 console.log(localStorage.getItem('refreshToken'))
             })
-            .catch(() =>{
+            .catch((error) =>{
                 localStorage.setItem('loggedin', false)
+                throw error
             }) //rossz refresh token esetén kijelentkeztetjük a felhasználót
 
 }
