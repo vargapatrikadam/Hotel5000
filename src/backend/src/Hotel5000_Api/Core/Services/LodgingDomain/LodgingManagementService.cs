@@ -75,12 +75,15 @@ namespace Core.Services.LodgingDomain
 
             List<LodgingAddress> lodgingAddresses = lodging.LodgingAddresses.ToList();
             List<Room> rooms = lodging.Rooms.ToList();
+            List<ReservationWindow> reservationWindows = lodging.ReservationWindows.ToList();
             lodging.Rooms = null;
             lodging.LodgingAddresses = null;
+            lodging.ReservationWindows = null;
             await _lodgingRepository.AddAsync(lodging);
 
             lodgingAddresses.ForEach(p => p.LodgingId = lodging.Id);
             rooms.ForEach(p => p.LodgingId = lodging.Id);
+            reservationWindows.ForEach(p => p.LodgingId = lodging.Id);
 
             foreach (LodgingAddress address in lodgingAddresses)
             {
@@ -92,6 +95,13 @@ namespace Core.Services.LodgingDomain
             foreach (Room room in rooms)
             {
                 var result = await AddRoom(room, room.Currency.Name, resourceAccessorId);
+                if (result.ResultType != ResultType.Ok)
+                    return result;
+            }
+
+            foreach (ReservationWindow reservationWindow in reservationWindows)
+            { 
+                var result = await AddReservationWindow(reservationWindow, resourceAccessorId);
                 if (result.ResultType != ResultType.Ok)
                     return result;
             }
