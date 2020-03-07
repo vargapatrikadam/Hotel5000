@@ -2,12 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="745f7ff9-4df1-4f0b-a058-cf3846961eb2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/LodgingForm.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/PostLodging.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ApprovingData.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ApprovingData.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Contacts.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Contacts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Lodging.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Lodging.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/LodgingForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/LodgingForm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Loginform.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Loginform.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/NavBar.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/NavBar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/RefreshHelper.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/RefreshHelper.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/RegisterForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/RegisterForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/User.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/User.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +99,8 @@
       <workItem from="1583348752576" duration="5098000" />
       <workItem from="1583435241533" duration="7061000" />
       <workItem from="1583508501529" duration="640000" />
-      <workItem from="1583512170383" duration="6364000" />
+      <workItem from="1583512170383" duration="6545000" />
+      <workItem from="1583574145397" duration="15031000" />
     </task>
     <servers />
   </component>
@@ -111,30 +116,30 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1580480089847" />
-    <state width="1899" height="52" key="GridCell.Tab.0.bottom" timestamp="1583514567435">
+    <state width="1899" height="52" key="GridCell.Tab.0.bottom" timestamp="1583578696773">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="52" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1583514567435" />
-    <state width="1899" height="52" key="GridCell.Tab.0.center" timestamp="1583514567435">
+    <state width="1899" height="52" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1583578696773" />
+    <state width="1899" height="52" key="GridCell.Tab.0.center" timestamp="1583578696773">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="52" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1583514567435" />
-    <state width="1899" height="52" key="GridCell.Tab.0.left" timestamp="1583514567435">
+    <state width="1899" height="52" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1583578696773" />
+    <state width="1899" height="52" key="GridCell.Tab.0.left" timestamp="1583578696772">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="52" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1583514567435" />
-    <state width="1899" height="52" key="GridCell.Tab.0.right" timestamp="1583514567435">
+    <state width="1899" height="52" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1583578696772" />
+    <state width="1899" height="52" key="GridCell.Tab.0.right" timestamp="1583578696773">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="52" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1583514567435" />
+    <state width="1899" height="52" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1583578696773" />
     <state x="461" y="163" key="SettingsEditor" timestamp="1580480092177">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="163" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1580480092177" />
-    <state x="769" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1583177721665">
+    <state x="769" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1583598851972">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="769" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1583177721665" />
+    <state x="769" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1583598851972" />
     <state x="616" y="240" key="run.anything.popup" timestamp="1582649285988">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

@@ -159,7 +159,7 @@ class Lodging extends Component {
                                                           <div key={address.id}>
                                                               <ListGroup>
                                                                   <ListGroupItem>
-                                                                      {address.countryCode}, {address.county}, {address.postalCode},
+                                                                      {address.countryCode}, {address.country}, {address.county}, {address.postalCode},
                                                                       {address.city}, {address.street}, {address.houseNumber}
                                                                   </ListGroupItem>
                                                                   <ListGroupItem hidden={address.floor === null}>

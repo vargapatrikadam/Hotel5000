@@ -39,6 +39,7 @@ class Loginform extends Component {
         .then((responsedata) => {
             this.setState({ loggedin: true, role: responsedata.role })
             localStorage.setItem('role', responsedata.role)
+            localStorage.setItem('username', responsedata.username)
             localStorage.setItem('accessToken', responsedata.accessToken)
             localStorage.setItem('refreshToken', responsedata.refreshToken)
             localStorage.setItem('loggedin', this.state.loggedin)

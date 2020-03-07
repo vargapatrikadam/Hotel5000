@@ -13,15 +13,17 @@ class NavBar extends Component {
         this.state = {
             loggedin: false,
             role: '',
+            username: ""
         }
     }
 
     getDataFromLocal = () => {
         let obj = {
             role: localStorage.getItem('role'),
-            loggedin: localStorage.getItem('loggedin')
+            loggedin: localStorage.getItem('loggedin'),
+            username: localStorage.getItem('username')
         }
-        this.setState({loggedin: obj.loggedin, role: obj.role})
+        this.setState({loggedin: obj.loggedin, role: obj.role, username: obj.username})
     }
 
     componentDidMount(){
@@ -39,7 +41,7 @@ class NavBar extends Component {
                                 <FaAlignJustify className="icon dropdownbutton"/>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <h3 align="center" className="usernameh2">Username</h3>
+                                <h3 align="center" className="usernameh2" hidden={!this.state.loggedin}>{this.state.username}</h3>
                                 <Link to="/postLodging"><Button variant="outline-dark" style={{width: '15rem'}}><FaSuitcase/>Post new lodging</Button></Link>
                                 <Dropdown.Divider/>
                                 <Dropdown.Item className="dropdownitem"><FaGripHorizontal/>Manage existing lodging</Dropdown.Item>
