@@ -30,6 +30,15 @@ class NavBar extends Component {
         this.getDataFromLocal()
     }
 
+    logOut = () => {
+        localStorage.setItem('loggedin', false)
+        localStorage.setItem('accessToken', "")
+        localStorage.setItem('refreshToken', "")
+        localStorage.setItem('email', "")
+        localStorage.setItem('username', "")
+        localStorage.setItem('role', "")
+    }
+
     render() {
         return (
             <div onMouseEnter={this.getDataFromLocal}>
@@ -44,7 +53,7 @@ class NavBar extends Component {
                                 <h3 align="center" className="usernameh2" hidden={!this.state.loggedin}>{this.state.username}</h3>
                                 <Link to="/postLodging"><Button variant="outline-dark" style={{width: '15rem'}}><FaSuitcase/>Post new lodging</Button></Link>
                                 <Dropdown.Divider/>
-                                <Dropdown.Item className="dropdownitem"><FaGripHorizontal/>Manage existing lodging</Dropdown.Item>
+                                <Link to="/ownReservations"><Button variant="outline-dark" style={{width: '15rem'}}><FaGripHorizontal/>Own reservations</Button></Link>
                                 <Dropdown.Divider/>
                                 <Dropdown.Item className="dropdownitem" href="/about">About</Dropdown.Item>
                             </Dropdown.Menu>
@@ -62,7 +71,7 @@ class NavBar extends Component {
                                 <FaUser className="icon dropdownbutton"/>
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <h3 align="center" className="usernameh2">Username</h3>
+                                <h3 align="center" className="usernameh2" hidden={!this.state.loggedin}>{this.state.username}</h3>
                                 <Dropdown.Item className="dropdownitem" disabled={this.state.loggedin !== true}> <FaShoppingCart/>Cart</Dropdown.Item>
                                 <Dropdown.Divider/>
                                 <Dropdown.Item className="dropdownitem" disabled={this.state.loggedin !== true}><FaClock/>Reservations</Dropdown.Item>
@@ -72,6 +81,16 @@ class NavBar extends Component {
                                 <Dropdown.Item className="dropdownitem" disabled={this.state.loggedin !== true}><FaPen/>Ratings</Dropdown.Item>
                                 <Dropdown.Divider/>
                                 <Link to="/login"><Button variant="outline-dark" style={{width: '10rem'}}>Sign in</Button></Link>
+                                <Dropdown.Divider/>
+                                <Link to="/register">
+                                    <Button variant="outline-dark" style={{width: "10rem"}}>Register</Button>
+                                </Link>
+                                <Dropdown.Divider/>
+                                <Button variant="outline-dark" style={{width: "10rem"}}
+                                        onClick={() => {this.logOut(); this.getDataFromLocal()}}
+                                        disabled={this.state.loggedin === "false"}>
+                                    Log out
+                                </Button>
                                 <Dropdown.Divider/>
                                 <Link to="/users" hidden={this.state.loggedin !== true && this.state.role !== 'Admin'}><Button variant="outline-dark" style={{width: '10rem'}}>User management</Button></Link>
                             </Dropdown.Menu>
