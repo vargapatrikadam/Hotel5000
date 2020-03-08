@@ -3,7 +3,7 @@ using Core.Helpers.Results;
 using Core.Interfaces;
 using Core.Interfaces.PasswordHasher;
 using Core.Services.LodgingDomain;
-using Hotel5000_Api_Tests.UnitTests.Core.Data;
+using Hotel5000_Api_Tests.UnitTests.Data;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;

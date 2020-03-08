@@ -2,7 +2,7 @@
 using Core.Enums.Lodging;
 using System.Collections.Generic;
 
-namespace Hotel5000_Api_Tests.UnitTests.Core.Data
+namespace Hotel5000_Api_Tests.UnitTests.Data
 {
     public static class AuthenticationEntities
     {
