@@ -242,7 +242,8 @@ namespace Core.Services.LodgingDomain
             string lodgingType = null,
             DateTime? reservableFrom = null,
             DateTime? reservableTo = null,
-            string address = null, 
+            string address = null,
+            string owner = null,
             int? skip = null, 
             int? take = null)
         {
@@ -260,6 +261,7 @@ namespace Core.Services.LodgingDomain
                 (lodgingType == null || p.LodgingType.Name == lodgingTypeAsEnum) &&
                 (!reservableFrom.HasValue || p.ReservationWindows.Any(p => reservableFrom >= p.From && p.To > reservableFrom )) &&
                 (!reservableTo.HasValue || p.ReservationWindows.Any(p => reservableTo >= p.From && p.To > reservableTo)) &&
+                (owner == null || p.User.Email == owner || p.User.Username == owner) &&
                 (address == null || p.LodgingAddresses.Any(p => p.County.StartsWith(address) ||
                                    p.City.StartsWith(address) || 
                                    p.PostalCode.StartsWith(address) || 

@@ -41,6 +41,7 @@ namespace Web.Controllers
             [FromQuery] DateTime? reservableFrom = null,
             [FromQuery] DateTime? reservableTo = null,
             [FromQuery] string address = null,
+            [FromQuery] string owner = null,
             [FromQuery] int? pageNumber = null,
             [FromQuery] int? resultPerPage = null)
         {
@@ -50,6 +51,7 @@ namespace Web.Controllers
                 reservableFrom,
                 reservableTo,
                 address,
+                owner,
                 (pageNumber.HasValue && pageNumber.Value > 0) ? ((pageNumber.Value - 1) * resultPerPage) : null,
                 resultPerPage);
 

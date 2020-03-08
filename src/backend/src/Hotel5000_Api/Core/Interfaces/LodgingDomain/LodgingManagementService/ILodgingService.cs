@@ -15,6 +15,7 @@ namespace Core.Interfaces.LodgingDomain.LodgingManagementService
             DateTime? reservableFrom = null,
             DateTime? reservableTo = null,
             string address = null,
+            string owner = null,
             int? skip = null,
             int? take = null);
 
