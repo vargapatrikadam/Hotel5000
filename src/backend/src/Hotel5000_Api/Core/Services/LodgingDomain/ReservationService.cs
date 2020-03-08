@@ -113,7 +113,7 @@ namespace Core.Services.LodgingDomain
             if (room == null)
                 return new NotFoundResult<IReadOnlyList<ReservationWindow>>(Errors.ROOM_NOT_FOUND);
 
-            ReservationWindow reservationWindowForLodging = (await _lodgingManagementService.GetReservationWindow(lodgingId: room.LodgingId, isAfter: DateTime.Now)).Data.LastOrDefault();
+            ReservationWindow reservationWindowForLodging = (await _lodgingManagementService.GetReservationWindow(lodgingId: room.LodgingId, isBefore: DateTime.Now)).Data.FirstOrDefault();
             if (reservationWindowForLodging == null)
                 return new NotFoundResult<IReadOnlyList<ReservationWindow>>(Errors.RESERVATION_WINDOW_NOT_FOUND);
 

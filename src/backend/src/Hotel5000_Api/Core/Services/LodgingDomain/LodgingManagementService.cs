@@ -310,7 +310,7 @@ namespace Core.Services.LodgingDomain
                 (!id.HasValue || p.Id == id.Value) &&
                 (!lodgingId.HasValue || p.LodgingId == lodgingId.Value) &&
                 (!isAfter.HasValue || p.From >= isAfter.Value) &&
-                (!isBefore.HasValue || p.To <= isBefore.Value))
+                (!isBefore.HasValue || p.To >= isBefore.Value))
                 .AddInclude(p => (p.ReservationItems as ReservationItem).Room);
 
             return new SuccessfulResult<IReadOnlyList<ReservationWindow>>(await _reservationWindowRepository.GetAsync(specification));
