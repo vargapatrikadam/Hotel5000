@@ -2,9 +2,6 @@
 using Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Infrastructure.Lodgings.Configurations
 {
@@ -60,7 +57,10 @@ namespace Infrastructure.Lodgings.Configurations
                 k.County,
                 k.City,
                 k.PostalCode,
-                k.Street
+                k.Street,
+                k.HouseNumber,
+                k.Floor,
+                k.DoorNumber
             }).IsUnique()
               .HasName("LodgingAddress_UQ")
               .IsSoftDeleteable();

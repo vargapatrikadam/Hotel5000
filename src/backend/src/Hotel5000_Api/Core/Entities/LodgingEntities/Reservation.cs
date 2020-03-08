@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Core.Entities.LodgingEntities
 {
@@ -9,7 +7,7 @@ namespace Core.Entities.LodgingEntities
         public string Email { get; set; }
 
         public int PaymentTypeId { get; set; }
-        public virtual PaymentType PaymentType { get; set; }
+        public PaymentType PaymentType { get; set; }
         public virtual ICollection<ReservationItem> ReservationItems { get; set; }
     }
 }

@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Core.Enums;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Web.DTOs
 {
@@ -11,13 +10,28 @@ namespace Web.DTOs
         {
             Messages = messages.ToList();
         }
-        public ErrorDto(ICollection<string> messages)
+        public ErrorDto(ICollection<string> messages) : this(messages.ToArray())
         {
-            Messages = messages.ToList();
         }
-        public ErrorDto(string message)
+        public ErrorDto(string message) : this(new string[] { message })
         {
-            Messages = new List<string> { message };
+        }
+        public ErrorDto(params Errors[] errors)
+        {
+            Messages = new List<string>();
+            foreach (Errors error in errors)
+            {
+                Messages.Add(((int)error).ToString());
+                Messages.Add(error.ToString());
+            }
+        }
+        public ErrorDto(Errors error) : this(new Errors[] { error })
+        {
+
+        }
+        public ErrorDto(ICollection<Errors> errors) : this(errors.ToArray())
+        {
+
         }
         public ICollection<string> Messages { get; private set; }
     }

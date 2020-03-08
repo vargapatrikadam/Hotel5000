@@ -1,19 +1,19 @@
-﻿using System;
+﻿using Core.Enums;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Core.Helpers.Results
 {
     public class UnexpectedResult<T> : Result<T>
     {
-        private readonly string[] _messages;
-        public UnexpectedResult(params string[] messages)
-        {
-            _messages = messages;
-        }
+        public UnexpectedResult(params string[] messages) :base(messages)
+        { }
+        public UnexpectedResult(params Errors[] messages) : base(messages)
+        { }
+        public UnexpectedResult(Errors error, params string[] messages) : base(error, messages)
+        { }
         public override ResultType ResultType => ResultType.Unexpected;
-        public override List<string> Errors => _messages.ToList() ?? new List<string> { "Unexpected error" };
+        public override List<string> Errors => _messages.ToList() ?? new List<string> { Enums.Errors.UNDEFINED.ToString() };
         public override T Data => default;
     }
 }

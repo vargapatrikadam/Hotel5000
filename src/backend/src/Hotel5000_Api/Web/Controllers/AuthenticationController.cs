@@ -1,21 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AutoMapper;
+using Core.Entities.LodgingEntities;
+using Core.Helpers.Results;
+using Core.Interfaces;
+using Core.Interfaces.LodgingDomain;
+using Core.Interfaces.LodgingDomain.UserManagementService;
+using Core.Services.LodgingDomain;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using AutoMapper;
-using Core.Entities.LodgingEntities;
-using Core.Helpers.Results;
-using Core.Interfaces;
-using Core.Interfaces.Lodging;
-using Core.Services.Lodging;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+using Web.Attributes;
 using Web.DTOs;
+using Web.Helpers;
 
 namespace Web.Controllers
 {
@@ -24,16 +25,19 @@ namespace Web.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationService _authenticationService;
+        private readonly IUserService _userService;
         private readonly AuthenticationOptions _options;
         private readonly IMapper _mapper;
 
         public AuthenticationController(IAuthenticationService authenticationService,
             ISetting<AuthenticationOptions> settings,
-            IMapper mapper)
+            IMapper mapper,
+            IUserService userService)
         {
             _authenticationService = authenticationService;
             _options = settings.Option;
             _mapper = mapper;
+            _userService = userService;
         }
 
         private string GenerateToken(User user)
@@ -44,9 +48,7 @@ namespace Web.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Username),
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.UserData, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, user.Role.Name.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddSeconds(_options.AccessTokenDuration),
@@ -67,20 +69,24 @@ namespace Web.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto loginData)
         {
             Result<User> result =
-                await _authenticationService.AuthenticateAsync(loginData.Username, loginData.Password, loginData.Email);
+                await _authenticationService.AuthenticateAsync(loginData.Identifier, loginData.Password);
 
-            if (result.ResultType == ResultType.Unauthorized)
-                return BadRequest(new ErrorDto("Invalid login data"));
+            if (result.ResultType != ResultType.Ok)
+                return this.GetError(result);
 
             var accessToken = GenerateToken(result.Data);
             var refreshToken = result.Data.Tokens.LastOrDefault().RefreshToken;
             var role = result.Data.Role.Name.ToString();
+            var username = result.Data.Username;
+            var email = result.Data.Email;
 
             return Ok(new AuthenticationDto
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
-                Role = role
+                Role = role,
+                Username = username,
+                Email = email
             });
         }
 
@@ -88,14 +94,17 @@ namespace Web.Controllers
         [HttpPost("Refresh")]
         [ProducesResponseType(typeof(AuthenticationDto), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
-        public async Task<IActionResult> Refresh([FromBody] string refreshToken)
+        public async Task<IActionResult> Refresh([FromBody] RefreshDto refreshDto)
         {
-            Result<User> result = await _authenticationService.RefreshAsync(refreshToken);
-            if (result.ResultType == ResultType.Unauthorized)
-                return BadRequest(new ErrorDto("Invalid refresh token"));
+            Result<User> result = await _authenticationService.RefreshAsync(refreshDto.RefreshToken);
+
+            if (result.ResultType != ResultType.Ok)
+                return this.GetError(result);
+
             var accessToken = GenerateToken(result.Data);
-            var newRefreshToken = result.Data.Tokens.FirstOrDefault().RefreshToken;
+            var newRefreshToken = result.Data.Tokens.LastOrDefault().RefreshToken;
             var role = result.Data.Role.Name.ToString();
+
             return Ok(new AuthenticationDto
             {
                 AccessToken = accessToken,
@@ -111,11 +120,39 @@ namespace Web.Controllers
         {
             User newUserEntity = _mapper.Map<User>(newUserDto);
 
-            Result<bool> result = await _authenticationService.RegisterAsync(newUserEntity, newUserDto.Role);
+            Result<bool> result = await _userService.AddUser(newUserEntity, newUserDto.Role);
 
-            if (result.ResultType == ResultType.Ok)
-                return Ok();
-            else return BadRequest(new ErrorDto(result.Errors));
+            if (result.ResultType != ResultType.Ok)
+                return this.GetError(result);
+
+            return Ok();
+        }
+        /// <summary>
+        /// Logs out an user who has a valid refresh token
+        /// </summary>
+        /// <param name="refreshDto">this contains the refresh token</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///     
+        ///     POST api/auth/logout
+        ///     {
+        ///         "refreshToken": "valid refresh token"
+        ///     }
+        ///     
+        /// </remarks>
+        [AllowAnonymous]
+        [HttpPost("logout")]
+        [ProducesResponseType(200)]
+        [ProducesErrorResponseType(typeof(ErrorDto))]
+        public async Task<IActionResult> Logout([FromBody] RefreshDto refreshDto)
+        {
+            var result = await _authenticationService.LogoutAsync(refreshDto.RefreshToken);
+
+            if (result.ResultType != ResultType.Ok)
+                return this.GetError(result);
+
+            return Ok();
         }
     }
 }

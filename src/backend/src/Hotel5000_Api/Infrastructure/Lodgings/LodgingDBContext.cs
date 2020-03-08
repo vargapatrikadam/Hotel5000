@@ -1,10 +1,7 @@
 ﻿using Core.Entities.LodgingEntities;
-using Infrastructure.Lodgings.Configurations;
 using Infrastructure.Helpers;
+using Infrastructure.Lodgings.Configurations;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,7 +38,6 @@ namespace Infrastructure.Lodgings
         public override int SaveChanges()
         {
             this.UpdateSoftDeleteStatuses();
-            //this.DetachAllEntries();
             return base.SaveChanges();
         }
 
@@ -49,7 +45,7 @@ namespace Infrastructure.Lodgings
             CancellationToken cancellationToken = default)
         {
             this.UpdateSoftDeleteStatuses();
-            //this.DetachAllEntries();
+            this.UpdateBaseEntityDateColumns();
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
     }

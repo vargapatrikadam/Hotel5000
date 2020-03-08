@@ -1,8 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Logging
 {
@@ -13,6 +9,7 @@ namespace Infrastructure.Logging
             //if(isProduction)
             //    context.Database.Migrate();
             context.Database.Migrate();
+            context.SaveChanges();
         }
     }
 }

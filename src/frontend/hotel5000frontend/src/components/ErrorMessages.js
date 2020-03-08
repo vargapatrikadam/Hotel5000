@@ -1,0 +1,31 @@
+export default function ErrorMessage(){
+    var code = []
+    code[1000] = "UNDEFINED"
+    code[2000] = "DATA_UNIQUENESS_CONFLICT"
+    code[3000] = "INVALID_PARAMETER"
+    code[4000] = "NOT_FOUND"
+    code[5000] = "UNAUTHORIZED"
+    code[10001] = "APPROVING_DATA_ALREADY_EXISTS"
+    code[10002] = "APPROVING_DATA_NOT_UNIQUE"
+    code[10003] = "APPROVING_DATA_NOT_FOUND"
+    code[10004] = "CONTACT_NOT_UNIQUE"
+    code[10005] = "CONTACT_NOT_FOUND"
+    code[10006] = "EMAIL_NOT_UNIQUE"
+    code[10007] = "USERNAME_NOT_UNIQUE"
+    code[10008] = "ROLE_NOT_EXISTS"
+    code[10009] = "USER_NOT_FOUND"
+    code[10010] = "PASSWORD_INCORRECT"
+    code[10011] = "PASSWORD_IS_EMPTY"
+    code[10012] = "PASSWORD_NOT_CONTAINS_LOWERCASE"
+    code[10013] = "PASSWORD_NOT_CONTAINS_UPPERCASE"
+    code[10014] = "PASSWORD_LENGTH_INCORRECT"
+    code[10015] = "PASSWORD_NOT_CONTAINS_NUMERIC"
+    code[10016] = "EMAIL_IS_EMPTY"
+    code[10017] = "EMAIL_INVALID"
+    code[20001] = "RESOURCE_OWNER_NOT_FOUND"
+    code[20002] = "ACCESSING_USER_NOT_FOUND"
+    code[20003] = "TOKEN_NOT_FOUND"
+    code[20004] = "TOKEN_INVALID"
+
+    return code
+} 

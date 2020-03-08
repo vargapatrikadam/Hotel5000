@@ -1,19 +1,19 @@
-﻿using System;
+﻿using Core.Enums;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Core.Helpers.Results
 {
     public class NotFoundResult<T> : Result<T>
     {
-        private readonly string[] _messages;
-        public NotFoundResult(params string[] messages)
-        {
-            _messages = messages;
-        }
+        public NotFoundResult(params string[] messages) : base(messages)
+        { }
+        public NotFoundResult(params Errors[] messages) : base(messages)
+        { }
+        public NotFoundResult(Errors error, params string[] messages) : base(error, messages)
+        { }
         public override ResultType ResultType => ResultType.NotFound;
-        public override List<string> Errors => _messages.ToList() ?? new List<string> { "Not found" };
+        public override List<string> Errors => _messages.ToList() ?? new List<string> { Enums.Errors.NOT_FOUND.ToString() };
         public override T Data => default;
     }
 }

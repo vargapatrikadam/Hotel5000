@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Web.DTOs
 {
     public class UserDto
     {
+        public int Id { get; set; }
+        [Required]
         public string Username { get; set; }
         public string Password { get; set; }
+        [Required]
         public string Email { get; set; }
+        [Required]
         public string FirstName { get; set; }
+        [Required]
         public string LastName { get; set; }
         public string Role { get; set; }
-        public string IdentityNumber { get; set; }
-        public string TaxNumber { get; set; }
-        public string RegistrationNumber { get; set; }
-        public ICollection<ContactDto> Contacts { get; set; }
-        //public virtual ICollection<LodgingDto> Lodgings { get; set; }
     }
 }

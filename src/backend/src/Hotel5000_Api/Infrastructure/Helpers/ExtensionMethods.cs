@@ -1,10 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using Core.Entities;
 using System.Reflection;
 
 namespace Infrastructure.Helpers
@@ -64,17 +62,6 @@ namespace Infrastructure.Helpers
             builder.Property(p => p.Id)
                 .UseIdentityColumn();
 
-            builder.Property(p => p.ModifiedAt)
-                .ValueGeneratedOnAddOrUpdate()
-                .HasComputedColumnSql("getdate()");
-
-            builder.Property(p => p.AddedAt)
-                .ValueGeneratedOnAdd()
-                .HasComputedColumnSql("getdate()");
-
-            builder.Property(p => p.AddedAt)
-                .Metadata.SetAfterSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Ignore);
-
             return builder;
         }
 
@@ -91,13 +78,31 @@ namespace Infrastructure.Helpers
         public static void ApplyConfigurationsDerivedFrom<T>(this ModelBuilder builder)
         {
             var typesToRegister = Assembly.GetExecutingAssembly().GetTypes()
-                         .Where(t => t.GetInterfaces().Any(gi => gi.IsGenericType && gi.GetGenericTypeDefinition() == typeof(IEntityTypeConfiguration<>)) 
+                         .Where(t => t.GetInterfaces().Any(gi => gi.IsGenericType && gi.GetGenericTypeDefinition() == typeof(IEntityTypeConfiguration<>))
                          && t.GetInterfaces().Contains(typeof(T))).ToList();
 
             foreach (var type in typesToRegister)
             {
                 dynamic configurationInstance = Activator.CreateInstance(type);
                 builder.ApplyConfiguration(configurationInstance);
+            }
+        }
+        public static void UpdateBaseEntityDateColumns(this DbContext context)
+        {
+            var entries = context.ChangeTracker
+                .Entries()
+                .Where(e => e.Entity is BaseEntity && (
+                    e.State == EntityState.Added
+                    || e.State == EntityState.Modified));
+
+            foreach (var entityEntry in entries)
+            {
+                ((BaseEntity)entityEntry.Entity).ModifiedAt = DateTime.Now;
+
+                if (entityEntry.State == EntityState.Added)
+                {
+                    ((BaseEntity)entityEntry.Entity).AddedAt = DateTime.Now;
+                }
             }
         }
     }

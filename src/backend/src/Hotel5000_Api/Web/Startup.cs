@@ -3,10 +3,12 @@ using Core.Entities.LodgingEntities;
 using Core.Entities.LoggingEntities;
 using Core.Helpers;
 using Core.Interfaces;
-using Core.Interfaces.Lodging;
+using Core.Interfaces.LodgingDomain;
+using Core.Interfaces.LodgingDomain.LodgingManagementService;
+using Core.Interfaces.LodgingDomain.UserManagementService;
 using Core.Interfaces.Logging;
 using Core.Interfaces.PasswordHasher;
-using Core.Services.Lodging;
+using Core.Services.LodgingDomain;
 using Core.Services.Logging;
 using Core.Services.PasswordHasher;
 using Infrastructure.Lodgings;
@@ -21,10 +23,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Linq;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Web.Mapping;
+using Web.DTOs;
+using Web.Helpers;
 
 namespace Web
 {
@@ -49,7 +53,8 @@ namespace Web
                 options.AddPolicy("CorsPolicy", builder => builder
                     .AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader());
+                    .AllowAnyHeader()
+                    .WithExposedHeaders("Token-Expired"));
             });
 
             services.AddRouting(options => options.LowercaseUrls = true);
@@ -57,13 +62,13 @@ namespace Web
             services.AddDbContext<LodgingDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("LodgingDb")));
             services.AddDbContext<LoggingDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("LoggingDb")));
+                options.UseSqlServer(Configuration.GetConnectionString("LoggingDb")), ServiceLifetime.Singleton);
 
             #region swagger settings
 
             services.AddSwaggerGen(s =>
             {
-                s.SwaggerDoc("v1", new OpenApiInfo() {Title = "Hotel5000 Api", Version = "v0.1"});
+                s.SwaggerDoc("v1", new OpenApiInfo() { Title = "Hotel5000 Api", Version = "v0.1" });
                 var securityScheme = new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -86,6 +91,9 @@ namespace Web
                         Array.Empty<string>()
                     }
                 });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                s.IncludeXmlComments(xmlPath);
             });
 
             #endregion
@@ -129,16 +137,18 @@ namespace Web
             #endregion
 
             #region repository registrations 
-            services.AddScoped<IAsyncRepository<Log>, LoggingDbRepository<Log>>();
+            services.AddSingleton<IAsyncRepository<Log>, LoggingDbRepository<Log>>();
 
             services.AddScoped<IAsyncRepository<Role>, LodgingDbRepository<Role>>();
             services.AddScoped<IAsyncRepository<User>, LodgingDbRepository<User>>();
             services.AddScoped<IAsyncRepository<Token>, LodgingDbRepository<Token>>();
             services.AddScoped<IAsyncRepository<ApprovingData>, LodgingDbRepository<ApprovingData>>();
             services.AddScoped<IAsyncRepository<Contact>, LodgingDbRepository<Contact>>();
+            services.AddScoped<IAsyncRepository<LodgingType>, LodgingDbRepository<LodgingType>>();
             services.AddScoped<IAsyncRepository<Lodging>, LodgingDbRepository<Lodging>>();
             services.AddScoped<IAsyncRepository<Country>, LodgingDbRepository<Country>>();
             services.AddScoped<IAsyncRepository<LodgingAddress>, LodgingDbRepository<LodgingAddress>>();
+            services.AddScoped<IAsyncRepository<Currency>, LodgingDbRepository<Currency>>();
             services.AddScoped<IAsyncRepository<Room>, LodgingDbRepository<Room>>();
             services.AddScoped<IAsyncRepository<ReservationWindow>, LodgingDbRepository<ReservationWindow>>();
             services.AddScoped<IAsyncRepository<PaymentType>, LodgingDbRepository<PaymentType>>();
@@ -153,7 +163,19 @@ namespace Web
                 (Configuration.GetSection("HashingOptions").Get<HashingOptions>()));
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
-            services.AddScoped<ILoggingService, LoggingService>();
+            services.AddSingleton<ILoggingService, LoggingService>();
+
+            services.AddScoped<IUserManagementService, UserManagementService>();
+            services.AddScoped<IContactService, UserManagementService>();
+            services.AddScoped<IApprovingDataService, UserManagementService>();
+            services.AddScoped<IUserService, UserManagementService>();
+
+            services.AddScoped<ILodgingManagementService, LodgingManagementService>();
+            services.AddScoped<ILodgingService, LodgingManagementService>();
+            services.AddScoped<ILodgingAddressService, LodgingManagementService>();
+            services.AddScoped<IReservationWindowService, LodgingManagementService>();
+            services.AddScoped<IRoomService, LodgingManagementService>();
+            services.AddScoped<IReservationService, ReservationService>();
 
             services.AddSingleton<ISetting<AuthenticationOptions>>(new Setting<AuthenticationOptions>
                 (authenticationOptions));
@@ -169,7 +191,7 @@ namespace Web
                 app.UseExceptionHandler("/api/error");
 
             app.UseHttpsRedirection();
-            
+
             app.UseSwagger();
 
             app.UseSwaggerUI(s =>
@@ -185,7 +207,6 @@ namespace Web
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => endpoints.MapControllers());
-
         }
 
         //This method is only called when the project's enviroment variable 'ASPNETCORE_ENVIRONMENT' is set to 'Development'

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Core.Helpers.Results
+﻿namespace Core.Helpers.Results
 {
     public enum ResultType
     {
@@ -10,6 +6,7 @@ namespace Core.Helpers.Results
         NotFound,
         Invalid,
         Unexpected,
-        Unauthorized
+        Unauthorized,
+        Conflict
     }
 }
