@@ -7,6 +7,7 @@ namespace Core.Interfaces.LodgingDomain
     public interface IAuthenticationService
     {
         Task<Result<User>> AuthenticateAsync(string identifier, string password);
+        Task<Result<bool>> LogoutAsync(string refreshToken);
         Task<Result<User>> RefreshAsync(string refreshToken);
         Task<Result<bool>> IsAuthorized(int resourceOwnerId, int accessingUserId);
     }

@@ -68,6 +68,18 @@ namespace Core.Services.LodgingDomain
 
             return new SuccessfulResult<User>(userWithToken);
         }
+        public async Task<Result<bool>> LogoutAsync(string refreshToken)
+        {
+
+            var token = (await _tokenRepository.GetAsync(new Specification<Token>().ApplyFilter(p => p.RefreshToken == refreshToken))).FirstOrDefault();
+            if (token == null)
+                return new NotFoundResult<bool>(Errors.TOKEN_NOT_FOUND);
+
+            await _tokenRepository.DeleteAsync(token);
+
+            return new SuccessfulResult<bool>(true);
+        }
+
 
         private string GenerateRefreshToken()
         {

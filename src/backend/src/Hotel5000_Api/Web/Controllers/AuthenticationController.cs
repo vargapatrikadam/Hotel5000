@@ -14,6 +14,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Web.Attributes;
 using Web.DTOs;
 using Web.Helpers;
 
@@ -120,6 +121,33 @@ namespace Web.Controllers
             User newUserEntity = _mapper.Map<User>(newUserDto);
 
             Result<bool> result = await _userService.AddUser(newUserEntity, newUserDto.Role);
+
+            if (result.ResultType != ResultType.Ok)
+                return this.GetError(result);
+
+            return Ok();
+        }
+        /// <summary>
+        /// Logs out an user who has a valid refresh token
+        /// </summary>
+        /// <param name="refreshDto">this contains the refresh token</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///     
+        ///     POST api/auth/logout
+        ///     {
+        ///         "refreshToken": "valid refresh token"
+        ///     }
+        ///     
+        /// </remarks>
+        [AllowAnonymous]
+        [HttpPost("logout")]
+        [ProducesResponseType(200)]
+        [ProducesErrorResponseType(typeof(ErrorDto))]
+        public async Task<IActionResult> Logout([FromBody] RefreshDto refreshDto)
+        {
+            var result = await _authenticationService.LogoutAsync(refreshDto.RefreshToken);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
