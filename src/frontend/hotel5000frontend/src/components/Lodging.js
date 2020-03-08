@@ -1,12 +1,25 @@
 import React, {Component} from 'react';
-import {Accordion, Button, Card, FormControl, InputGroup, ListGroup, ListGroupItem, Modal} from "react-bootstrap";
+import {
+    Accordion,
+    Button,
+    Card,
+    FormControl,
+    FormLabel,
+    InputGroup,
+    ListGroup,
+    ListGroupItem,
+    Modal
+} from "react-bootstrap";
 import {FaSearch} from "react-icons/fa";
+import {refresh} from "./RefreshHelper";
 
 
 class Lodging extends Component {
 
     constructor(props) {
         super(props);
+
+        this.setSelectedPaymentType = this.setSelectedPaymentType.bind(this)
 
         this.state = {
             pageNumber: 1,
@@ -17,7 +30,18 @@ class Lodging extends Component {
             fromDateFilter: "",
             toDateFilter: "",
             isSearchClicked: false,
-            modalIndex: null
+            modalIndex: null,
+            freeIntervals: [],
+
+            paymentType: "Cash",
+            reservedFrom: null,
+            reservedTo: null,
+            reservationItems: []
+        }
+        this.reservationItem = {
+            "reservedFrom": "",
+            "reservedTo": "",
+            "roomId": null
         }
     }
 
@@ -32,6 +56,7 @@ class Lodging extends Component {
             this.getCurrentLodgings();
             this.getNextData();
         }
+        console.log(this.state.reservationItems)
     }
 
     increasePageNumber = () => {
@@ -97,6 +122,70 @@ class Lodging extends Component {
         return new Date(dateString).toLocaleDateString([], options)
     }
 
+    getFreeIntervals = (roomId) => {
+        fetch("https://localhost:5000/api/reservations/rooms/" + roomId, {
+            method: 'GET',
+            mode: "cors",
+            headers: {
+
+            }
+        })
+            .then(response => response.json())
+            .then(responseJson => {
+                this.setState({freeIntervals: responseJson})
+            })
+    }
+
+    //region Reservation
+    setSelectedPaymentType(event) {
+        this.setState({paymentType: event.target.value})
+    }
+    handleReservedFromChanged = (from) => {
+        this.reservationItem.reservedFrom = from
+    }
+    handleReservedToChanged  = (to) => {
+        this.reservationItem.reservedTo = to
+    }
+    addReservationItem = (item) => {
+        const currentItems = this.state.reservationItems
+        const newItems = currentItems.concat(JSON.parse(JSON.stringify(item)))
+        this.setState({reservationItems: newItems})
+    }
+    reserveRoom = (paymentType, reservationItems) => {
+        const data = {
+            "email": "reservation.@res.com",
+            "paymentType": paymentType,
+            "reservationItems": reservationItems
+        }
+
+        fetch("https://localhost:5000/api/reservations", {
+            method: 'POST',
+            mode: "cors",
+            headers: {
+                "Content-Type":"application/json",
+                "Authorization":"Bearer " + localStorage.getItem('accessToken')
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if(response.status === 200){
+                    alert("successful reservation")
+                    window.location.reload(false)
+                }
+                else if(response.status === 401){
+                    let token = response.headers.get('token-expired')
+                    if(token) {
+                        refresh().then(() => {
+                            this.reserveRoom(paymentType, reservationItems)
+                        }).catch((error) => {
+                            console.log(error)
+                        })
+                    }
+                }
+            })
+    }
+    //endregion
+
     renderLodgings = () => {
 
         const rows = [...Array(Math.ceil(this.state.data.length / 3))]
@@ -131,7 +220,8 @@ class Lodging extends Component {
                                                                 <Accordion>
                                                                     <Card>
                                                                         <Card.Header>
-                                                                            <Accordion.Toggle as={Button} variant="outline-dark" eventKey={room.id}>
+                                                                            <Accordion.Toggle as={Button} variant="outline-dark"
+                                                                                              eventKey={room.id} onClick={() => this.getFreeIntervals(room.id)}>
                                                                                 {room.adultCapacity + room.childrenCapacity} capacity room
                                                                             </Accordion.Toggle>
                                                                         </Card.Header>
@@ -146,6 +236,39 @@ class Lodging extends Component {
                                                                                 <ListGroupItem>
                                                                                     Price: {room.price} {room.currency}
                                                                                 </ListGroupItem>
+                                                                                <ListGroupItem>
+                                                                                    <h5>Free intervals</h5>
+                                                                                    {this.state.freeIntervals.map((interval, index) => {
+                                                                                        return(
+                                                                                            <div key={index}>
+                                                                                                <FormLabel>From</FormLabel>
+                                                                                                <FormLabel className="mx-2">{this.formatDate(interval.from)}</FormLabel>
+                                                                                                <FormLabel>To</FormLabel>
+                                                                                                <FormLabel className="mx-2">{this.formatDate(interval.to)}</FormLabel>
+                                                                                            </div>
+                                                                                        )
+                                                                                    })}
+                                                                                </ListGroupItem>
+                                                                                <ListGroupItem>
+                                                                                    <FormLabel>Payment type</FormLabel>
+                                                                                    <FormControl as="select">
+                                                                                        <option value="Cash">Cash</option>
+                                                                                        <option value="Card">Card</option>
+                                                                                    </FormControl>
+                                                                                </ListGroupItem>
+                                                                                <ListGroupItem>
+                                                                                    <FormLabel className="mr-3">Date of arrival</FormLabel>
+                                                                                    <input type="date"
+                                                                                           onChange={(from) => this.handleReservedFromChanged(from.target.value)}/><br/>
+                                                                                    <FormLabel className="mr-3">Date of leave</FormLabel>
+                                                                                    <input type="date"
+                                                                                           onChange={(to) => this.handleReservedToChanged(to.target.value)}/>
+                                                                                </ListGroupItem>
+                                                                                <Button variant="outline-dark"
+                                                                                        onClick={() => {this.reservationItem.roomId = room.id;
+                                                                                            this.addReservationItem(this.reservationItem);}}>
+                                                                                    Add item to reservation
+                                                                                </Button>
                                                                             </ListGroup>
                                                                         </Accordion.Collapse>
                                                                     </Card>
@@ -153,6 +276,11 @@ class Lodging extends Component {
                                                             </div>
                                                         )}
                                                     )}
+                                                    <Button variant="success" className="mx-auto"
+                                                            hidden={this.reservationItem.roomId === null}
+                                                            onClick={() => this.reserveRoom(this.state.paymentType, this.state.reservationItems)}>
+                                                        Send reservation
+                                                    </Button>
                                                     <h5 className="mt-3">Address</h5>
                                                     {lodging.lodgingAddresses.map( address => {
                                                         return(
@@ -202,6 +330,7 @@ class Lodging extends Component {
         )
     }
 
+    //region Searchbar handlers
     handleFromDateChanged = (from) => {
         this.setState({fromDateFilter: from})
         console.log(from)
@@ -215,6 +344,7 @@ class Lodging extends Component {
     handleSearchClick = () => {
         this.setState({isSearchClicked: !this.state.isSearchClicked, pageNumber: 1})
     }
+    //endregion
 
     render() {
         return (
