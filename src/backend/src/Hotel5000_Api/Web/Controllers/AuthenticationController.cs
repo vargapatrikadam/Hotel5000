@@ -77,13 +77,15 @@ namespace Web.Controllers
             var refreshToken = result.Data.Tokens.LastOrDefault().RefreshToken;
             var role = result.Data.Role.Name.ToString();
             var username = result.Data.Username;
+            var email = result.Data.Email;
 
             return Ok(new AuthenticationDto
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
                 Role = role,
-                Username = username
+                Username = username,
+                Email = email
             });
         }
 
@@ -101,6 +103,7 @@ namespace Web.Controllers
             var accessToken = GenerateToken(result.Data);
             var newRefreshToken = result.Data.Tokens.LastOrDefault().RefreshToken;
             var role = result.Data.Role.Name.ToString();
+
             return Ok(new AuthenticationDto
             {
                 AccessToken = accessToken,
