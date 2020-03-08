@@ -42,6 +42,7 @@ class Loginform extends Component {
             localStorage.setItem('username', responsedata.username)
             localStorage.setItem('accessToken', responsedata.accessToken)
             localStorage.setItem('refreshToken', responsedata.refreshToken)
+            localStorage.setItem('email', responsedata.email)
             localStorage.setItem('loggedin', this.state.loggedin)
             alert("Successful login")
             console.log(localStorage.getItem('accessToken'))

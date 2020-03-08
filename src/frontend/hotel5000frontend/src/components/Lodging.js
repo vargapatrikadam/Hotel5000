@@ -153,7 +153,7 @@ class Lodging extends Component {
     }
     reserveRoom = (paymentType, reservationItems) => {
         const data = {
-            "email": "reservation.@res.com",
+            "email": localStorage.getItem('email'),
             "paymentType": paymentType,
             "reservationItems": reservationItems
         }
