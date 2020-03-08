@@ -150,6 +150,7 @@ class Lodging extends Component {
         const currentItems = this.state.reservationItems
         const newItems = currentItems.concat(JSON.parse(JSON.stringify(item)))
         this.setState({reservationItems: newItems})
+        alert("Item added to reservation")
     }
     reserveRoom = (paymentType, reservationItems) => {
         const data = {
@@ -238,7 +239,7 @@ class Lodging extends Component {
                                                                                 </ListGroupItem>
                                                                                 <ListGroupItem>
                                                                                     <h5>Free intervals</h5>
-                                                                                    {this.state.freeIntervals.map((interval, index) => {
+                                                                                    {Array.from(this.state.freeIntervals).map((interval, index) => {
                                                                                         return(
                                                                                             <div key={index}>
                                                                                                 <FormLabel>From</FormLabel>
