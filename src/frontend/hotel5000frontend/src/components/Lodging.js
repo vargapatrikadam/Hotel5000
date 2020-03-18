@@ -32,6 +32,7 @@ class Lodging extends Component {
             isSearchClicked: false,
             modalIndex: null,
             freeIntervals: [],
+            countryFilter: "",
 
             paymentType: "Cash",
             reservedFrom: null,
@@ -337,6 +338,10 @@ class Lodging extends Component {
         console.log(from)
     }
 
+    handleCountryChanged = (country) => {
+        this.setState({countryFilter: country.target.value})
+    }
+
     handleToDateChanged = (to) => {
         this.setState({toDateFilter: to})
         console.log(to)
@@ -352,7 +357,7 @@ class Lodging extends Component {
             <div>
                 <div style={{width: '50rem'}} className="mx-auto mt-3">
                     <InputGroup id="input">
-                        <FormControl size="lg" placeholder="Country of holiday"></FormControl>
+                        <FormControl size="lg" placeholder="Country of holiday" onChange={(country) => {this.handleCountryChanged(country)}}/>
 
                         <input type="date" as={InputGroup.Append} onChange={(event) => this.handleFromDateChanged(event.target.value)}/>
 
