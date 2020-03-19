@@ -53,6 +53,12 @@ class NavBar extends Component {
                                 <Dropdown.Divider/>
                                 <Link to="/ownReservations"><Button variant="outline-dark" style={{width: '15rem'}}><FaGripHorizontal/>Own reservations</Button></Link>
                                 <Dropdown.Divider/>
+                                <Link to="/ownLodgings">
+                                    <Button variant="outline-dark" style={{width: '15rem'}}>
+                                        <FaGripHorizontal/>Own lodgings
+                                    </Button>
+                                </Link>
+                                <Dropdown.Divider/>
                                 <Dropdown.Item className="dropdownitem" href="/about">About</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>

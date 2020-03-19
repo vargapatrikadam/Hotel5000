@@ -8,6 +8,7 @@ import About from './pages/About';
 import Users from "./pages/Users";
 import PostLodging from "./pages/PostLodging";
 import OwnReservationsPage from "./pages/OwnReservationsPage";
+import OwnLodgings from "./pages/OwnLodgings";
 
 function App() {
     return(
@@ -21,6 +22,7 @@ function App() {
                     <Route exact path="/users" component={Users}/>
                     <Route exact path="/postLodging" component={PostLodging}/>
                     <Route exact path="/ownReservations" component={OwnReservationsPage}/>
+                    <Route exact path="/ownLodgings" component={OwnLodgings}/>
                     <Route component={Error} />
                 </Switch>
             </Router>
