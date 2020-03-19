@@ -53,7 +53,10 @@ class Lodging extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if(prevState.pageNumber !== this.state.pageNumber ||
-            prevState.isSearchClicked !== this.state.isSearchClicked){
+            prevState.isSearchClicked !== this.state.isSearchClicked ||
+            (prevState.countryFilter !== "" && this.state.countryFilter === "") ||
+            (prevState.fromDateFilter!== "" && this.state.fromDateFilter === "") ||
+            (prevState.toDateFilter !== "" && this.state.toDateFilter === "")){
             this.getCurrentLodgings();
             this.getNextData();
         }
@@ -73,7 +76,8 @@ class Lodging extends Component {
     getCurrentLodgings = () => {
         let url = new URL("https://localhost:5000/api/lodgings"),
             params = {pageNumber: this.state.pageNumber, resultPerPage: this.state.resultPerPage,
-                      reservableFrom: this.state.fromDateFilter, reservableTo: this.state.toDateFilter}
+                      reservableFrom: this.state.fromDateFilter, reservableTo: this.state.toDateFilter,
+                      address: this.state.countryFilter}
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 
         fetch(url, {
@@ -93,7 +97,8 @@ class Lodging extends Component {
     getNextData = () => {
         let url = new URL("https://localhost:5000/api/lodgings"),
             params = {pageNumber: this.state.pageNumber + 1, resultPerPage: this.state.resultPerPage,
-                      reservableFrom: this.state.fromDateFilter, reservableTo: this.state.toDateFilter}
+                      reservableFrom: this.state.fromDateFilter, reservableTo: this.state.toDateFilter,
+                      address: this.state.countryFilter}
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 
         fetch(url, {
