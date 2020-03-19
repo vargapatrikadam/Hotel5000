@@ -1,3 +1,5 @@
+import {logout} from "./LogoutHelper";
+
 export function refresh() {
         const data = {
             "refreshToken": localStorage.getItem('refreshToken')
@@ -30,7 +32,9 @@ export function refresh() {
                 console.log(localStorage.getItem('refreshToken'))
             })
             .catch((error) =>{
-                localStorage.setItem('loggedin', false)
+                logout().then(
+                    console.log('Logged out due to invalid refresh token')
+                )
                 throw error
             }) //rossz refresh token esetén kijelentkeztetjük a felhasználót
 

@@ -4,6 +4,7 @@ import {FaAlignJustify, FaUser, FaSuitcase, FaGripHorizontal, FaShoppingCart, Fa
 import './NavBar.css';
 import {Navbar, Dropdown, Nav, Button} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import {logout} from "./LogoutHelper";
 
 class NavBar extends Component {
 
@@ -31,12 +32,9 @@ class NavBar extends Component {
     }
 
     logOut = () => {
-        localStorage.setItem('loggedin', false)
-        localStorage.setItem('accessToken', "")
-        localStorage.setItem('refreshToken', "")
-        localStorage.setItem('email', "")
-        localStorage.setItem('username', "")
-        localStorage.setItem('role', "")
+        logout().then(
+            alert("Successfully logged out.")
+        )
     }
 
     render() {
@@ -92,7 +90,9 @@ class NavBar extends Component {
                                     Log out
                                 </Button>
                                 <Dropdown.Divider/>
-                                <Link to="/users" hidden={this.state.loggedin !== true && this.state.role !== 'Admin'}><Button variant="outline-dark" style={{width: '10rem'}}>User management</Button></Link>
+                                <Link to="/users" hidden={this.state.loggedin !== true && this.state.role !== 'Admin'}>
+                                    <Button variant="outline-dark" style={{width: '10rem'}}>User management</Button>
+                                </Link>
                             </Dropdown.Menu>
                         </Dropdown>
                     </Nav>
