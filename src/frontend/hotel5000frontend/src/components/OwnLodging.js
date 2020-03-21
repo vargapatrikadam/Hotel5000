@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Accordion, Button, Card, FormLabel, ListGroup, ListGroupItem, Modal} from "react-bootstrap";
+import {refresh} from "./RefreshHelper";
 
 class OwnLodging extends Component {
 
@@ -9,7 +10,9 @@ class OwnLodging extends Component {
         this.state = {
             lodgings: [],
             modalIndex: null,
-            freeIntervals: []
+            freeIntervals: [],
+            freeFrom: "",
+            freeTo: ""
         }
 
     }
@@ -60,9 +63,50 @@ class OwnLodging extends Component {
             })
     }
 
+    addReservationWindow = (id, from, to) => {
+        const data = {
+            lodgingId: id,
+            From: from,
+            To: to
+        }
+
+        fetch("https://localhost:5000/api/lodgings/reservationwindows", {
+            method: 'POST',
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if(response.status === 200){
+                    alert("Reservation window successfully added to lodging")
+                    window.location.reload(false)
+                }
+                else if(response.status === 401){
+                    let token = response.headers.get('token-expired')
+                    if(token) {
+                        refresh().then(() => {
+                            this.addReservationWindow(id, from, to)
+                        }).catch((error) => {
+                            console.log(error)
+                        })
+                    }
+                }
+            })
+    }
+
     formatDate = (dateString) => {
         let options = {year: 'numeric', month: 'numeric', day: 'numeric'}
         return new Date(dateString).toLocaleDateString([], options)
+    }
+
+    handleFromChanged = (from) => {
+        this.setState({freeFrom: from})
+    }
+    handleToChanged = (to) => {
+        this.setState({freeTo: to})
     }
 
     renderOwnLodgings = () => {
@@ -107,19 +151,6 @@ class OwnLodging extends Component {
                                                                     <ListGroupItem>
                                                                         Price: {room.price} {room.currency}
                                                                     </ListGroupItem>
-                                                                    <ListGroupItem>
-                                                                        <h5>Free intervals</h5>
-                                                                        {Array.from(this.state.freeIntervals).map((interval, index) => {
-                                                                            return(
-                                                                                <div key={index}>
-                                                                                    <FormLabel>From</FormLabel>
-                                                                                    <FormLabel className="mx-2">{this.formatDate(interval.from)}</FormLabel>
-                                                                                    <FormLabel>To</FormLabel>
-                                                                                    <FormLabel className="mx-2">{this.formatDate(interval.to)}</FormLabel>
-                                                                                </div>
-                                                                            )
-                                                                        })}
-                                                                    </ListGroupItem>
                                                                 </ListGroup>
                                                             </Accordion.Collapse>
                                                         </Card>
@@ -146,6 +177,31 @@ class OwnLodging extends Component {
                                                 </div>
                                             )}
                                         )}
+                                        <h5 className="mt-3">Reservation windows</h5>
+                                        {lodging.reservationWindows.map( window => {
+                                            return (
+                                                <div key={window.id} className="mx-auto" style={{textAlign: 'center'}}>
+                                                    <p>From: {this.formatDate(window.from)} &emsp; To: {this.formatDate(window.to)}</p>
+                                                </div>
+                                            )
+                                        })}
+                                        <Accordion>
+                                            <Accordion.Toggle as={Button} variant="outline-dark"
+                                                              eventKey={lodging.id}>
+                                                Add reservation window
+                                            </Accordion.Toggle>
+                                            <Accordion.Collapse eventKey={lodging.id}>
+                                                <ListGroup>
+                                                    <ListGroupItem>
+                                                        <FormLabel>Free from:</FormLabel>
+                                                        <input type="date" onChange={(event) => this.handleFromChanged(event.target.value)}/><br/>
+                                                        <FormLabel>To:</FormLabel>
+                                                        <input type="date" className="ml-5" onChange={(event) => this.handleToChanged(event.target.value)}/>
+                                                        <Button variant="outline-dark" onClick={() => this.addReservationWindow(lodging.id, this.state.freeFrom, this.state.freeTo)}>Add reservationWindow to lodging</Button>
+                                                    </ListGroupItem>
+                                                </ListGroup>
+                                            </Accordion.Collapse>
+                                        </Accordion>
                                     </Modal.Body>
                                 </Modal>
                             </ListGroup>
