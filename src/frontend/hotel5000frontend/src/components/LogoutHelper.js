@@ -1,8 +1,10 @@
-export function logout() {
+import {BaseUrl} from './FetchHelper'
+//????????????????????????
+function logout() {
     const data = {
         "refreshToken": localStorage.getItem('refreshToken')
     }
-    return fetch("https://localhost:5000/api/auth/logout", {
+    return fetch(BaseUrl+"api/auth/logout", {
         method: 'POST',
         mode: 'cors',
         headers: {
@@ -22,3 +24,5 @@ export function logout() {
             }
         })
 }
+
+export default logout;

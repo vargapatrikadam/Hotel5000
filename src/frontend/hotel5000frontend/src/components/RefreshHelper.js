@@ -1,11 +1,13 @@
-import {logout} from "./LogoutHelper";
+import logout from "./LogoutHelper";
+import {BaseUrl} from './FetchHelper'
+
 
 export function refresh() {
         const data = {
             "refreshToken": localStorage.getItem('refreshToken')
         }
 
-        return fetch("https://localhost:5000/api/auth/refresh", {
+        return fetch(BaseUrl + "api/auth/refresh", {
             method: 'POST',
             mode: 'cors',
             headers: {

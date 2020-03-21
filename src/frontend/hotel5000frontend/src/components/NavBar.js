@@ -4,7 +4,7 @@ import {FaAlignJustify, FaUser, FaSuitcase, FaGripHorizontal, FaShoppingCart, Fa
 import './NavBar.css';
 import {Navbar, Dropdown, Nav, Button} from "react-bootstrap";
 import {Link} from "react-router-dom";
-import {logout} from "./LogoutHelper";
+import logout from "./LogoutHelper";
 
 class NavBar extends Component {
 

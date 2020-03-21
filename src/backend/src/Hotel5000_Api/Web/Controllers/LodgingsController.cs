@@ -463,7 +463,7 @@ namespace Web.Controllers
         [ProducesResponseType(200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         [AuthorizeRoles]
-        public async Task<IActionResult> UpdateRoom([FromBody] ReservationWindowDto newReservationWindowDataDto, int updateThisReservationWindow)
+        public async Task<IActionResult> UpdateReservationWindow([FromBody] ReservationWindowDto newReservationWindowDataDto, int updateThisReservationWindow)
         {
             var newReservationWindowData = _mapper.Map<ReservationWindow>(newReservationWindowDataDto);
 

@@ -5,6 +5,8 @@ import Spinner from "react-bootstrap/Spinner";
 import "./Users.css"
 import ApprovingData from "./ApprovingData";
 import {refresh} from "./RefreshHelper";
+import {BaseUrl} from './FetchHelper'
+
 
 
 
@@ -63,7 +65,7 @@ class User extends Component {
     }
 
     getCurrentData = () => {
-        let url = new URL("https://localhost:5000/api/users"),
+        let url = new URL(BaseUrl + "api/users"),
             params = {pageNumber:this.state.pageNumber, resultPerPage:this.state.resultPerPage, username:this.state.username}
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 
@@ -80,7 +82,7 @@ class User extends Component {
             })
     }
     getNextData = () => {
-        let url = new URL("https://localhost:5000/api/users"),
+        let url = new URL(BaseUrl + "api/users"),
             params = {pageNumber:this.state.pageNumber + 1, resultPerPage:this.state.resultPerPage, username:this.state.username}
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 
@@ -141,7 +143,7 @@ class User extends Component {
         if(!data.lastName)
             data.lastName = user.lastName
 
-        fetch("https://localhost:5000/api/users/" + userId, {
+        fetch(BaseUrl + "api/users/" + userId, {
             method: 'PUT',
             mode: 'cors',
             headers: {

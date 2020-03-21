@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {Button} from "react-bootstrap";
 import {refresh} from "./RefreshHelper";
+import {BaseUrl} from './FetchHelper'
+
 
 class ApprovingData extends Component {
 
@@ -40,7 +42,7 @@ class ApprovingData extends Component {
     }
 
     getApprovingData = (id) => {
-        fetch("https://localhost:5000/api/users/" + id + "/approvingdata", {
+        fetch(BaseUrl + "api/users/" + id + "/approvingdata", {
             method: 'GET',
             mode: 'cors',
             headers: {}
@@ -52,7 +54,7 @@ class ApprovingData extends Component {
     }
 
     deleteApprovingData = (userId) => {
-        fetch("https://localhost:5000/api/users/" + userId + "/approvingdata", {
+        fetch(BaseUrl + "api/users/" + userId + "/approvingdata", {
             method: 'DELETE',
             mode: "cors",
             headers: {
@@ -88,7 +90,7 @@ class ApprovingData extends Component {
             "registrationNumber": registrationNumber
         }
 
-        fetch("https://localhost:5000/api/users/approvingdata/" + approvingDataId, {
+        fetch(BaseUrl + "api/users/approvingdata/" + approvingDataId, {
             method: 'PUT',
             mode: "cors",
             headers: {

@@ -61,7 +61,7 @@ namespace Hotel5000_Api_Tests.IntegrationTests.Core
             var passwordHasher = AuthentiationDependencies.GetPasswordHasher();
 
             testUser.Password = passwordHasher.Hash(testUser.Password);
-            await userRepo.AddAsync(testUser);
+            userRepo.AddAsync(testUser);
 
             IAuthenticationService service = new AuthenticationService(
                 userRepo,

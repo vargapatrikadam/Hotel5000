@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {Accordion, Button, Card, Form, FormLabel, ListGroup, ListGroupItem, Modal} from "react-bootstrap";
 import {refresh} from "./RefreshHelper";
+import {BaseUrl} from './FetchHelper'
+
 
 class OwnLodging extends Component {
 
@@ -26,7 +28,7 @@ class OwnLodging extends Component {
             countryCode: "HU",
             county: "",
             city: "",
-            postalCode : null,
+            postalCode : "",
             street: "",
             houseNumber: "",
             floor: "",
@@ -40,7 +42,7 @@ class OwnLodging extends Component {
     }
 
     getFreeIntervals = (roomId) => {
-        fetch("https://localhost:5000/api/reservations/rooms/" + roomId, {
+        fetch(BaseUrl + "api/reservations/rooms/" + roomId, {
             method: 'GET',
             mode: "cors",
             headers: {
@@ -53,7 +55,7 @@ class OwnLodging extends Component {
             })
     }
     getOwnLodgings = () => {
-        let url = new URL("https://localhost:5000/api/lodgings"),
+        let url = new URL(BaseUrl + "api/lodgings"),
             params = {
                 owner: localStorage.getItem('username')
             }
@@ -78,7 +80,7 @@ class OwnLodging extends Component {
             To: to
         }
 
-        fetch("https://localhost:5000/api/lodgings/reservationwindows", {
+        fetch(BaseUrl + "api/lodgings/reservationwindows", {
             method: 'POST',
             mode: "cors",
             headers: {
@@ -105,7 +107,7 @@ class OwnLodging extends Component {
             })
     }
     deleteLodging = (id) => {
-        fetch("https://localhost:5000/api/lodgings/lodgings/" + id, {
+        fetch(BaseUrl + "api/lodgings/lodgings/" + id, {
             method: 'DELETE',
             mode: "cors",
             headers: {
@@ -131,7 +133,7 @@ class OwnLodging extends Component {
             })
     }
     deleteRoom = (id) => {
-        fetch("https://localhost:5000/api/lodgings/rooms/" + id, {
+        fetch(BaseUrl + "api/lodgings/rooms/" + id, {
             method: 'DELETE',
             mode: "cors",
             headers: {
@@ -164,7 +166,7 @@ class OwnLodging extends Component {
             currency: this.state.currency
         }
 
-        fetch("https://localhost:5000/api/lodgings/rooms/" + id, {
+        fetch(BaseUrl + "api/lodgings/rooms/" + id, {
             method: 'PUT',
             mode: "cors",
             headers: {
@@ -202,8 +204,7 @@ class OwnLodging extends Component {
             floor: this.state.floor, //optional
             doorNumber: this.state.doorNumber //optional
         }
-
-        fetch("https://localhost:5000/api/lodgings/addresses/" + id, {
+        fetch(BaseUrl + "api/lodgings/addresses/" + id, {
             method: 'PUT',
             mode: "cors",
             headers: {
@@ -239,7 +240,7 @@ class OwnLodging extends Component {
         this.setState({adults: adults, children: children, price: price})
     }
     fillStateForAddress = (country, county, city, postal, street, hNumber, floor, dNumber) => {
-        this.setState({countryCode: country, county: county, postalCode: postal, street: street, houseNumber: hNumber, floor: floor, doorNumber: dNumber})
+        this.setState({countryCode: country, county: county, city: city, postalCode: postal, street: street, houseNumber: hNumber, floor: floor, doorNumber: dNumber})
     }
 
     handleOpenModal(e, id){

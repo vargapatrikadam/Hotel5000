@@ -12,6 +12,8 @@ import {
 } from "react-bootstrap";
 import {FaSearch} from "react-icons/fa";
 import {refresh} from "./RefreshHelper";
+import {BaseUrl} from './FetchHelper'
+
 
 
 class Lodging extends Component {
@@ -74,7 +76,7 @@ class Lodging extends Component {
     }
 
     getCurrentLodgings = () => {
-        let url = new URL("https://localhost:5000/api/lodgings"),
+        let url = new URL(BaseUrl + "api/lodgings"),
             params = {pageNumber: this.state.pageNumber, resultPerPage: this.state.resultPerPage,
                       reservableFrom: this.state.fromDateFilter, reservableTo: this.state.toDateFilter,
                       address: this.state.countryFilter}
@@ -95,7 +97,7 @@ class Lodging extends Component {
     }
 
     getNextData = () => {
-        let url = new URL("https://localhost:5000/api/lodgings"),
+        let url = new URL(BaseUrl + "api/lodgings"),
             params = {pageNumber: this.state.pageNumber + 1, resultPerPage: this.state.resultPerPage,
                       reservableFrom: this.state.fromDateFilter, reservableTo: this.state.toDateFilter,
                       address: this.state.countryFilter}
@@ -129,7 +131,7 @@ class Lodging extends Component {
     }
 
     getFreeIntervals = (roomId) => {
-        fetch("https://localhost:5000/api/reservations/rooms/" + roomId, {
+        fetch(BaseUrl + "api/reservations/rooms/" + roomId, {
             method: 'GET',
             mode: "cors",
             headers: {
@@ -165,7 +167,7 @@ class Lodging extends Component {
             "reservationItems": reservationItems
         }
 
-        fetch("https://localhost:5000/api/reservations", {
+        fetch(BaseUrl + "api/reservations", {
             method: 'POST',
             mode: "cors",
             headers: {
