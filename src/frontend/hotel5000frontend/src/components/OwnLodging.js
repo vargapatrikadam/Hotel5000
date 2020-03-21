@@ -7,16 +7,30 @@ class OwnLodging extends Component {
     constructor(props) {
         super(props);
 
+        this.setSelectedCurrency = this.setSelectedCurrency.bind(this)
+        this.setSelectedCountry = this.setSelectedCountry.bind(this)
+
         this.state = {
             lodgings: [],
             modalIndex: null,
             freeIntervals: [],
+
             freeFrom: "",
             freeTo: "",
+
             currency: 'Forint',
             adults: null,
             children: null,
-            price: null
+            price: null,
+
+            countryCode: "HU",
+            county: "",
+            city: "",
+            postalCode : null,
+            street: "",
+            houseNumber: "",
+            floor: "",
+            doorNumber: ""
         }
 
     }
@@ -177,13 +191,55 @@ class OwnLodging extends Component {
                 }
             })
     }
+    modifyAddress = (id) => {
+        const data = {
+            countryCode: this.state.countryCode,
+            county: this.state.county,
+            city: this.state.city,
+            postalCode: this.state.postalCode,
+            street: this.state.street,
+            houseNumber: this.state.houseNumber,
+            floor: this.state.floor, //optional
+            doorNumber: this.state.doorNumber //optional
+        }
+
+        fetch("https://localhost:5000/api/lodgings/addresses/" + id, {
+            method: 'PUT',
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (response.status === 401) {
+                    let token = response.headers.get('token-expired');
+                    if(token) {
+                        refresh().then(() => {
+                            this.modifyAddress(id)
+                        })
+                            .catch((error) => {
+                                console.log(error)
+                            })
+                    }
+                }
+                else if(response.status === 200){
+                    alert("Address successfully modified")
+                    window.location.reload(false)
+                }
+            })
+    }
 
     formatDate = (dateString) => {
         let options = {year: 'numeric', month: 'numeric', day: 'numeric'}
         return new Date(dateString).toLocaleDateString([], options)
     }
-    fillState = (adults, children, price) => {
+    fillStateForRoom = (adults, children, price) => {
         this.setState({adults: adults, children: children, price: price})
+    }
+    fillStateForAddress = (country, county, city, postal, street, hNumber, floor, dNumber) => {
+        this.setState({countryCode: country, county: county, postalCode: postal, street: street, houseNumber: hNumber, floor: floor, doorNumber: dNumber})
     }
 
     handleOpenModal(e, id){
@@ -210,6 +266,31 @@ class OwnLodging extends Component {
     }
     handlePriceChanged = event => {
         this.setState({price: parseInt(event.target.value)})
+    }
+
+    setSelectedCountry(event){
+        this.setState({countryCode: event.target.value})
+    }
+    handleCountyChanged = (county) => {
+        this.setState({county: county.target.value})
+    }
+    handleCityChanged = (city) => {
+        this.setState({city: city.target.value})
+    }
+    handlePostalCodeChanged = event => {
+        this.setState({postalCode: parseInt(event.target.value)})
+    }
+    handleStreetChanged = (street) => {
+        this.setState({street: street.target.value})
+    }
+    handleHouseNumberChanged = (hNumber) => {
+        this.setState({houseNumber: hNumber.target.value})
+    }
+    handleFloorChanged = (floor) => {
+        this.setState({floor: floor.target.value})
+    }
+    handleDoorNumberChanged = (dNumber) => {
+        this.setState({doorNumber: dNumber.target.value})
     }
 
     renderOwnLodgings = () => {
@@ -257,7 +338,7 @@ class OwnLodging extends Component {
                                                                     <ListGroupItem>
                                                                         <Accordion>
                                                                             <Accordion.Toggle as={Button} variant="outline-secondary"
-                                                                                                eventKey={room.id} onClick={() => this.fillState(room.adultCapacity, room.childrenCapacity, room.price)}>
+                                                                                                eventKey={room.id} onClick={() => this.fillStateForRoom(room.adultCapacity, room.childrenCapacity, room.price)}>
                                                                                 Modify room
                                                                             </Accordion.Toggle>
                                                                             <Accordion.Collapse eventKey={room.id}>
@@ -312,6 +393,47 @@ class OwnLodging extends Component {
                                                         </ListGroupItem>
                                                         <ListGroupItem hidden={address.doorNumber === null}>
                                                             Door number: {address.doorNumber}
+                                                        </ListGroupItem>
+                                                        <ListGroupItem>
+                                                            <Accordion>
+                                                                <Accordion.Toggle as={Button} variant="outline-secondary"
+                                                                                    eventKey={address.id} onClick={() => this.fillStateForAddress(address.country, address.county, address.city,
+                                                                                                                                                  address.postalCode, address.street, address.houseNumber,
+                                                                                                                                                  address.floor, address.doorNumber)}>
+                                                                    Modify address
+                                                                </Accordion.Toggle>
+                                                                <Accordion.Collapse eventKey={address.id}>
+                                                                    <ListGroup>
+                                                                        <Form.Label>Country</Form.Label>
+                                                                        <Form.Control as="select" onChange={this.setSelectedCountry}>
+                                                                            <option value="HU">Hungary</option>
+                                                                            <option value="SK">Slovakia</option>
+                                                                            <option value="HR">Croatia</option>
+                                                                            <option value="RS">Serbia</option>
+                                                                            <option value="IT">Italy</option>
+                                                                        </Form.Control>
+                                                                        <Form.Label>County</Form.Label>
+                                                                        <Form.Control type="text" placeholder="County" onChange={(county) => this.handleCountyChanged(county)}/>
+                                                                        <Form.Label>City</Form.Label>
+                                                                        <Form.Control type="text" placeholder="City" onChange={(city) => this.handleCityChanged(city)}/>
+                                                                        <Form.Label>Postal code</Form.Label>
+                                                                        <Form.Control type="number" placeholder="Postal code" min="0" onChange={this.handlePostalCodeChanged}/>
+                                                                        <Form.Label>Street</Form.Label>
+                                                                        <Form.Control type="text" placeholder="Street" onChange={(street) => this.handleStreetChanged(street)}/>
+                                                                        <Form.Label>House number</Form.Label>
+                                                                        <Form.Control type="text" placeholder="House number" onChange={(hNumber) => this.handleHouseNumberChanged(hNumber)}/>
+                                                                        <Form.Label>Floor</Form.Label>
+                                                                        <Form.Control type="text" placeholder="Floor (optional)" onChange={(floor) => this.handleFloorChanged(floor)}/>
+                                                                        <Form.Label>Door number</Form.Label>
+                                                                        <Form.Control type="text" placeholder="Door number (optional)" onChange={(dNumber) => this.handleDoorNumberChanged(dNumber)}/>
+                                                                        <ListGroupItem>
+                                                                            <Button variant="outline-success" onClick={() => this.modifyAddress(address.id)}>
+                                                                                Update
+                                                                            </Button>
+                                                                        </ListGroupItem>
+                                                                    </ListGroup>
+                                                                </Accordion.Collapse>
+                                                            </Accordion>
                                                         </ListGroupItem>
                                                     </ListGroup>
                                                 </div>

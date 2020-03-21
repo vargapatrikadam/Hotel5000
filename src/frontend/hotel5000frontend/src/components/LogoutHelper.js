@@ -18,6 +18,7 @@ export function logout() {
                 localStorage.setItem('role', "")
                 localStorage.setItem('username', "")
                 localStorage.setItem('email', "")
+                window.location.href = '/'
             }
         })
 }
