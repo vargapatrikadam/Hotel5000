@@ -182,6 +182,9 @@ class OwnLodging extends Component {
         let options = {year: 'numeric', month: 'numeric', day: 'numeric'}
         return new Date(dateString).toLocaleDateString([], options)
     }
+    fillState = (adults, children, price) => {
+        this.setState({adults: adults, children: children, price: price})
+    }
 
     handleOpenModal(e, id){
         this.setState({modalIndex: id});
@@ -254,7 +257,7 @@ class OwnLodging extends Component {
                                                                     <ListGroupItem>
                                                                         <Accordion>
                                                                             <Accordion.Toggle as={Button} variant="outline-secondary"
-                                                                                                eventKey={room.id}>
+                                                                                                eventKey={room.id} onClick={() => this.fillState(room.adultCapacity, room.childrenCapacity, room.price)}>
                                                                                 Modify room
                                                                             </Accordion.Toggle>
                                                                             <Accordion.Collapse eventKey={room.id}>
