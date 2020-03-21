@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Accordion, Button, Card, FormLabel, ListGroup, ListGroupItem, Modal} from "react-bootstrap";
+import {Accordion, Button, Card, Form, FormLabel, ListGroup, ListGroupItem, Modal} from "react-bootstrap";
 import {refresh} from "./RefreshHelper";
 
 class OwnLodging extends Component {
@@ -12,7 +12,11 @@ class OwnLodging extends Component {
             modalIndex: null,
             freeIntervals: [],
             freeFrom: "",
-            freeTo: ""
+            freeTo: "",
+            currency: 'Forint',
+            adults: null,
+            children: null,
+            price: null
         }
 
     }
@@ -34,15 +38,6 @@ class OwnLodging extends Component {
                 this.setState({freeIntervals: responseJson})
             })
     }
-
-    handleOpenModal(e, id){
-        this.setState({modalIndex: id});
-    }
-
-    handleCloseModal(){
-        this.setState({modalIndex: null})
-    }
-
     getOwnLodgings = () => {
         let url = new URL("https://localhost:5000/api/lodgings"),
             params = {
@@ -62,7 +57,6 @@ class OwnLodging extends Component {
                 this.setState({lodgings: responseJson})
             })
     }
-
     addReservationWindow = (id, from, to) => {
         const data = {
             lodgingId: id,
@@ -96,17 +90,123 @@ class OwnLodging extends Component {
                 }
             })
     }
+    deleteLodging = (id) => {
+        fetch("https://localhost:5000/api/lodgings/lodgings/" + id, {
+            method: 'DELETE',
+            mode: "cors",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+            }
+        })
+            .then(response => {
+                if (response.status === 401) {
+                    let token = response.headers.get('token-expired');
+                    if(token) {
+                        refresh().then(() => {
+                            this.deleteLodging(id)
+                        })
+                            .catch((error) => {
+                                console.log(error)
+                            })
+                    }
+                }
+                else if(response.status === 200){
+                    alert("Lodging successfully deleted")
+                    window.location.reload(false)
+                }
+            })
+    }
+    deleteRoom = (id) => {
+        fetch("https://localhost:5000/api/lodgings/rooms/" + id, {
+            method: 'DELETE',
+            mode: "cors",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+            }
+        })
+            .then(response => {
+                if (response.status === 401) {
+                    let token = response.headers.get('token-expired');
+                    if(token) {
+                        refresh().then(() => {
+                            this.deleteRoom(id)
+                        })
+                            .catch((error) => {
+                                console.log(error)
+                            })
+                    }
+                }
+                else if(response.status === 200){
+                    alert("Room successfully deleted")
+                    window.location.reload(false)
+                }
+            })
+    }
+    modifyRoom = (id) => {
+        const data = {
+            adultCapacity: this.state.adults,
+            childrenCapacity: this.state.children,
+            price: this.state.price,
+            currency: this.state.currency
+        }
+
+        fetch("https://localhost:5000/api/lodgings/rooms/" + id, {
+            method: 'PUT',
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (response.status === 401) {
+                    let token = response.headers.get('token-expired');
+                    if(token) {
+                        refresh().then(() => {
+                            this.modifyRoom(id)
+                        })
+                            .catch((error) => {
+                                console.log(error)
+                            })
+                    }
+                }
+                else if(response.status === 200){
+                    alert("Room successfully modified")
+                    window.location.reload(false)
+                }
+            })
+    }
 
     formatDate = (dateString) => {
         let options = {year: 'numeric', month: 'numeric', day: 'numeric'}
         return new Date(dateString).toLocaleDateString([], options)
     }
 
+    handleOpenModal(e, id){
+        this.setState({modalIndex: id});
+    }
+    handleCloseModal(){
+        this.setState({modalIndex: null})
+    }
     handleFromChanged = (from) => {
         this.setState({freeFrom: from})
     }
     handleToChanged = (to) => {
         this.setState({freeTo: to})
+    }
+
+    setSelectedCurrency(event) {
+        this.setState({currency: event.target.value})
+    }
+    handleAdultCapacityChanged = event =>{
+        this.setState({adults: parseInt(event.target.value)})
+    }
+    handleChildrenCapacityChanged = event => {
+        this.setState({children: parseInt(event.target.value)})
+    }
+    handlePriceChanged = event => {
+        this.setState({price: parseInt(event.target.value)})
     }
 
     renderOwnLodgings = () => {
@@ -150,6 +250,43 @@ class OwnLodging extends Component {
                                                                     </ListGroupItem>
                                                                     <ListGroupItem>
                                                                         Price: {room.price} {room.currency}
+                                                                    </ListGroupItem>
+                                                                    <ListGroupItem>
+                                                                        <Accordion>
+                                                                            <Accordion.Toggle as={Button} variant="outline-secondary"
+                                                                                                eventKey={room.id}>
+                                                                                Modify room
+                                                                            </Accordion.Toggle>
+                                                                            <Accordion.Collapse eventKey={room.id}>
+                                                                                <ListGroup>
+                                                                                    <ListGroupItem>
+                                                                                        <Form.Label>Adults</Form.Label>
+                                                                                        <Form.Control type="number" placeholder="Adult capacity" min="0" onChange={this.handleAdultCapacityChanged}/>
+                                                                                        <Form.Label>Children</Form.Label>
+                                                                                        <Form.Control type="number" placeholder="Children capacity" min="0" onChange={this.handleChildrenCapacityChanged}/>
+                                                                                        <Form.Label>Price</Form.Label>
+                                                                                        <Form.Control placeholder="Price of room" step="50" min="0" type="number" onChange={this.handlePriceChanged}/>
+                                                                                        <Form.Label>Currency</Form.Label>
+                                                                                        <Form.Control as="select" onChange={this.setSelectedCurrency}>
+                                                                                            <option value="Forint">Forint</option>
+                                                                                            <option value="Euro">Euro</option>
+                                                                                        </Form.Control>
+
+                                                                                    </ListGroupItem>
+                                                                                    <ListGroupItem>
+                                                                                        <Button variant="outline-success" onClick={() => this.modifyRoom(room.id)}>
+                                                                                            Update
+                                                                                        </Button>
+                                                                                    </ListGroupItem>
+                                                                                </ListGroup>
+                                                                            </Accordion.Collapse>
+                                                                        </Accordion>
+                                                                    </ListGroupItem>
+                                                                    <ListGroupItem>
+                                                                        <Button variant="outline-danger"
+                                                                                onClick={() => {if(window.confirm("Are you sure you want to delete this room?")) this.deleteRoom(room.id)}}>
+                                                                            Delete room
+                                                                        </Button>
                                                                     </ListGroupItem>
                                                                 </ListGroup>
                                                             </Accordion.Collapse>
@@ -202,6 +339,11 @@ class OwnLodging extends Component {
                                                 </ListGroup>
                                             </Accordion.Collapse>
                                         </Accordion>
+                                        <Button variant="outline-danger"
+                                                onClick={() => {if(window.confirm('Are you sure you want to delete this lodging?'))
+                                                                this.deleteLodging(lodging.id)}}>
+                                            Delete lodging
+                                        </Button>
                                     </Modal.Body>
                                 </Modal>
                             </ListGroup>
