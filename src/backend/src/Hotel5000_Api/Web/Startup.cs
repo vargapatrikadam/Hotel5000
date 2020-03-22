@@ -48,138 +48,21 @@ namespace Web
                 .AddNewtonsoftJson(x =>
                     x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy", builder => builder
-                    .AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .WithExposedHeaders("Token-Expired"));
-            });
+            services.ConfigureCors();
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
-            services.AddDbContext<LodgingDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("LodgingDb")));
-            services.AddDbContext<LoggingDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("LoggingDb")), ServiceLifetime.Singleton);
+            services.RegisterDbContexts(Configuration);
 
-            #region swagger settings
+            services.RegisterRepositories();
 
-            services.AddSwaggerGen(s =>
-            {
-                s.SwaggerDoc("v1", new OpenApiInfo() { Title = "Hotel5000 Api", Version = "v0.1" });
-                var securityScheme = new OpenApiSecurityScheme
-                {
-                    Name = "Authorization",
-                    Description = "Enter JWT Bearer authorization token",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer",
-                    BearerFormat = "Bearer {token}",
-                    Reference = new OpenApiReference
-                    {
-                        Id = JwtBearerDefaults.AuthenticationScheme,
-                        Type = ReferenceType.SecurityScheme
-                    }
-                };
-                s.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, securityScheme);
-                s.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        securityScheme,
-                        Array.Empty<string>()
-                    }
-                });
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                s.IncludeXmlComments(xmlPath);
-            });
+            services.SetupSwagger();
 
-            #endregion
-
-            var authenticationOptions = Configuration.GetSection("AuthenticationOptions").Get<AuthenticationOptions>();
-
-            #region jwt settings
-
-            var key = Encoding.ASCII.GetBytes(authenticationOptions.Secret);
-            services.AddAuthentication(x =>
-                {
-                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(options =>
-                {
-                    options.RequireHttpsMetadata = false;
-                    // restful?
-                    options.SaveToken = true;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(key),
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ValidateLifetime = true,
-                        ClockSkew = TimeSpan.Zero
-                    };
-                    options.Events = new JwtBearerEvents
-                    {
-                        OnAuthenticationFailed = context =>
-                        {
-                            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-                                context.Response.Headers.Add("Token-Expired", "true");
-                            context.Response.StatusCode = 401;
-                            return Task.CompletedTask;
-                        }
-                    };
-                });
-
-            #endregion
-
-            #region repository registrations 
-            services.AddSingleton<IAsyncRepository<Log>, LoggingDbRepository<Log>>();
-
-            services.AddScoped<IAsyncRepository<Role>, LodgingDbRepository<Role>>();
-            services.AddScoped<IAsyncRepository<User>, LodgingDbRepository<User>>();
-            services.AddScoped<IAsyncRepository<Token>, LodgingDbRepository<Token>>();
-            services.AddScoped<IAsyncRepository<ApprovingData>, LodgingDbRepository<ApprovingData>>();
-            services.AddScoped<IAsyncRepository<Contact>, LodgingDbRepository<Contact>>();
-            services.AddScoped<IAsyncRepository<LodgingType>, LodgingDbRepository<LodgingType>>();
-            services.AddScoped<IAsyncRepository<Lodging>, LodgingDbRepository<Lodging>>();
-            services.AddScoped<IAsyncRepository<Country>, LodgingDbRepository<Country>>();
-            services.AddScoped<IAsyncRepository<LodgingAddress>, LodgingDbRepository<LodgingAddress>>();
-            services.AddScoped<IAsyncRepository<Currency>, LodgingDbRepository<Currency>>();
-            services.AddScoped<IAsyncRepository<Room>, LodgingDbRepository<Room>>();
-            services.AddScoped<IAsyncRepository<ReservationWindow>, LodgingDbRepository<ReservationWindow>>();
-            services.AddScoped<IAsyncRepository<PaymentType>, LodgingDbRepository<PaymentType>>();
-            services.AddScoped<IAsyncRepository<Reservation>, LodgingDbRepository<Reservation>>();
-            services.AddScoped<IAsyncRepository<ReservationItem>, LodgingDbRepository<ReservationItem>>();
-
-            #endregion
+            services.SetupJwtAuthentication(Configuration);
 
             services.AddAutoMapper(typeof(Startup));
 
-            services.AddSingleton<ISetting<HashingOptions>>(new Setting<HashingOptions>
-                (Configuration.GetSection("HashingOptions").Get<HashingOptions>()));
-            services.AddSingleton<IPasswordHasher, PasswordHasher>();
-
-            services.AddSingleton<ILoggingService, LoggingService>();
-
-            services.AddScoped<IUserManagementService, UserManagementService>();
-            services.AddScoped<IContactService, UserManagementService>();
-            services.AddScoped<IApprovingDataService, UserManagementService>();
-            services.AddScoped<IUserService, UserManagementService>();
-
-            services.AddScoped<ILodgingManagementService, LodgingManagementService>();
-            services.AddScoped<ILodgingService, LodgingManagementService>();
-            services.AddScoped<ILodgingAddressService, LodgingManagementService>();
-            services.AddScoped<IReservationWindowService, LodgingManagementService>();
-            services.AddScoped<IRoomService, LodgingManagementService>();
-            services.AddScoped<IReservationService, ReservationService>();
-
-            services.AddSingleton<ISetting<AuthenticationOptions>>(new Setting<AuthenticationOptions>
-                (authenticationOptions));
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.RegisterServices(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

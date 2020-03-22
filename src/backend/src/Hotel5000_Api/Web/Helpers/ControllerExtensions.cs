@@ -4,7 +4,7 @@ using Web.DTOs;
 
 namespace Web.Helpers
 {
-    public static class ExtensionMethods
+    public static class ControllerExtensions
     {
         public static IActionResult GetError<T>(this ControllerBase controller, Result<T> result)
         {

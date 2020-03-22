@@ -32,7 +32,7 @@ namespace Infrastructure.Lodgings
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfigurationsDerivedFrom<ILodgingConfigurationAggregate>();
+            modelBuilder.ApplyConfigurationsDerivedFromInterface<ILodgingConfigurationAggregate>();
         }
 
         public override int SaveChanges()
