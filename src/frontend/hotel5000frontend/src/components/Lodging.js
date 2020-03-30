@@ -12,6 +12,8 @@ import {
 } from "react-bootstrap";
 import {FaSearch} from "react-icons/fa";
 import {refresh} from "./RefreshHelper";
+import {BaseUrl} from './FetchHelper'
+
 
 
 class Lodging extends Component {
@@ -32,6 +34,7 @@ class Lodging extends Component {
             isSearchClicked: false,
             modalIndex: null,
             freeIntervals: [],
+            countryFilter: "",
 
             paymentType: "Cash",
             reservedFrom: null,
@@ -52,7 +55,10 @@ class Lodging extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if(prevState.pageNumber !== this.state.pageNumber ||
-            prevState.isSearchClicked !== this.state.isSearchClicked){
+            prevState.isSearchClicked !== this.state.isSearchClicked ||
+            (prevState.countryFilter !== "" && this.state.countryFilter === "") ||
+            (prevState.fromDateFilter!== "" && this.state.fromDateFilter === "") ||
+            (prevState.toDateFilter !== "" && this.state.toDateFilter === "")){
             this.getCurrentLodgings();
             this.getNextData();
         }
@@ -70,9 +76,10 @@ class Lodging extends Component {
     }
 
     getCurrentLodgings = () => {
-        let url = new URL("https://localhost:5000/api/lodgings"),
+        let url = new URL(BaseUrl + "api/lodgings"),
             params = {pageNumber: this.state.pageNumber, resultPerPage: this.state.resultPerPage,
-                      reservableFrom: this.state.fromDateFilter, reservableTo: this.state.toDateFilter}
+                      reservableFrom: this.state.fromDateFilter, reservableTo: this.state.toDateFilter,
+                      address: this.state.countryFilter}
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 
         fetch(url, {
@@ -90,9 +97,10 @@ class Lodging extends Component {
     }
 
     getNextData = () => {
-        let url = new URL("https://localhost:5000/api/lodgings"),
+        let url = new URL(BaseUrl + "api/lodgings"),
             params = {pageNumber: this.state.pageNumber + 1, resultPerPage: this.state.resultPerPage,
-                      reservableFrom: this.state.fromDateFilter, reservableTo: this.state.toDateFilter}
+                      reservableFrom: this.state.fromDateFilter, reservableTo: this.state.toDateFilter,
+                      address: this.state.countryFilter}
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 
         fetch(url, {
@@ -123,7 +131,7 @@ class Lodging extends Component {
     }
 
     getFreeIntervals = (roomId) => {
-        fetch("https://localhost:5000/api/reservations/rooms/" + roomId, {
+        fetch(BaseUrl + "api/reservations/rooms/" + roomId, {
             method: 'GET',
             mode: "cors",
             headers: {
@@ -159,7 +167,7 @@ class Lodging extends Component {
             "reservationItems": reservationItems
         }
 
-        fetch("https://localhost:5000/api/reservations", {
+        fetch(BaseUrl + "api/reservations", {
             method: 'POST',
             mode: "cors",
             headers: {
@@ -337,6 +345,10 @@ class Lodging extends Component {
         console.log(from)
     }
 
+    handleCountryChanged = (country) => {
+        this.setState({countryFilter: country.target.value})
+    }
+
     handleToDateChanged = (to) => {
         this.setState({toDateFilter: to})
         console.log(to)
@@ -352,7 +364,7 @@ class Lodging extends Component {
             <div>
                 <div style={{width: '50rem'}} className="mx-auto mt-3">
                     <InputGroup id="input">
-                        <FormControl size="lg" placeholder="Country of holiday"></FormControl>
+                        <FormControl size="lg" placeholder="Country of holiday" onChange={(country) => {this.handleCountryChanged(country)}}/>
 
                         <input type="date" as={InputGroup.Append} onChange={(event) => this.handleFromDateChanged(event.target.value)}/>
 

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {Button, Form} from "react-bootstrap";
 import './RegisterForm.css';
+import {BaseUrl} from './FetchHelper'
+
 
 class RegisterForm extends Component {
 
@@ -57,7 +59,7 @@ class RegisterForm extends Component {
         };
 
         console.log(this.state);
-        fetch("https://localhost:5000/api/auth/register", {
+        fetch(BaseUrl + "api/auth/register", {
             method: 'POST',
             mode: 'cors',
             headers: {

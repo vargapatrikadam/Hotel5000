@@ -433,13 +433,17 @@ namespace Core.Services.LodgingDomain
             if (lodging == null)
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
+            Country newCountry = (await GetCountry(code: newLodgingAddress.Country.Code)).Data.FirstOrDefault();
+            if (newCountry == null)
+                return new NotFoundResult<bool>(Errors.COUNTRY_NOT_FOUND);
+
             Result<bool> authenticationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
             if (!authenticationResult.Data)
                 return authenticationResult;
 
             bool exists = await _lodgingAddressRepository.AnyAsync(p =>
                  p.Id != lodging.Id &&
-                 p.CountryId == newLodgingAddress.CountryId &&
+                 p.CountryId == newCountry.Id &&
                  p.County == newLodgingAddress.County &&
                  p.City == newLodgingAddress.City &&
                  p.PostalCode == newLodgingAddress.PostalCode &&
@@ -451,7 +455,8 @@ namespace Core.Services.LodgingDomain
             if (exists)
                 return new ConflictResult<bool>(Errors.ADDRESS_NOT_UNIQUE);
 
-            updateThisLodgingAddress.CountryId = newLodgingAddress.CountryId;
+            updateThisLodgingAddress.Country = null;
+            updateThisLodgingAddress.CountryId = newCountry.Id;
             updateThisLodgingAddress.County = newLodgingAddress.County;
             updateThisLodgingAddress.City = newLodgingAddress.City;
             updateThisLodgingAddress.Street = newLodgingAddress.Street;
@@ -501,15 +506,16 @@ namespace Core.Services.LodgingDomain
             if (lodging == null)
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
+            Currency newCurrency = (await GetCurrency(name: newRoom.Currency.Name)).Data.FirstOrDefault();
+            if (newCurrency == null)
+                return new NotFoundResult<bool>(Errors.CURRENCY_NOT_FOUND);
+
             Result<bool> authenticationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
             if (!authenticationResult.Data)
                 return authenticationResult;
 
-            Currency currency = (await GetCurrency(name: newRoom.Currency.Name)).Data.FirstOrDefault();
-            if (currency == null)
-                return new NotFoundResult<bool>(Errors.CURRENCY_NOT_FOUND);
-
-            updateThisRoom.CurrencyId = currency.Id;
+            updateThisRoom.Currency = null;
+            updateThisRoom.CurrencyId = newCurrency.Id;
             updateThisRoom.AdultCapacity = newRoom.AdultCapacity;
             updateThisRoom.ChildrenCapacity = newRoom.ChildrenCapacity;
             updateThisRoom.Price = newRoom.Price;

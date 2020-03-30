@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {Button} from "react-bootstrap";
 import {refresh} from "./RefreshHelper";
+import {BaseUrl} from './FetchHelper'
+
 
 class Contacts extends Component {
 
@@ -31,7 +33,7 @@ class Contacts extends Component {
     }
 
     getContacts = (id) => {
-        fetch("https://localhost:5000/api/users/" + id + "/contacts", {
+        fetch(BaseUrl + "api/users/" + id + "/contacts", {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -45,7 +47,7 @@ class Contacts extends Component {
     }
 
     deleteContacts = (userId, contactId) =>{
-        fetch("https://localhost:5000/api/users/" + userId + "/contacts/" + contactId, {
+        fetch(BaseUrl + "api/users/" + userId + "/contacts/" + contactId, {
             method: 'DELETE',
             mode: 'cors',
             headers: {
@@ -79,7 +81,7 @@ class Contacts extends Component {
         }
 
 
-        fetch("https://localhost:5000/api/users/contacts/" + contactId, {
+        fetch(BaseUrl + "api/users/contacts/" + contactId, {
             method: 'PUT',
             mode: "cors",
             headers: {

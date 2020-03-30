@@ -17,7 +17,7 @@ namespace Infrastructure.Logging
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfigurationsDerivedFrom<ILoggingConfigurationAggregate>();
+            modelBuilder.ApplyConfigurationsDerivedFromInterface<ILoggingConfigurationAggregate>();
         }
         public override int SaveChanges()
         {

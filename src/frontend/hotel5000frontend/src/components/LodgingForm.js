@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {refresh} from "./RefreshHelper";
 import {Button, Form} from "react-bootstrap";
+import {BaseUrl} from './FetchHelper'
+
 
 class LodgingForm extends Component {
     constructor(props) {
@@ -123,7 +125,7 @@ class LodgingForm extends Component {
         }
 
         console.log(data)
-        fetch("https://localhost:5000/api/lodgings", {
+        fetch(BaseUrl + "api/lodgings", {
             method: 'POST',
             mode: "cors",
             headers: {

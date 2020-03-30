@@ -4,6 +4,7 @@ import {FaAlignJustify, FaUser, FaSuitcase, FaGripHorizontal, FaShoppingCart, Fa
 import './NavBar.css';
 import {Navbar, Dropdown, Nav, Button} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import logout from "./LogoutHelper";
 
 class NavBar extends Component {
 
@@ -31,12 +32,9 @@ class NavBar extends Component {
     }
 
     logOut = () => {
-        localStorage.setItem('loggedin', false)
-        localStorage.setItem('accessToken', "")
-        localStorage.setItem('refreshToken', "")
-        localStorage.setItem('email', "")
-        localStorage.setItem('username', "")
-        localStorage.setItem('role', "")
+        logout().then(
+            alert("Successfully logged out.")
+        )
     }
 
     render() {
@@ -54,6 +52,12 @@ class NavBar extends Component {
                                 <Link to="/postLodging"><Button variant="outline-dark" style={{width: '15rem'}}><FaSuitcase/>Post new lodging</Button></Link>
                                 <Dropdown.Divider/>
                                 <Link to="/ownReservations"><Button variant="outline-dark" style={{width: '15rem'}}><FaGripHorizontal/>Own reservations</Button></Link>
+                                <Dropdown.Divider/>
+                                <Link to="/ownLodgings">
+                                    <Button variant="outline-dark" style={{width: '15rem'}}>
+                                        <FaGripHorizontal/>Own lodgings
+                                    </Button>
+                                </Link>
                                 <Dropdown.Divider/>
                                 <Dropdown.Item className="dropdownitem" href="/about">About</Dropdown.Item>
                             </Dropdown.Menu>
@@ -92,7 +96,9 @@ class NavBar extends Component {
                                     Log out
                                 </Button>
                                 <Dropdown.Divider/>
-                                <Link to="/users" hidden={this.state.loggedin !== true && this.state.role !== 'Admin'}><Button variant="outline-dark" style={{width: '10rem'}}>User management</Button></Link>
+                                <Link to="/users" hidden={this.state.loggedin !== true && this.state.role !== 'Admin'}>
+                                    <Button variant="outline-dark" style={{width: '10rem'}}>User management</Button>
+                                </Link>
                             </Dropdown.Menu>
                         </Dropdown>
                     </Nav>

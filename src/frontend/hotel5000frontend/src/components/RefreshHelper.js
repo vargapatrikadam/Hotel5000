@@ -1,9 +1,13 @@
+import logout from "./LogoutHelper";
+import {BaseUrl} from './FetchHelper'
+
+
 export function refresh() {
         const data = {
             "refreshToken": localStorage.getItem('refreshToken')
         }
 
-        return fetch("https://localhost:5000/api/auth/refresh", {
+        return fetch(BaseUrl + "api/auth/refresh", {
             method: 'POST',
             mode: 'cors',
             headers: {
@@ -30,7 +34,9 @@ export function refresh() {
                 console.log(localStorage.getItem('refreshToken'))
             })
             .catch((error) =>{
-                localStorage.setItem('loggedin', false)
+                logout().then(
+                    console.log('Logged out due to invalid refresh token')
+                )
                 throw error
             }) //rossz refresh token esetén kijelentkeztetjük a felhasználót
 

@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import {Card, ListGroup, ListGroupItem} from "react-bootstrap";
+import {BaseUrl} from './FetchHelper'
+
 
 class OwnReservations extends Component {
     constructor(props) {
@@ -15,7 +17,7 @@ class OwnReservations extends Component {
     }
 
     getOwnReservations = () =>{
-        let url = new URL("https://localhost:5000/api/reservations"),
+        let url = new URL(BaseUrl + "api/reservations"),
             params = {email: localStorage.getItem('email')}
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 

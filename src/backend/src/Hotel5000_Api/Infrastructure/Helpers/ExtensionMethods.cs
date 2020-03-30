@@ -64,22 +64,11 @@ namespace Infrastructure.Helpers
 
             return builder;
         }
-
-        public static void DetachAllEntries(this DbContext context)
-        {
-            var entries = context.ChangeTracker.Entries()
-                .Where(e => e.State != EntityState.Detached)
-                .ToList();
-
-            foreach (var entry in entries)
-                if (entry.Entity != null)
-                    entry.State = EntityState.Detached;
-        }
-        public static void ApplyConfigurationsDerivedFrom<T>(this ModelBuilder builder)
+        public static void ApplyConfigurationsDerivedFromInterface<TInterface>(this ModelBuilder builder)
         {
             var typesToRegister = Assembly.GetExecutingAssembly().GetTypes()
                          .Where(t => t.GetInterfaces().Any(gi => gi.IsGenericType && gi.GetGenericTypeDefinition() == typeof(IEntityTypeConfiguration<>))
-                         && t.GetInterfaces().Contains(typeof(T))).ToList();
+                         && t.GetInterfaces().Contains(typeof(TInterface))).ToList();
 
             foreach (var type in typesToRegister)
             {

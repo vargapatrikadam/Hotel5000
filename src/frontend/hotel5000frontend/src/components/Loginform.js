@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {Button, Form} from "react-bootstrap";
 import './Loginform.css';
+import {BaseUrl} from './FetchHelper'
+
 
 class Loginform extends Component {
 
@@ -27,7 +29,7 @@ class Loginform extends Component {
         };
 
         //console.log(this.state);
-        fetch("https://localhost:5000/api/auth/login", {
+        fetch(BaseUrl + "api/auth/login", {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -53,7 +55,7 @@ class Loginform extends Component {
     }
 
     test = () => {
-        fetch("https://localhost:5000/api/default/testauthenticate", {
+        fetch(BaseUrl + "api/default/testauthenticate", {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -82,7 +84,7 @@ class Loginform extends Component {
             "refreshToken": localStorage.getItem('refreshToken')
         }
 
-        fetch("https://localhost:5000/api/auth/refresh", {
+        fetch(BaseUrl + "api/auth/refresh", {
             method: 'POST',
             mode: 'cors',
             headers: {

@@ -1,4 +1,4 @@
-﻿using Core.Entities.LodgingEntities;
+﻿    using Core.Entities.LodgingEntities;
 using Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
