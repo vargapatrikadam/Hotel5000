@@ -391,15 +391,15 @@ leírni a titkosítási módszereket, hibakezelési módszereket stb.
 ## Naplózás és monitorozás
 kifejteni a naplózás módját és szintjeit (pl rendszerinformáció, figyelmeztetés, hibaüzenet stb)
 
-## Környezet-függő paraméterek
-Paraméter csoport | Paraméter neve | Érték DEV környezetben |
------------------ | -------------- | ---------------------- |
-HashingOptions | Iterations | 10000 |
-HashingOptions | SaltSize | 16 |
-HashingOptions | KeySize | 32 |
-AuthenticationOptions | RefreshTokenDuration | 60 |
-AuthenticationOptions | AccessTokenDuration | 60 |
-AuthenticationOptions | Secret | JWT AUTHENTICATION SECRET |
+## Környezetfüggő paraméterek
+Paraméter csoport | Paraméter neve | Érték DEV környezetben | Érték TEST környezetben |
+----------------- | -------------- | ---------------------- | ----------------------- |
+HashingOptions | Iterations | 10000 | 10000 |
+HashingOptions | SaltSize | 16 | 16 |
+HashingOptions | KeySize | 32 | 32 | 
+AuthenticationOptions | RefreshTokenDuration | 60 | 60 |
+AuthenticationOptions | AccessTokenDuration | 60 | 60 |
+AuthenticationOptions | Secret | JWT AUTHENTICATION SECRET | TEST SECRET |
 
 ## Hibaüzenetek
 Hibakód | Hiba üzenet | Magyarázat |
