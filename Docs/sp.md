@@ -125,6 +125,8 @@ Mező név | Típus/hossz | Kötelező | Érték/validáció | Kulcs | Megj. |
 -------- | ----------- | -------- | --------------- | ----- | ----- |
 Id | int | igen | auto-increment | PK | |
 RefreshToken | varchar(100) | igen | | | |
+ExpriresAt | datetime | igen | > UsableFrom | |
+UsableFrom | datetime | igen | < ExpiresAt | |
 User_Id | int | igen | | FK | |
 AddedAt | datetime | igen | | | |
 ModifiedAt | datetime | igen | | | |
