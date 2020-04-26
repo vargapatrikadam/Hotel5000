@@ -134,10 +134,12 @@ namespace Core.Services.LodgingDomain
         public async Task<Result<bool>> IsAuthorized(int resourceOwnerId, int accessingUserId)
         {
             ISpecification<User> query = new Specification<User>().AddInclude(p => p.Role);
-            User resourceOwner = (await _userRepository.GetAsync(query.ApplyFilter(f => f.Id == resourceOwnerId))).FirstOrDefault();
+            User resourceOwner = (await _userRepository.GetAsync(
+                query.ApplyFilter(f => f.Id == resourceOwnerId))).FirstOrDefault();
             if (resourceOwner == null)
                 return new NotFoundResult<bool>(Errors.RESOURCE_OWNER_NOT_FOUND);
-            User accessingUser = (await _userRepository.GetAsync(query.ApplyFilter(f => f.Id == accessingUserId))).FirstOrDefault();
+            User accessingUser = (await _userRepository.GetAsync(
+                query.ApplyFilter(f => f.Id == accessingUserId))).FirstOrDefault();
             if (accessingUser == null)
                 return new NotFoundResult<bool>(Errors.ACCESSING_USER_NOT_FOUND);
 

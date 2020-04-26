@@ -14,7 +14,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Web.Attributes;
 using Web.DTOs;
 using Web.Helpers;
 
@@ -57,7 +56,6 @@ namespace Web.Controllers
                     SecurityAlgorithms.HmacSha256Signature
                 )
             };
-
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
