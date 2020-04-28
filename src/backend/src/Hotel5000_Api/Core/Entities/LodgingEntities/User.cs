@@ -13,9 +13,9 @@ namespace Core.Entities.LodgingEntities
         public int RoleId { get; set; }
         public Role Role { get; set; }
 
-        public virtual ApprovingData ApprovingData { get; set; }
-        public virtual ICollection<Contact> Contacts { get; set; }
-        public virtual ICollection<Lodging> Lodgings { get; set; }
-        public virtual ICollection<Token> Tokens { get; set; }
+        public ApprovingData ApprovingData { get; set; }
+        public ICollection<Contact> Contacts { get; set; }
+        public ICollection<Lodging> Lodgings { get; set; }
+        public ICollection<Token> Tokens { get; set; }
     }
 }

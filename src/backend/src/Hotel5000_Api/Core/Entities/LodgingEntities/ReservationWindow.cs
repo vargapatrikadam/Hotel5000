@@ -10,6 +10,6 @@ namespace Core.Entities.LodgingEntities
         public int LodgingId { get; set; }
 
         public Lodging Lodging { get; set; }
-        public virtual ICollection<ReservationItem> ReservationItems { get; set; }
+        public ICollection<ReservationItem> ReservationItems { get; set; }
     }
 }

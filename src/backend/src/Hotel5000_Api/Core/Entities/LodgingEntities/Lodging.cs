@@ -10,8 +10,8 @@ namespace Core.Entities.LodgingEntities
 
         public User User { get; set; }
         public LodgingType LodgingType { get; set; }
-        public virtual ICollection<LodgingAddress> LodgingAddresses { get; set; }
-        public virtual ICollection<Room> Rooms { get; set; }
-        public virtual ICollection<ReservationWindow> ReservationWindows { get; set; }
+        public ICollection<LodgingAddress> LodgingAddresses { get; set; }
+        public ICollection<Room> Rooms { get; set; }
+        public ICollection<ReservationWindow> ReservationWindows { get; set; }
     }
 }

@@ -519,7 +519,6 @@ namespace Core.Services.LodgingDomain
             updateThisRoom.AdultCapacity = newRoom.AdultCapacity;
             updateThisRoom.ChildrenCapacity = newRoom.ChildrenCapacity;
             updateThisRoom.Price = newRoom.Price;
-            updateThisRoom.CurrencyId = newRoom.CurrencyId;
 
             await _roomRepository.UpdateAsync(updateThisRoom);
 

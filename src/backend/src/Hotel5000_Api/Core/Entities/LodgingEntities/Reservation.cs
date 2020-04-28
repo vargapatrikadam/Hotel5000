@@ -8,6 +8,6 @@ namespace Core.Entities.LodgingEntities
 
         public int PaymentTypeId { get; set; }
         public PaymentType PaymentType { get; set; }
-        public virtual ICollection<ReservationItem> ReservationItems { get; set; }
+        public ICollection<ReservationItem> ReservationItems { get; set; }
     }
 }

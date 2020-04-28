@@ -7,6 +7,6 @@ namespace Core.Entities.LodgingEntities
     {
         public LodgingTypes Name { get; set; }
 
-        public virtual ICollection<Lodging> Lodgings { get; set; }
+        public ICollection<Lodging> Lodgings { get; set; }
     }
 }
