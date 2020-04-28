@@ -17,7 +17,6 @@ class Contacts extends Component {
         this._isMounted = false;
     }
 
-
     componentDidMount() {
         this._isMounted = true
         this._isMounted && this.getContacts(this.props.id)

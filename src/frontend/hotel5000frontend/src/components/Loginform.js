@@ -121,15 +121,14 @@ class Loginform extends Component {
             <div className="formContainer">
                 <Form>
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Username</Form.Label>
-                        <Form.Control type="text" placeholder="Enter username" onChange={(text) => {this.handleUsername(text)}}/>
+                        <Form.Label>Identifier</Form.Label>
+                        <Form.Control type="text" placeholder="Enter identifier" onChange={(text) => {this.handleUsername(text)}}/>
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Password</Form.Label>
                         <Form.Control type="password" placeholder="Password" onChange={(text) => {this.handlePassword(text)}}/>
                     </Form.Group>
                         <Button variant="outline-dark" block onClick={()=>{this.login(this.state.username, this.state.password)}}>Log In</Button>
-                        <Button variant="outline-dark" block onClick={()=>{this.test()}}>Test auth</Button>
                 </Form>
             </div>
         );
