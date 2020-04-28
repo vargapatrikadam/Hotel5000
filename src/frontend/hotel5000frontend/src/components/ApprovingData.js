@@ -75,7 +75,7 @@ class ApprovingData extends Component {
                     }
                 }
                 else if(response.status === 200){
-                    console.log("token not expired")
+                    alert("Approving data successfully deleted.")
                     window.location.reload(false)
                 }
             })
@@ -107,6 +107,8 @@ class ApprovingData extends Component {
                             data.taxNumber = this.state.modifiedTaxNumber
                             data.registrationNumber = this.state.modifiedRegistrationNumber
                         }
+                        alert("Approving data successfully modified.")
+                        window.location.reload(false)
                         return data
                     })
                 }

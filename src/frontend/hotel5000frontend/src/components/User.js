@@ -166,7 +166,7 @@ class User extends Component {
                     }
                 }
                 else if(resp.status === 200){
-                    console.log("token not expired")
+                    alert("User successfully modified.")
                     window.location.reload(false)
 
                 }
