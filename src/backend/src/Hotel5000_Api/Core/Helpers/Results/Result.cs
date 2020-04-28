@@ -11,7 +11,7 @@ namespace Core.Helpers.Results
         {
             _data = data;
         }
-        public Result(params Errors[] messages)
+        protected Result(params Errors[] messages)
         {
             _messages = new string[messages.Length * 2];
             for (int i = 0; i < messages.Length; i += 2)
@@ -20,11 +20,11 @@ namespace Core.Helpers.Results
                 _messages[i + 1] = messages[i].ToString();
             }
         }
-        public Result(params string[] messages)
+        protected Result(params string[] messages)
         {
             _messages = messages;
         }
-        public Result(Errors error, params string[] messages)
+        protected Result(Errors error, params string[] messages)
         {
             List<string> errorMessages = new List<string>();
             errorMessages.Add(((int)error).ToString());

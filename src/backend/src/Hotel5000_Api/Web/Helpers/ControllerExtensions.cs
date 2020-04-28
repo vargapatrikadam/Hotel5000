@@ -6,17 +6,14 @@ namespace Web.Helpers
 {
     public static class ControllerExtensions
     {
-        public static IActionResult GetError<T>(this ControllerBase controller, Result<T> result)
+        public static IActionResult GetError<T>(this ControllerBase controller, Result<T> result) => result.ResultType switch
         {
-            switch (result.ResultType)
-            {
-                case ResultType.Invalid: return controller.BadRequest(new ErrorDto(result.Errors));
-                case ResultType.NotFound: return controller.NotFound(new ErrorDto(result.Errors));
-                case ResultType.Unauthorized: return controller.Unauthorized(new ErrorDto(result.Errors));
-                case ResultType.Unexpected: return controller.BadRequest(new ErrorDto(result.Errors));
-                case ResultType.Conflict: return controller.Conflict(new ErrorDto(result.Errors));
-                default: return controller.BadRequest(new ErrorDto(result.Errors));
-            }
-        }
+            ResultType.Invalid      => controller.BadRequest(new ErrorDto(result.Errors)),
+            ResultType.NotFound     => controller.NotFound(new ErrorDto(result.Errors)),
+            ResultType.Unauthorized => controller.Unauthorized(new ErrorDto(result.Errors)),
+            ResultType.Unexpected   => controller.BadRequest(new ErrorDto(result.Errors)),
+            ResultType.Conflict     => controller.Conflict(new ErrorDto(result.Errors)),
+            _                       => controller.BadRequest(new ErrorDto(result.Errors))
+        };
     }
 }
