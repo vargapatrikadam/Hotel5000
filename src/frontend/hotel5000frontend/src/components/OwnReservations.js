@@ -18,7 +18,7 @@ class OwnReservations extends Component {
 
     getOwnReservations = () =>{
         let url = new URL(BaseUrl + "api/reservations"),
-            params = {email: localStorage.getItem('email')}
+            params = {email: sessionStorage.getItem('email')}
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 
         fetch(url, {

@@ -58,7 +58,7 @@ class ApprovingData extends Component {
             method: 'DELETE',
             mode: "cors",
             headers: {
-                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+                "Authorization": "Bearer " + sessionStorage.getItem('accessToken')
             }
         })
             .then(response => {
@@ -95,7 +95,7 @@ class ApprovingData extends Component {
             mode: "cors",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+                "Authorization": "Bearer " + sessionStorage.getItem('accessToken')
             },
             body: JSON.stringify(data)
         })
