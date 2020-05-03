@@ -15,25 +15,18 @@ namespace Infrastructure.Abstracts
     {
         protected readonly TContext Context;
 
-        protected ARepository(TContext context)
-        {
-            Context = context;
-        }
+        protected ARepository(TContext context) => Context = context;
 
         public async Task AddAsync(TEntity entity)
         {
             await Context.Set<TEntity>().AddAsync(entity);
             await Context.SaveChangesAsync();
-            //TODO : is this necessary?
-            //Context.DetachAllEntries();
         }
 
         public async Task AddRange(IEnumerable<TEntity> entities)
         {
             await Context.Set<TEntity>().AddRangeAsync(entities);
             await Context.SaveChangesAsync();
-            //TODO : is this necessary?
-            //Context.DetachAllEntries();
         }
 
         public async Task DeleteAsync(TEntity entity)
@@ -67,7 +60,7 @@ namespace Infrastructure.Abstracts
 
         private IQueryable<TEntity> ApplySpecification(ISpecification<TEntity> specification)
         {
-            return SpecificationEvaluator<TEntity>.GetQuery(Context.Set<TEntity>().AsQueryable(), specification);
+            return SpecificationEvaluator.GetQuery(Context.Set<TEntity>().AsQueryable(), specification);
         }
     }
 }
