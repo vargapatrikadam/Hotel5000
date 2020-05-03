@@ -50,7 +50,7 @@ class Contacts extends Component {
             method: 'DELETE',
             mode: 'cors',
             headers: {
-                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+                "Authorization": "Bearer " + sessionStorage.getItem('accessToken')
             }
         })
             .then(response => {
@@ -59,6 +59,7 @@ class Contacts extends Component {
                     if(token) {
                         refresh().then(() => {
                             this.deleteContacts(userId, contactId)
+                            
                         })
                             .catch((error) => {
                                 console.log(error)
@@ -66,7 +67,7 @@ class Contacts extends Component {
                     }
                 }
                 else if(response.status === 200){
-                    console.log("token not expired")
+                    alert("Contact successfully deleted.")
                     window.location.reload(false)
                 }
             })
@@ -85,7 +86,7 @@ class Contacts extends Component {
             mode: "cors",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+                "Authorization": "Bearer " + sessionStorage.getItem('accessToken')
             },
             body: JSON.stringify(data)
         })
@@ -96,6 +97,9 @@ class Contacts extends Component {
                             contact.mobileNumber = this.state.modifiedNumber
                         return contact.mobileNumber
                     })
+                    alert("Contact successfully modified")
+                    window.location.reload(false)
+                    
                 }
                 else if (response.status === 401) {
                     let token = response.headers.get('token-expired');

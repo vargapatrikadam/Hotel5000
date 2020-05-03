@@ -20,9 +20,9 @@ class NavBar extends Component {
 
     getDataFromLocal = () => {
         let obj = {
-            role: localStorage.getItem('role'),
-            loggedin: localStorage.getItem('loggedin'),
-            username: localStorage.getItem('username')
+            role: sessionStorage.getItem('role'),
+            loggedin: sessionStorage.getItem('loggedin'),
+            username: sessionStorage.getItem('username')
         }
         this.setState({loggedin: obj.loggedin, role: obj.role, username: obj.username})
     }
@@ -92,7 +92,7 @@ class NavBar extends Component {
                                 <Dropdown.Divider/>
                                 <Button variant="outline-dark" style={{width: "10rem"}}
                                         onClick={() => {this.logOut(); this.getDataFromLocal()}}
-                                        disabled={this.state.loggedin === "false"}>
+                                        disabled={this.state.loggedin === "false" || !sessionStorage.getItem('loggedin')}>
                                     Log out
                                 </Button>
                                 <Dropdown.Divider/>

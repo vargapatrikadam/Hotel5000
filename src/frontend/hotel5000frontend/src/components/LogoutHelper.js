@@ -2,7 +2,7 @@ import {BaseUrl} from './FetchHelper'
 //????????????????????????
 function logout() {
     const data = {
-        "refreshToken": localStorage.getItem('refreshToken')
+        "refreshToken": sessionStorage.getItem('refreshToken')
     }
     return fetch(BaseUrl+"api/auth/logout", {
         method: 'POST',
@@ -14,12 +14,12 @@ function logout() {
     })
         .then(response => {
             if(response.status === 200){
-                localStorage.setItem('accessToken', "")
-                localStorage.setItem('refreshToken', "")
-                localStorage.setItem('loggedin', false)
-                localStorage.setItem('role', "")
-                localStorage.setItem('username', "")
-                localStorage.setItem('email', "")
+                sessionStorage.setItem('accessToken', "")
+                sessionStorage.setItem('refreshToken', "")
+                sessionStorage.setItem('loggedin', false)
+                sessionStorage.setItem('role', "")
+                sessionStorage.setItem('username', "")
+                sessionStorage.setItem('email', "")
                 window.location.href = '/'
             }
         })
