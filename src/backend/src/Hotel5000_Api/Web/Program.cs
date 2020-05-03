@@ -27,10 +27,10 @@ namespace Web
                 var hasher = services.GetRequiredService<IPasswordHasher>();
 
                 //TODO: log exceptions?
-                await LodgingDbContextSeed.SeedAsync(lodgingContext, hasher, environment.IsProduction());
+                await LodgingDbContextSeed.SeedAsync(lodgingContext, hasher, true);
 
                 var loggingContext = services.GetRequiredService<LoggingDbContext>();
-                LoggingDBContextSeed.Seed(loggingContext, environment.IsProduction());
+                LoggingDBContextSeed.Seed(loggingContext, true);
             }
 
             host.Run();

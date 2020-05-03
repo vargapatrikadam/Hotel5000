@@ -2,6 +2,7 @@
 using Core.Entities.LodgingEntities;
 using Core.Helpers.Results;
 using Core.Interfaces.LodgingDomain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -327,6 +328,8 @@ namespace Web.Controllers
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
+
+            
 
             return Ok();
         }

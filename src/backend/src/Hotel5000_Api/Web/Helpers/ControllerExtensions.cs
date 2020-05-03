@@ -6,7 +6,8 @@ namespace Web.Helpers
 {
     public static class ControllerExtensions
     {
-        public static IActionResult GetError<T>(this ControllerBase controller, Result<T> result) => result.ResultType switch
+        public static IActionResult GetError<T>(this ControllerBase controller, Result<T> result) 
+            => result.ResultType switch
         {
             ResultType.Invalid      => controller.BadRequest(new ErrorDto(result.Errors)),
             ResultType.NotFound     => controller.NotFound(new ErrorDto(result.Errors)),
