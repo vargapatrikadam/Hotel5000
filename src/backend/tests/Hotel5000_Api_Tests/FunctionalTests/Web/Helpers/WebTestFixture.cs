@@ -16,24 +16,22 @@ namespace Hotel5000_Api_Tests.FunctionalTests.Web.Helpers
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder.UseEnvironment("Development");
+            builder.UseEnvironment("TESTING");
 
             builder.ConfigureServices(services =>
             {
-                services.AddEntityFrameworkInMemoryDatabase();
-
                 var provider = services.AddEntityFrameworkInMemoryDatabase()
                     .BuildServiceProvider();
 
-                services.AddDbContext<LoggingDbContext>(options => 
+                services.AddDbContext<LoggingDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase("Logging db test database");
+                    options.UseInMemoryDatabase("Test logging db");
                     options.UseInternalServiceProvider(provider);
                 });
 
-                services.AddDbContext<LodgingDbContext>(options => 
+                services.AddDbContext<LodgingDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase("Lodging db test database");
+                    options.UseInMemoryDatabase("Test lodging db");
                     options.UseInternalServiceProvider(provider);
                 });
 
@@ -42,12 +40,13 @@ namespace Hotel5000_Api_Tests.FunctionalTests.Web.Helpers
                 using (var scope = serviceProvider.CreateScope())
                 {
                     var scopedServices = scope.ServiceProvider;
-                    var db = scopedServices.GetRequiredService<LodgingDbContext>();
+                    var domainDb = scopedServices.GetRequiredService<LodgingDbContext>();
                     var hasher = scopedServices.GetRequiredService<IPasswordHasher>();
 
-                    db.Database.EnsureCreated();
+                    LodgingDbContextSeed.SeedAsync(domainDb, hasher, false).Wait();
 
-                    LodgingDbContextSeed.SeedAsync(db, hasher, false).Wait();
+                    var loggingDb = scopedServices.GetRequiredService<LoggingDbContext>();
+                    LoggingDBContextSeed.Seed(loggingDb, false);
                 }
             });
         }

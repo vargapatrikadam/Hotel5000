@@ -4,6 +4,7 @@ using Core.Interfaces;
 using Core.Interfaces.PasswordHasher;
 using Core.Services.LodgingDomain;
 using Hotel5000_Api_Tests.UnitTests.Data;
+using Hotel5000_Api_Tests.UnitTests.Helpers;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,13 +23,6 @@ namespace Hotel5000_Api_Tests.UnitTests.Core
             var mockTokenRepo = new Mock<IAsyncRepository<Token>>();
             var mockPasswordHasher = new Mock<IPasswordHasher>();
             var mockAuthenticationOptions = new Mock<ISetting<AuthenticationOptions>>();
-            mockAuthenticationOptions.Setup(s => s.Option)
-                .Returns(new AuthenticationOptions()
-                {
-                    AccessTokenDuration = 60,
-                    RefreshTokenDuration = 60,
-                    Secret = "Unit Test Secret"
-                });
             var service = new AuthenticationService(mockUserRepo.Object, mockTokenRepo.Object, mockPasswordHasher.Object, mockAuthenticationOptions.Object);
 
             var result = await service.AuthenticateAsync("asd", "asd");
@@ -48,12 +42,7 @@ namespace Hotel5000_Api_Tests.UnitTests.Core
                 .Returns(false);
             var mockAuthenticationOptions = new Mock<ISetting<AuthenticationOptions>>();
             mockAuthenticationOptions.Setup(s => s.Option)
-                .Returns(new AuthenticationOptions()
-                {
-                    AccessTokenDuration = 60,
-                    RefreshTokenDuration = 60,
-                    Secret = "Unit Test Secret"
-                });
+                .Returns(AuthenticationHelpers.GetTestAuthenticationOptions());
             var service = new AuthenticationService(mockUserRepo.Object, mockTokenRepo.Object, mockPasswordHasher.Object, mockAuthenticationOptions.Object);
 
             var result = await service.AuthenticateAsync("testusername", "badpassword");
@@ -75,12 +64,7 @@ namespace Hotel5000_Api_Tests.UnitTests.Core
                 .Returns(true);
             var mockAuthenticationOptions = new Mock<ISetting<AuthenticationOptions>>();
             mockAuthenticationOptions.Setup(s => s.Option)
-                .Returns(new AuthenticationOptions()
-                {
-                    AccessTokenDuration = 60,
-                    RefreshTokenDuration = 60,
-                    Secret = "Unit Test Secret"
-                });
+                .Returns(AuthenticationHelpers.GetTestAuthenticationOptions());
             var service = new AuthenticationService(mockUserRepo.Object, mockTokenRepo.Object, mockPasswordHasher.Object, mockAuthenticationOptions.Object);
 
             var result = await service.AuthenticateAsync("testemail", "testpassword");
