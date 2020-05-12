@@ -4,9 +4,10 @@ using System.Linq;
 
 namespace Infrastructure.Helpers
 {
-    public class SpecificationEvaluator<T> where T : class
+    public class SpecificationEvaluator
     {
-        public static IQueryable<T> GetQuery(IQueryable<T> inputQuery, ISpecification<T> specification)
+        public static IQueryable<T> GetQuery<T>(IQueryable<T> inputQuery, ISpecification<T> specification)
+            where T : class
         {
             var query = inputQuery;
 

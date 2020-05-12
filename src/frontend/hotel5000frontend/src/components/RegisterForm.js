@@ -66,7 +66,8 @@ class RegisterForm extends Component {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data)
-        }).catch(console.log) //TODO: kiegészíteni .then-el, ha a backend azon része kész ahol kapok vissza json bodyban egyedi status code-ot
+        }).then(window.location.href = '/')
+            .catch(console.log) //TODO: kiegészíteni .then-el, ha a backend azon része kész ahol kapok vissza json bodyban egyedi status code-ot
     }
 
 

@@ -19,8 +19,9 @@ namespace Hotel5000_Api_Tests.IntegrationTests.Core
         [Fact]
         public async Task Authenticate_InvalidUser()
         {
-            var userRepo = RepositoryHelpers.GetTestUserRepository();
-            var tokenRepo = RepositoryHelpers.GetTestTokenRepository();
+            string dbName = "invalid";
+            var userRepo = RepositoryHelpers.GetTestUserRepository(dbName);
+            var tokenRepo = RepositoryHelpers.GetTestTokenRepository(dbName);
             IAuthenticationService service = new AuthenticationService(
                 userRepo,
                 tokenRepo,
@@ -34,9 +35,10 @@ namespace Hotel5000_Api_Tests.IntegrationTests.Core
         [Fact]
         public async Task Authenticate_BadPassword()
         {
-            var userRepo = RepositoryHelpers.GetTestUserRepository();
+            string dbName = "badpassword";
+            var userRepo = RepositoryHelpers.GetTestUserRepository(dbName);
             var testUser = AuthenticationEntities.GetTestUser();
-            var tokenRepo = RepositoryHelpers.GetTestTokenRepository();
+            var tokenRepo = RepositoryHelpers.GetTestTokenRepository(dbName);
             var passwordHasher = AuthentiationDependencies.GetPasswordHasher();
 
             testUser.Password = passwordHasher.Hash(testUser.Password);
@@ -55,19 +57,21 @@ namespace Hotel5000_Api_Tests.IntegrationTests.Core
         [Fact]
         public async Task Authenticate_Successful()
         {
-            var userRepo = RepositoryHelpers.GetTestUserRepository();
+            string dbName = "successful";
+            var userRepo = RepositoryHelpers.GetTestUserRepository(dbName);
             var testUser = AuthenticationEntities.GetTestUser();
-            var tokenRepo = RepositoryHelpers.GetTestTokenRepository();
+            var tokenRepo = RepositoryHelpers.GetTestTokenRepository(dbName);
             var passwordHasher = AuthentiationDependencies.GetPasswordHasher();
+            var authenticationOptions = AuthentiationDependencies.GetAuthenticationOptions();
 
             testUser.Password = passwordHasher.Hash(testUser.Password);
-            userRepo.AddAsync(testUser);
+            await userRepo.AddAsync(testUser);
 
             IAuthenticationService service = new AuthenticationService(
                 userRepo,
                 tokenRepo,
                 passwordHasher,
-                AuthentiationDependencies.GetAuthenticationOptions());
+                authenticationOptions);
 
             var result = await service.AuthenticateAsync("testusername", "testpassword");
 

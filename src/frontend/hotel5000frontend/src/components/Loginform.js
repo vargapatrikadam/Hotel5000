@@ -40,16 +40,16 @@ class Loginform extends Component {
         )
         .then((responsedata) => {
             this.setState({ loggedin: true, role: responsedata.role })
-            localStorage.setItem('role', responsedata.role)
-            localStorage.setItem('username', responsedata.username)
-            localStorage.setItem('accessToken', responsedata.accessToken)
-            localStorage.setItem('refreshToken', responsedata.refreshToken)
-            localStorage.setItem('email', responsedata.email)
-            localStorage.setItem('loggedin', this.state.loggedin)
+            sessionStorage.setItem('role', responsedata.role)
+            sessionStorage.setItem('username', responsedata.username)
+            sessionStorage.setItem('accessToken', responsedata.accessToken)
+            sessionStorage.setItem('refreshToken', responsedata.refreshToken)
+            sessionStorage.setItem('email', responsedata.email)
+            sessionStorage.setItem('loggedin', this.state.loggedin)
             alert("Successful login")
             window.location.href = '/'
-            console.log(localStorage.getItem('accessToken'))
-            console.log(localStorage.getItem('refreshToken'))
+            console.log(sessionStorage.getItem('accessToken'))
+            console.log(sessionStorage.getItem('refreshToken'))
         })
         .catch(console.log)
     }
@@ -60,7 +60,7 @@ class Loginform extends Component {
             mode: 'cors',
             headers: {
 
-                "Authorization" : "Bearer " + localStorage.getItem('accessToken')
+                "Authorization" : "Bearer " + sessionStorage.getItem('accessToken')
             }
         })
             .then(function (response) {
@@ -81,7 +81,7 @@ class Loginform extends Component {
 
     refresh = () => {
         const data = {
-            "refreshToken": localStorage.getItem('refreshToken')
+            "refreshToken": sessionStorage.getItem('refreshToken')
         }
 
         fetch(BaseUrl + "api/auth/refresh", {
@@ -103,10 +103,10 @@ class Loginform extends Component {
             })
             .then(data => {
                 console.log(data)
-                localStorage.setItem('accessToken', data.accessToken)
-                localStorage.setItem('refreshToken', data.refreshToken)
-                console.log(localStorage.getItem('accessToken'))
-                console.log(localStorage.getItem('refreshToken'))
+                sessionStorage.setItem('accessToken', data.accessToken)
+                sessionStorage.setItem('refreshToken', data.refreshToken)
+                console.log(sessionStorage.getItem('accessToken'))
+                console.log(sessionStorage.getItem('refreshToken'))
             })
             .catch(() =>{
                 this.setState({
@@ -121,15 +121,14 @@ class Loginform extends Component {
             <div className="formContainer">
                 <Form>
                     <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Username</Form.Label>
-                        <Form.Control type="text" placeholder="Enter username" onChange={(text) => {this.handleUsername(text)}}/>
+                        <Form.Label>Identifier</Form.Label>
+                        <Form.Control type="text" placeholder="Enter identifier" onChange={(text) => {this.handleUsername(text)}}/>
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Password</Form.Label>
                         <Form.Control type="password" placeholder="Password" onChange={(text) => {this.handlePassword(text)}}/>
                     </Form.Group>
                         <Button variant="outline-dark" block onClick={()=>{this.login(this.state.username, this.state.password)}}>Log In</Button>
-                        <Button variant="outline-dark" block onClick={()=>{this.test()}}>Test auth</Button>
                 </Form>
             </div>
         );

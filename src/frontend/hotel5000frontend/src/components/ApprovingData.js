@@ -58,7 +58,7 @@ class ApprovingData extends Component {
             method: 'DELETE',
             mode: "cors",
             headers: {
-                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+                "Authorization": "Bearer " + sessionStorage.getItem('accessToken')
             }
         })
             .then(response => {
@@ -75,7 +75,7 @@ class ApprovingData extends Component {
                     }
                 }
                 else if(response.status === 200){
-                    console.log("token not expired")
+                    alert("Approving data successfully deleted.")
                     window.location.reload(false)
                 }
             })
@@ -95,7 +95,7 @@ class ApprovingData extends Component {
             mode: "cors",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem('accessToken')
+                "Authorization": "Bearer " + sessionStorage.getItem('accessToken')
             },
             body: JSON.stringify(data)
         })
@@ -107,6 +107,8 @@ class ApprovingData extends Component {
                             data.taxNumber = this.state.modifiedTaxNumber
                             data.registrationNumber = this.state.modifiedRegistrationNumber
                         }
+                        alert("Approving data successfully modified.")
+                        window.location.reload(false)
                         return data
                     })
                 }

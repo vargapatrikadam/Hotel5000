@@ -100,6 +100,7 @@ class LodgingForm extends Component {
         console.log(typeof currentAddresses)
         const newAddresses = currentAddresses.concat(JSON.parse(JSON.stringify(address)))
         this.setState({lodgingAddresses: newAddresses})
+        alert("Address successfully added to lodging.")
     }
 
     addRoom = (room) => {
@@ -107,6 +108,7 @@ class LodgingForm extends Component {
         console.log(typeof currentRooms)
         const newRooms = currentRooms.concat(JSON.parse(JSON.stringify(room)))
         this.setState({rooms: newRooms})
+        alert("Room successfully added to lodging.")
     }
 
     handleRoomsVisibilityChanged = () => {
@@ -130,7 +132,7 @@ class LodgingForm extends Component {
             mode: "cors",
             headers: {
                 "Content-Type":"application/json",
-                "Authorization":"Bearer " + localStorage.getItem('accessToken')
+                "Authorization":"Bearer " + sessionStorage.getItem('accessToken')
             },
             body: JSON.stringify(data)
         })

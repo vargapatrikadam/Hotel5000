@@ -1,19 +1,4 @@
 using AutoMapper;
-using Core.Entities.LodgingEntities;
-using Core.Entities.LoggingEntities;
-using Core.Helpers;
-using Core.Interfaces;
-using Core.Interfaces.LodgingDomain;
-using Core.Interfaces.LodgingDomain.LodgingManagementService;
-using Core.Interfaces.LodgingDomain.UserManagementService;
-using Core.Interfaces.Logging;
-using Core.Interfaces.PasswordHasher;
-using Core.Services.LodgingDomain;
-using Core.Services.Logging;
-using Core.Services.PasswordHasher;
-using Infrastructure.Lodgings;
-using Infrastructure.Logging;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -34,9 +19,11 @@ namespace Web
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IWebHostEnvironment _env;
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            _env = env;
         }
 
         public IConfiguration Configuration { get; }
@@ -52,7 +39,8 @@ namespace Web
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
-            services.RegisterDbContexts(Configuration);
+            if (!_env.IsEnvironment("TESTING"))
+                services.RegisterDbContexts(Configuration);
 
             services.RegisterRepositories();
 
@@ -60,15 +48,15 @@ namespace Web
 
             services.SetupJwtAuthentication(Configuration);
 
-            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             services.RegisterServices(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (_env.IsDevelopment())
                 app.UseExceptionHandler("/api/error-local-development");
             else
                 app.UseExceptionHandler("/api/error");

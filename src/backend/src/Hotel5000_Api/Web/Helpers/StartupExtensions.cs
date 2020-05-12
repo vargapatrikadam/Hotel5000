@@ -105,6 +105,8 @@ namespace Web.Helpers
             var authenticationOptions = configuration.GetSection("AuthenticationOptions").Get<AuthenticationOptions>();
 
             var key = Encoding.ASCII.GetBytes(authenticationOptions.Secret);
+            
+            
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -113,7 +115,6 @@ namespace Web.Helpers
                 .AddJwtBearer(options =>
                 {
                     options.RequireHttpsMetadata = false;
-                    // restful?
                     options.SaveToken = true;
                     options.TokenValidationParameters = new TokenValidationParameters
                     {

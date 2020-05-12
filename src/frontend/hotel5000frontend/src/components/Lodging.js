@@ -162,7 +162,7 @@ class Lodging extends Component {
     }
     reserveRoom = (paymentType, reservationItems) => {
         const data = {
-            "email": localStorage.getItem('email'),
+            "email": sessionStorage.getItem('email'),
             "paymentType": paymentType,
             "reservationItems": reservationItems
         }
@@ -172,7 +172,7 @@ class Lodging extends Component {
             mode: "cors",
             headers: {
                 "Content-Type":"application/json",
-                "Authorization":"Bearer " + localStorage.getItem('accessToken')
+                "Authorization":"Bearer " + sessionStorage.getItem('accessToken')
             },
             body: JSON.stringify(data)
         })

@@ -59,7 +59,11 @@ namespace Web.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-
+        /// <summary>
+        /// Authenticates an user
+        /// </summary>
+        /// <param name="loginData">This contains the username or email of an user, and its password</param>
+        /// <returns>A new JWT Token, refresh token, the user's role, username and email</returns>
         [AllowAnonymous]
         [HttpPost("Login")]
         [ProducesResponseType(typeof(AuthenticationDto), 200)]

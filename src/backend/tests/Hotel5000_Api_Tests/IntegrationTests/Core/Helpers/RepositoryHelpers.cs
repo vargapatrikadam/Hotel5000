@@ -10,21 +10,21 @@ namespace Hotel5000_Api_Tests.IntegrationTests.Core.Helpers
 {
     public static class RepositoryHelpers
     {
-        private static LodgingDbContext GetNewLodgingDbContext()
+        private static LodgingDbContext GetNewLodgingDbContext(string dbName)
         {
             var options = new DbContextOptionsBuilder<LodgingDbContext>()
-                .UseInMemoryDatabase("Lodging test database")
+                .UseInMemoryDatabase(dbName)
                 .Options;
 
             return new LodgingDbContext(options);
         }
-        public static IAsyncRepository<User> GetTestUserRepository()
+        public static IAsyncRepository<User> GetTestUserRepository(string dbName)
         {
-            return new LodgingDbRepository<User>(GetNewLodgingDbContext());
+            return new LodgingDbRepository<User>(GetNewLodgingDbContext(dbName));
         }
-        public static IAsyncRepository<Token> GetTestTokenRepository()
+        public static IAsyncRepository<Token> GetTestTokenRepository(string dbName)
         {
-            return new LodgingDbRepository<Token>(GetNewLodgingDbContext());
+            return new LodgingDbRepository<Token>(GetNewLodgingDbContext(dbName));
         }
     }
 }

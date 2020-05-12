@@ -4,7 +4,7 @@ import {BaseUrl} from './FetchHelper'
 
 export function refresh() {
         const data = {
-            "refreshToken": localStorage.getItem('refreshToken')
+            "refreshToken": sessionStorage.getItem('refreshToken')
         }
 
         return fetch(BaseUrl + "api/auth/refresh", {
@@ -27,11 +27,11 @@ export function refresh() {
             })
             .then(data => {
                 console.log(data)
-                localStorage.setItem('accessToken', data.accessToken)
-                localStorage.setItem('refreshToken', data.refreshToken)
-                localStorage.setItem('loggedin', true)
-                console.log(localStorage.getItem('accessToken'))
-                console.log(localStorage.getItem('refreshToken'))
+                sessionStorage.setItem('accessToken', data.accessToken)
+                sessionStorage.setItem('refreshToken', data.refreshToken)
+                sessionStorage.setItem('loggedin', true)
+                console.log(sessionStorage.getItem('accessToken'))
+                console.log(sessionStorage.getItem('refreshToken'))
             })
             .catch((error) =>{
                 logout().then(

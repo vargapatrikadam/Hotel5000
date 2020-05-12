@@ -33,6 +33,7 @@ namespace Infrastructure.Lodgings
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsDerivedFromInterface<ILodgingConfigurationAggregate>();
+            modelBuilder.ApplyConfigurationsFromAssembly(System.Reflection.Assembly.GetExecutingAssembly());
         }
 
         public override int SaveChanges()
