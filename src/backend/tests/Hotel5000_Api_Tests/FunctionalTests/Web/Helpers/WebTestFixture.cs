@@ -17,7 +17,6 @@ namespace Hotel5000_Api_Tests.FunctionalTests.Web.Helpers
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.UseEnvironment("TESTING");
-
             builder.ConfigureServices(services =>
             {
                 var provider = services.AddEntityFrameworkInMemoryDatabase()
