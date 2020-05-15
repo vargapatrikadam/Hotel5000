@@ -22,7 +22,7 @@
       "applicationUrl": "https://localhost:5000"
     },
     "Dev": {
-      "commandName": "IISExpress",
+      "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
