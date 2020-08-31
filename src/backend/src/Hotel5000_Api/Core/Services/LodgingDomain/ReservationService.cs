@@ -4,7 +4,7 @@ using Core.Enums.Lodging;
 using Core.Helpers.Results;
 using Core.Interfaces;
 using Core.Interfaces.LodgingDomain;
-using Core.Specifications;
+using Core.Specifications.Reservation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace Core.Services.LodgingDomain
 
         public async Task<Result<bool>> DeleteReservation(int reservationId)
         {
-            Reservation deleteThis = (await _reservationRepository.GetAsync(new Specification<Reservation>().ApplyFilter(p => p.Id == reservationId))).FirstOrDefault();
+            Reservation deleteThis = (await GetReservation(id: reservationId)).Data.FirstOrDefault();
             if (deleteThis == null)
                 return new NotFoundResult<bool>(Errors.RESERVATION_NOT_FOUND);
             await _reservationRepository.DeleteAsync(deleteThis);
@@ -46,21 +46,11 @@ namespace Core.Services.LodgingDomain
             string email = null,
             int? lodgingId = null)
         {
-            ISpecification<Reservation> specification = new Specification<Reservation>();
-            specification.AddInclude(p => p.PaymentType)
-                .AddInclude(p => p.ReservationItems)
-                .AddInclude(p => (p.ReservationItems as ReservationItem).Room.Currency)
-                .AddInclude(p => (p.ReservationItems as ReservationItem).ReservationWindow)
-                .AddInclude(p => (p.ReservationItems as ReservationItem).Room.Lodging);
-            specification.ApplyFilter(p =>
-                (!id.HasValue || p.Id == id) &&
-                (!roomId.HasValue || p.ReservationItems.Any(o => o.RoomId == roomId && o.ReservationId == p.Id)) &&
-                (!reservationWindowId.HasValue || p.ReservationItems.Any(o => o.ReservationWindowId == reservationWindowId && o.ReservationId == p.Id)) &&
-                (email == null || p.Email == email) &&
-                (!lodgingId.HasValue || p.ReservationItems.Any(o => o.Room.LodgingId == lodgingId && o.ReservationId == p.Id)));
+            var specification = new GetReservation(id, roomId, reservationWindowId, email, lodgingId);
 
             return new SuccessfulResult<IReadOnlyList<Reservation>>(await _reservationRepository.GetAsync(specification));
         }
+
         public async Task<Result<bool>> Reserve(Reservation newReservation, string paymentType)
         {
             List<ReservationItem> reservationItems = newReservation.ReservationItems.ToList();
@@ -71,13 +61,17 @@ namespace Core.Services.LodgingDomain
             {
                 return new InvalidResult<bool>(Errors.LODGING_TYPE_NOT_FOUND);
             }
-            PaymentType paymentTypeEntity = (await _paymentTypeRepository.GetAsync(new Specification<PaymentType>().ApplyFilter(p => p.Name == paymentTypeAsEnum))).FirstOrDefault();
+
+            var getPaymentTypeSpecification = new GetPaymentType(paymentTypeAsEnum);
+            PaymentType paymentTypeEntity = (await _paymentTypeRepository.GetAsync(getPaymentTypeSpecification)).FirstOrDefault();
             newReservation.PaymentTypeId = paymentTypeEntity.Id;
 
             if (reservationItems.Any(p => p.ReservedFrom > p.ReservedTo))
                 return new InvalidResult<bool>(Errors.RESERVATION_DATE_INVALID);
 
-            ISpecification<ReservationItem> specification = new Specification<ReservationItem>();
+            var specification = new IsReservationAvailable();
+
+            //could make it work like when one is invalid, it doesnt break a loop, and reserves the rest
             foreach (ReservationItem newItem in reservationItems)
             {
                 Room reservedRoom = (await _lodgingManagementService.GetRoom(id: newItem.RoomId)).Data.FirstOrDefault();
@@ -90,8 +84,8 @@ namespace Core.Services.LodgingDomain
 
                 newItem.ReservationWindowId = activeReservationWindow.Id;
 
-                specification.ApplyFilter(existing => (existing.RoomId == newItem.RoomId) &&
-                    (existing.ReservedFrom < newItem.ReservedTo && newItem.ReservedFrom < existing.ReservedTo));
+                specification.SetFilter(newItem);
+
                 ReservationItem existingReservation = (await _reservationItemRepository.GetAsync(specification)).FirstOrDefault();
                 if (existingReservation != null)
                     return new InvalidResult<bool>(Errors.RESERVATION_DATE_TAKEN, $"This room is already reserved from {existingReservation.ReservedFrom.ToShortDateString()} to {existingReservation.ReservedTo.ToShortDateString()}");
@@ -117,10 +111,8 @@ namespace Core.Services.LodgingDomain
             if (reservationWindowForLodging == null)
                 return new NotFoundResult<IReadOnlyList<ReservationWindow>>(Errors.RESERVATION_WINDOW_NOT_FOUND);
 
-            List<ReservationItem> reservationItems = (await _reservationItemRepository.GetAsync(
-                new Specification<ReservationItem>().ApplyFilter(
-                    p => p.ReservationWindowId == reservationWindowForLodging.Id &&
-                         p.RoomId == roomId))).ToList();
+            var specification = new GetReservationItem(reservationWindowForLodging.Id, roomId);
+            List<ReservationItem> reservationItems = (await _reservationItemRepository.GetAsync(specification)).ToList();
 
             List<ReservationWindow> freeReservationWindows = new List<ReservationWindow>();
 
