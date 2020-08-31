@@ -48,6 +48,14 @@ namespace Web.Helpers
             services.AddDbContext<LoggingDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("LoggingDb")), ServiceLifetime.Singleton);
         }
+        public static void RegisterInMemoryDbContexts(this IServiceCollection services)
+        {
+            services.AddDbContext<LoggingDbContext>(options =>
+                options.UseInMemoryDatabase("LoggingDb"));
+
+            services.AddDbContext<LodgingDbContext>(options =>
+                options.UseInMemoryDatabase("LodgingDb"));
+        }
         public static void RegisterRepositories(this IServiceCollection services)
         {
             services.AddSingleton<IAsyncRepository<Log>, LoggingDbRepository<Log>>();

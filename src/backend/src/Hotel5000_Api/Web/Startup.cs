@@ -39,8 +39,9 @@ namespace Web
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
-            if (!_env.IsEnvironment("TESTING"))
-                services.RegisterDbContexts(Configuration);
+            //if (!_env.IsEnvironment("TESTING"))
+            //    services.RegisterDbContexts(Configuration);
+            services.RegisterInMemoryDbContexts();
 
             services.RegisterRepositories();
 
@@ -79,18 +80,5 @@ namespace Web
 
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
-
-        //This method is only called when the project's enviroment variable 'ASPNETCORE_ENVIRONMENT' is set to 'Development'
-        //public void ConfigureDevelopmentServices(IServiceCollection services)
-        //{
-        //    //If you want to use in-memory database during a development enviroment, use this
-        //    services.AddDbContext<LoggingDbContext>(options =>
-        //        options.UseInMemoryDatabase("LoggingDatabase"));
-
-        //    services.AddDbContext<LodgingDbContext>(options =>
-        //        options.UseInMemoryDatabase("LodgingDatabase"));
-
-        //    ConfigureServices(services);
-        //}
     }
 }
