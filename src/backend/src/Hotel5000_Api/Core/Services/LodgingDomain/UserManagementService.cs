@@ -7,6 +7,7 @@ using Core.Interfaces;
 using Core.Interfaces.LodgingDomain;
 using Core.Interfaces.PasswordHasher;
 using Core.Specifications;
+using Core.Specifications.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -92,7 +93,9 @@ namespace Core.Services.LodgingDomain
                 return new InvalidResult<bool>(Errors.ROLE_NOT_EXISTS);
             }
 
-            var roleEntity = (await _roleRepository.GetAsync(new Specification<Role>().ApplyFilter(p => p.Name == roleAsEnum))).FirstOrDefault();
+            var specification = new GetRole(roleAsEnum);
+
+            var roleEntity = (await _roleRepository.GetAsync(specification)).FirstOrDefault();
 
             user.Role = null;
 
@@ -108,17 +111,7 @@ namespace Core.Services.LodgingDomain
             int? skip = null,
             int? take = null)
         {
-            ISpecification<User> specification = new Specification<User>();
-            specification.ApplyFilter(p =>
-                (!id.HasValue || p.Id == id) &&
-                (username == null || p.Username.Contains(username)) &&
-                (email == null || p.Email.Contains(email)))
-                .AddInclude(p => p.Role)
-                .AddInclude(p => p.ApprovingData)
-                .AddInclude(p => p.Contacts);
-
-            if (skip.HasValue && take.HasValue)
-                specification.ApplyPaging(skip.Value, take.Value);
+            var specification = new GetUser(id, username, email, skip, take);
 
             return new SuccessfulResult<IReadOnlyList<User>>(
                 (await _userRepository.GetAsync(specification)));
@@ -131,15 +124,7 @@ namespace Core.Services.LodgingDomain
             string identityNumber = null,
             string registrationNumber = null)
         {
-            ISpecification<ApprovingData> specification = new Specification<ApprovingData>();
-            specification.ApplyFilter(p =>
-                (!approvingDataOwnerId.HasValue || p.UserId == approvingDataOwnerId) &&
-                (!approvingDataId.HasValue || p.Id == approvingDataId) &&
-                (username == null || p.User.Username.Contains(username)) &&
-                (taxNumber == null || p.TaxNumber.Contains(taxNumber)) &&
-                (identityNumber == null || p.IdentityNumber.Contains(identityNumber)) &&
-                (registrationNumber == null || p.RegistrationNumber.Contains(registrationNumber)))
-                .AddInclude(i => i.User);
+            var specification = new GetApprovingData(approvingDataOwnerId, approvingDataId, username, taxNumber, identityNumber, registrationNumber);
 
             IReadOnlyList<ApprovingData> approvingDatas = await _approvingDataRepository.GetAsync(specification);
 
@@ -151,13 +136,7 @@ namespace Core.Services.LodgingDomain
             string phoneNumber = null,
             string username = null)
         {
-            ISpecification<Contact> specification = new Specification<Contact>();
-            specification.ApplyFilter(p =>
-                (!id.HasValue || p.Id == id.Value) &&
-                (!userId.HasValue || p.UserId == userId.Value) &&
-                (phoneNumber == null || p.MobileNumber.Contains(phoneNumber)) &&
-                (username == null || p.User.Username.Contains(phoneNumber)))
-                .AddInclude(i => i.User);
+            var specification = new GetContacts(id, userId, phoneNumber, username);
 
             return new SuccessfulResult<IReadOnlyList<Contact>>(await _contactRepository.GetAsync(specification));
         }
