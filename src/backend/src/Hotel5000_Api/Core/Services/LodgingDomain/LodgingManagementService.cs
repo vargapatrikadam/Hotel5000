@@ -60,7 +60,8 @@ namespace Core.Services.LodgingDomain
                 return new InvalidResult<bool>(Errors.LODGING_TYPE_NOT_FOUND);
             }
 
-            var lodgingTypeEntity = (await _lodgingTypeRepository.GetAsync(new Specification<LodgingType>().ApplyFilter(p => p.Name == lodgingTypeAsEnum))).FirstOrDefault();
+            var specification = new GetLodgingType(lodgingTypeAsEnum);
+            var lodgingTypeEntity = (await _lodgingTypeRepository.GetAsync(specification)).FirstOrDefault();
 
             lodging.LodgingType = null;
             lodging.LodgingTypeId = lodgingTypeEntity.Id;
