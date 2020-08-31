@@ -1,9 +1,13 @@
 ﻿using Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 
 namespace Infrastructure.Helpers
 {
@@ -11,20 +15,56 @@ namespace Infrastructure.Helpers
     {
         public static void UpdateSoftDeleteStatuses(this DbContext context)
         {
-            foreach (var entry in context.ChangeTracker.Entries())
-                if (entry.Entity is BaseEntity)
+            foreach (EntityEntry entry in context.ChangeTracker.Entries())
+                if (entry.IsSoftDeletable())
+                {
                     switch (entry.State)
                     {
                         case EntityState.Added:
-                            entry.CurrentValues["IsDeleted"] = false;
+                            HandleDeletion(entry, false);
                             break;
                         case EntityState.Deleted:
                             entry.State = EntityState.Modified;
-                            entry.CurrentValues["IsDeleted"] = true;
+                            HandleDeletion(entry);
+                            HandleCascade(entry);
                             break;
                     }
+                }
         }
-
+        private static void HandleCascade(EntityEntry entry)
+        {
+            DbContext context = entry.Context;
+            foreach (NavigationEntry navigationEntry in
+                entry.Navigations.Where(n => !n.Metadata.IsDependentToPrincipal()))
+            {
+                navigationEntry.Load();
+                if (navigationEntry is CollectionEntry collectionEntry)
+                {
+                    foreach (var dependentEntry in collectionEntry.CurrentValue)
+                    {
+                        HandleDeletion(context.Entry(dependentEntry));
+                    }
+                }
+                else
+                {
+                    var dependentEntry = navigationEntry.EntityEntry;
+                    if (dependentEntry != null)
+                    {
+                        HandleDeletion(context.Entry(dependentEntry));
+                    }
+                }
+            }
+        }
+        private static void HandleDeletion(EntityEntry entry, bool deleted = true)
+        {
+            entry.CurrentValues["IsDeleted"] = deleted;
+        }
+        public static bool IsSoftDeletable(this EntityEntry entry)
+        {
+            if (entry.Metadata.FindProperty("IsDeleted") == null)
+                return false;
+            return true;
+        }
         /// <summary>
         /// Adds new property & query filter to a configuration which enables soft deletion on it.
         /// </summary>

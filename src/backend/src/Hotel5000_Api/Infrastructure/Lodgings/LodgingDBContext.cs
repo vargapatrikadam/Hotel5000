@@ -39,6 +39,7 @@ namespace Infrastructure.Lodgings
         public override int SaveChanges()
         {
             this.UpdateSoftDeleteStatuses();
+            this.UpdateBaseEntityDateColumns();
             return base.SaveChanges();
         }
 

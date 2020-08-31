@@ -1,4 +1,5 @@
-﻿using Core.Entities.LodgingEntities;
+﻿using Ardalis.Specification;
+using Core.Entities.LodgingEntities;
 using Core.Enums;
 using Core.Enums.Lodging;
 using Core.Helpers.Results;
@@ -6,6 +7,7 @@ using Core.Interfaces;
 using Core.Interfaces.LodgingDomain;
 using Core.Interfaces.PasswordHasher;
 using Core.Specifications;
+using Core.Specifications.Authentication;
 using System;
 using System.Linq;
 using System.Security.Cryptography;
@@ -33,16 +35,7 @@ namespace Core.Services.LodgingDomain
 
         public async Task<Result<User>> AuthenticateAsync(string identifier, string password)
         {
-            //This way we don't need to implement a replica of ThenInclude from EF Core, because we cause eager loading on entities from the context.
-            //Specification<User> spec = new Specification<User>()
-            //    .AddInclude(p => p.Lodgings
-            //        .Select(s => s.Rooms
-            //            .Select(s => s.ReservationWindows)));
-            //return user.WithoutPassword();
-
-            var specification = new Specification<User>()
-                .ApplyFilter(p => p.Email == identifier || p.Username == identifier)
-                .AddInclude(p => p.Role);
+            var specification = new GetUserByIdentifier(identifier);
 
             var user = (await _userRepository.GetAsync(specification))
                 .FirstOrDefault();
@@ -62,16 +55,19 @@ namespace Core.Services.LodgingDomain
 
             await _tokenRepository.AddAsync(newToken);
 
+            specification = new GetUserByIdentifier(identifier, true);
+            
             var userWithToken = (await _userRepository.GetAsync
-                    (specification.AddInclude(p => p.Tokens)))
+                    (specification))
                 .FirstOrDefault();
 
             return new SuccessfulResult<User>(userWithToken);
         }
         public async Task<Result<bool>> LogoutAsync(string refreshToken)
         {
+            var specification = new GetTokenByRefreshToken(refreshToken);
 
-            var token = (await _tokenRepository.GetAsync(new Specification<Token>().ApplyFilter(p => p.RefreshToken == refreshToken))).FirstOrDefault();
+            var token = (await _tokenRepository.GetAsync(specification)).FirstOrDefault();
             if (token == null)
                 return new NotFoundResult<bool>(Errors.TOKEN_NOT_FOUND);
 
@@ -93,9 +89,9 @@ namespace Core.Services.LodgingDomain
 
         public async Task<Result<User>> RefreshAsync(string refreshToken)
         {
-            var oldToken = (await _tokenRepository.GetAsync(
-                    new Specification<Token>()
-                        .ApplyFilter(p => p.RefreshToken == refreshToken))).FirstOrDefault();
+            var specification = new GetTokenByRefreshToken(refreshToken);
+
+            var oldToken = (await _tokenRepository.GetAsync(specification)).FirstOrDefault();
 
             if (oldToken == null)
                 return new UnauthorizedResult<User>(Errors.TOKEN_NOT_FOUND);
@@ -121,11 +117,9 @@ namespace Core.Services.LodgingDomain
 
             await _tokenRepository.DeleteAsync(oldToken);
 
-            var userWithToken = (await _userRepository.GetAsync(
-                    new Specification<User>()
-                        .ApplyFilter(p => p.Id == newToken.UserId)
-                        .AddInclude(p => p.Role)
-                        .AddInclude(p => p.Tokens)))
+            var getUserSpecification = new GetUserByIdWithRoleAndToken(newToken.UserId);
+
+            var userWithToken = (await _userRepository.GetAsync(getUserSpecification))
                 .FirstOrDefault();
 
             return new SuccessfulResult<User>(userWithToken);
@@ -133,13 +127,13 @@ namespace Core.Services.LodgingDomain
 
         public async Task<Result<bool>> IsAuthorized(int resourceOwnerId, int accessingUserId)
         {
-            ISpecification<User> query = new Specification<User>().AddInclude(p => p.Role);
-            User resourceOwner = (await _userRepository.GetAsync(
-                query.ApplyFilter(f => f.Id == resourceOwnerId))).FirstOrDefault();
+            var getResourceOwnerSpecification = new GetUserByIdWithRole(resourceOwnerId);
+            User resourceOwner = (await _userRepository.GetAsync(getResourceOwnerSpecification)).FirstOrDefault();
             if (resourceOwner == null)
                 return new NotFoundResult<bool>(Errors.RESOURCE_OWNER_NOT_FOUND);
-            User accessingUser = (await _userRepository.GetAsync(
-                query.ApplyFilter(f => f.Id == accessingUserId))).FirstOrDefault();
+
+            var getAccessingUserSpecification = new GetUserByIdWithRole(accessingUserId);
+            User accessingUser = (await _userRepository.GetAsync(getAccessingUserSpecification)).FirstOrDefault();
             if (accessingUser == null)
                 return new NotFoundResult<bool>(Errors.ACCESSING_USER_NOT_FOUND);
 
