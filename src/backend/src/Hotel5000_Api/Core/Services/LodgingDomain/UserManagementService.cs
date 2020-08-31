@@ -7,7 +7,7 @@ using Core.Interfaces;
 using Core.Interfaces.LodgingDomain;
 using Core.Interfaces.PasswordHasher;
 using Core.Specifications;
-using Core.Specifications.Users;
+using Core.Specifications.UserManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Specifications.Users
+namespace Core.Specifications.UserManagement
 {
     public class GetApprovingData : Specification<ApprovingData>
     {

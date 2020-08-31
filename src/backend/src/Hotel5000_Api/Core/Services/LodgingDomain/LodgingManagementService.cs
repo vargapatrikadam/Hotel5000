@@ -5,6 +5,8 @@ using Core.Helpers.Results;
 using Core.Interfaces;
 using Core.Interfaces.LodgingDomain;
 using Core.Specifications;
+using Core.Specifications.LodgingManagement;
+using Core.Specifications.UserManagement;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -218,21 +220,14 @@ namespace Core.Services.LodgingDomain
 
         public async Task<Result<IReadOnlyList<Country>>> GetCountry(int? id = null, string name = null, string code = null)
         {
-            ISpecification<Country> specification = new Specification<Country>();
-            specification.ApplyFilter(p =>
-                (!id.HasValue || p.Id == id.Value) &&
-                (name == null || p.Name == name) &&
-                (code == null || p.Code == code));
+            var specification = new GetCountry(id, name, code);
 
             return new SuccessfulResult<IReadOnlyList<Country>>(await _countryRepository.GetAsync(specification));
         }
 
         public async Task<Result<IReadOnlyList<Currency>>> GetCurrency(int? id = null, string name = null)
         {
-            ISpecification<Currency> specification = new Specification<Currency>();
-            specification.ApplyFilter(p =>
-                (!id.HasValue || p.Id == id.Value) &&
-                (name == null || p.Name == name));
+            var specification = new GetCurrency(id, name);
 
             return new SuccessfulResult<IReadOnlyList<Currency>>(await _currencyRepository.GetAsync(specification));
         }
@@ -254,48 +249,39 @@ namespace Core.Services.LodgingDomain
             if (address != null)
                 country = (await GetCountry(name: address)).Data.FirstOrDefault();
 
-            ISpecification<Lodging> specification = new Specification<Lodging>();
-            specification.ApplyFilter(p =>
-                (!id.HasValue || p.Id == id.Value) &&
-                (name == null || p.Name == name) &&
-                (lodgingType == null || p.LodgingType.Name == lodgingTypeAsEnum) &&
-                (!reservableFrom.HasValue || p.ReservationWindows.Any(p => reservableFrom >= p.From && p.To > reservableFrom )) &&
-                (!reservableTo.HasValue || p.ReservationWindows.Any(p => reservableTo >= p.From && p.To > reservableTo)) &&
-                (owner == null || p.User.Email == owner || p.User.Username == owner) &&
-                (address == null || p.LodgingAddresses.Any(p => p.County.StartsWith(address) ||
-                                   p.City.StartsWith(address) || 
-                                   p.PostalCode.StartsWith(address) || 
-                                   p.Street.StartsWith(address)) || 
-                                   (country != null &&
-                                   p.LodgingAddresses.Any(p => p.CountryId == country.Id))))
-                .AddInclude(p => p.LodgingType)
-                .AddInclude(p => p.User)
-                .AddInclude(p => (p.LodgingAddresses as LodgingAddress).Country)
-                .AddInclude(p => (p.Rooms as Room).Currency)
-                .AddInclude(p => p.ReservationWindows);
-
-            if (skip.HasValue && take.HasValue)
-                specification.ApplyPaging(skip.Value, take.Value);
+            var specification = new GetLodging(id, 
+                name, 
+                lodgingTypeAsEnum, 
+                reservableFrom, 
+                reservableTo, 
+                address, 
+                owner, 
+                country, 
+                skip, 
+                take);
 
             var data = await _lodgingRepository.GetAsync(specification);
 
             return new SuccessfulResult<IReadOnlyList<Lodging>>(data);
         }
 
-        public async Task<Result<IReadOnlyList<LodgingAddress>>> GetLodgingAddress(int? id = null, int? lodgingId = null, string countryCode = null, string countryName = null, string county = null, string city = null, string postalCode = null, string lodgingName = null)
+        public async Task<Result<IReadOnlyList<LodgingAddress>>> GetLodgingAddress(int? id = null, 
+            int? lodgingId = null, 
+            string countryCode = null, 
+            string countryName = null, 
+            string county = null, 
+            string city = null, 
+            string postalCode = null, 
+            string lodgingName = null)
         {
-            ISpecification<LodgingAddress> specification = new Specification<LodgingAddress>();
-            specification.ApplyFilter(p =>
-                (!id.HasValue || p.Id == id.Value) &&
-                (!lodgingId.HasValue || p.LodgingId == lodgingId.Value) &&
-                (countryCode == null || p.Country.Code == countryCode) &&
-                (countryName == null || p.Country.Name == countryName) &&
-                (county == null || p.County == county) &&
-                (city == null || p.City == city) &&
-                (postalCode == null || p.PostalCode == postalCode) &&
-                (lodgingName == null || p.Lodging.Name == lodgingName))
-                .AddInclude(p => p.Country)
-                .AddInclude(p => p.Lodging);
+            var specification = new GetLodgingAddress(id, 
+                lodgingId, 
+                countryCode, 
+                countryName, 
+                county, 
+                city, 
+                postalCode, 
+                lodgingName);
 
             return new SuccessfulResult<IReadOnlyList<LodgingAddress>>(await _lodgingAddressRepository.GetAsync(specification));
         }
@@ -305,13 +291,7 @@ namespace Core.Services.LodgingDomain
             DateTime? isAfter = null, 
             DateTime? isBefore = null)
         {
-            ISpecification<ReservationWindow> specification = new Specification<ReservationWindow>();
-            specification.ApplyFilter(p =>
-                (!id.HasValue || p.Id == id.Value) &&
-                (!lodgingId.HasValue || p.LodgingId == lodgingId.Value) &&
-                (!isAfter.HasValue || p.From >= isAfter.Value) &&
-                (!isBefore.HasValue || p.To >= isBefore.Value))
-                .AddInclude(p => (p.ReservationItems as ReservationItem).Room);
+            var specification = new GetReservationWindow(id, lodgingId, isAfter, isBefore);
 
             return new SuccessfulResult<IReadOnlyList<ReservationWindow>>(await _reservationWindowRepository.GetAsync(specification));
         }
@@ -322,16 +302,7 @@ namespace Core.Services.LodgingDomain
             double? priceMin = null, 
             double? priceMax = null)
         {
-            ISpecification<Room> specification = new Specification<Room>();
-            specification.ApplyFilter(p =>
-                (!id.HasValue || p.Id == id.Value) &&
-                (!lodgingId.HasValue || p.LodgingId == lodgingId.Value) &&
-                (!adultCapacity.HasValue || p.AdultCapacity == adultCapacity.Value) &&
-                (!childrenCapacity.HasValue || p.ChildrenCapacity == childrenCapacity.Value) &&
-                (!priceMin.HasValue || p.Price <= priceMin.Value) &&
-                (!priceMax.HasValue || p.Price >= priceMax.Value))
-                .AddInclude(p => p.Currency)
-                .AddInclude(p => p.ReservationItems);
+            var specification = new GetRoom(id, lodgingId, adultCapacity, childrenCapacity, priceMin, priceMax);
 
             return new SuccessfulResult<IReadOnlyList<Room>>(await _roomRepository.GetAsync(specification));
         }
