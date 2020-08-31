@@ -51,7 +51,7 @@ namespace Web.Helpers
         public static void RegisterInMemoryDbContexts(this IServiceCollection services)
         {
             services.AddDbContext<LoggingDbContext>(options =>
-                options.UseInMemoryDatabase("LoggingDb"));
+                options.UseInMemoryDatabase("LoggingDb"), ServiceLifetime.Singleton);
 
             services.AddDbContext<LodgingDbContext>(options =>
                 options.UseInMemoryDatabase("LodgingDb"));
