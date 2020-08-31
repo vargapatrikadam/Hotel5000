@@ -1,4 +1,6 @@
-﻿using Core.Entities;
+﻿using Ardalis.Specification;
+using Ardalis.Specification.EntityFrameworkCore;
+using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
@@ -60,7 +62,8 @@ namespace Infrastructure.Abstracts
 
         private IQueryable<TEntity> ApplySpecification(ISpecification<TEntity> specification)
         {
-            return SpecificationEvaluator.GetQuery(Context.Set<TEntity>().AsQueryable(), specification);
+            var evaluator = new SpecificationEvaluator<TEntity>();
+            return evaluator.GetQuery(Context.Set<TEntity>().AsQueryable(), specification);
         }
     }
 }
