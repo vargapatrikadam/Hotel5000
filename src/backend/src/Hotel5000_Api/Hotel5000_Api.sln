@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{7FAC1CEF-3118-4926-BE48-F1E6460DB504}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hotel5000_Api_Tests", "..\..\tests\Hotel5000_Api_Tests\Hotel5000_Api_Tests.csproj", "{31CA5AB7-79FF-45BD-8911-BF7862BA9AAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hotel5000_Api_Tests", "..\..\tests\Hotel5000_Api_Tests\Hotel5000_Api_Tests.csproj", "{31CA5AB7-79FF-45BD-8911-BF7862BA9AAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorWebApp", "BlazorWebApp\BlazorWebApp.csproj", "{789F9A34-8EF9-4768-987F-C4DFD8161155}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{31CA5AB7-79FF-45BD-8911-BF7862BA9AAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31CA5AB7-79FF-45BD-8911-BF7862BA9AAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31CA5AB7-79FF-45BD-8911-BF7862BA9AAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{789F9A34-8EF9-4768-987F-C4DFD8161155}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{789F9A34-8EF9-4768-987F-C4DFD8161155}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{789F9A34-8EF9-4768-987F-C4DFD8161155}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{789F9A34-8EF9-4768-987F-C4DFD8161155}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
