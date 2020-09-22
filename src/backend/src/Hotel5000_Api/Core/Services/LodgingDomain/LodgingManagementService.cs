@@ -1,8 +1,10 @@
-﻿using Core.Entities.LodgingEntities;
+﻿using Core.Entities.Authentication;
+using Core.Entities.LodgingEntities;
 using Core.Enums;
 using Core.Enums.Lodging;
 using Core.Helpers.Results;
 using Core.Interfaces;
+using Core.Interfaces.Authentication;
 using Core.Interfaces.LodgingDomain;
 using Core.Specifications;
 using Core.Specifications.LodgingManagement;
@@ -17,7 +19,7 @@ namespace Core.Services.LodgingDomain
 {
     public class LodgingManagementService : ILodgingManagementService
     {
-        private readonly IAuthenticationService _authenticationService;
+        private readonly IAuthorization _authorizationService;
         private readonly IUserManagementService _userManagementService;
         private readonly IAsyncRepository<Lodging> _lodgingRepository;
         private readonly IAsyncRepository<LodgingType> _lodgingTypeRepository;
@@ -26,7 +28,7 @@ namespace Core.Services.LodgingDomain
         private readonly IAsyncRepository<Room> _roomRepository;
         private readonly IAsyncRepository<Country> _countryRepository;
         private readonly IAsyncRepository<Currency> _currencyRepository;
-        public LodgingManagementService(IAuthenticationService authenticationService,
+        public LodgingManagementService(IAuthorization authorizationService,
             IUserManagementService userManagementService,
             IAsyncRepository<Lodging> lodgingRepository,
             IAsyncRepository<LodgingType> lodgingTypeRepository,
@@ -36,7 +38,7 @@ namespace Core.Services.LodgingDomain
             IAsyncRepository<Country> countryRepository,
             IAsyncRepository<Currency> currecyRepository)
         {
-            _authenticationService = authenticationService;
+            _authorizationService = authorizationService;
             _userManagementService = userManagementService;
             _lodgingRepository = lodgingRepository;
             _lodgingTypeRepository = lodgingTypeRepository;
@@ -49,7 +51,11 @@ namespace Core.Services.LodgingDomain
         #region add
         public async Task<Result<bool>> AddLodging(Lodging lodging, string lodgingType, int resourceAccessorId)
         {
-            Result<bool> authorizationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(lodging.UserId, nameof(Lodging)),
+                new Operation(Operation.Type.CREATE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
                 return authorizationResult;
@@ -119,7 +125,11 @@ namespace Core.Services.LodgingDomain
             if (lodging == null)
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
-            Result<bool> authorizationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(lodging.UserId, nameof(LodgingAddress)),
+                new Operation(Operation.Type.CREATE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
                 return authorizationResult;
@@ -170,7 +180,11 @@ namespace Core.Services.LodgingDomain
             if (lodging == null)
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
-            Result<bool> authorizationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(lodging.UserId, nameof(ReservationWindow)),
+                new Operation(Operation.Type.CREATE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
                 return authorizationResult;
@@ -198,7 +212,11 @@ namespace Core.Services.LodgingDomain
             if (currency == null)
                 return new NotFoundResult<bool>(Errors.CURRENCY_NOT_FOUND);
 
-            Result<bool> authorizationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(lodging.UserId, nameof(Room)),
+                new Operation(Operation.Type.CREATE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
                 return authorizationResult;
@@ -315,9 +333,14 @@ namespace Core.Services.LodgingDomain
             if (removeThisLodging == null)
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(removeThisLodging.UserId, resourceAccessorId);
-            if (!authenticationResult.Data)
-                return authenticationResult;
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(removeThisLodging.UserId, nameof(Lodging)),
+                new Operation(Operation.Type.DELETE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
+
+            if (!authorizationResult.Data)
+                return authorizationResult;
 
             await _lodgingRepository.DeleteAsync(removeThisLodging);
             return new SuccessfulResult<bool>(true);
@@ -333,9 +356,14 @@ namespace Core.Services.LodgingDomain
             if (lodging == null)
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
-            if (!authenticationResult.Data)
-                return authenticationResult;
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(lodging.UserId, nameof(LodgingAddress)),
+                new Operation(Operation.Type.DELETE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
+
+            if (!authorizationResult.Data)
+                return authorizationResult;
 
             await _lodgingAddressRepository.DeleteAsync(removeThisLodgingAddress);
             return new SuccessfulResult<bool>(true);
@@ -351,9 +379,14 @@ namespace Core.Services.LodgingDomain
             if (lodging == null)
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
-            if (!authenticationResult.Data)
-                return authenticationResult;
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(lodging.UserId, nameof(ReservationWindow)),
+                new Operation(Operation.Type.DELETE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
+
+            if (!authorizationResult.Data)
+                return authorizationResult;
 
             await _reservationWindowRepository.DeleteAsync(removeThisReservationWindow);
             return new SuccessfulResult<bool>(true);
@@ -369,9 +402,14 @@ namespace Core.Services.LodgingDomain
             if (lodging == null)
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
-            if (!authenticationResult.Data)
-                return authenticationResult;
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(lodging.UserId, nameof(Room)),
+                new Operation(Operation.Type.DELETE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
+
+            if (!authorizationResult.Data)
+                return authorizationResult;
 
             await _roomRepository.DeleteAsync(removeThisRoom);
             return new SuccessfulResult<bool>(true);
@@ -384,9 +422,14 @@ namespace Core.Services.LodgingDomain
             if (updateThisLodging == null)
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(updateThisLodging.UserId, resourceAccessorId);
-            if (!authenticationResult.Data)
-                return authenticationResult;
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(updateThisLodging.UserId, nameof(Lodging)),
+                new Operation(Operation.Type.UPDATE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
+
+            if (!authorizationResult.Data)
+                return authorizationResult;
 
             updateThisLodging.LodgingAddresses = null;
             updateThisLodging.Name = newLodging.Name;
@@ -409,9 +452,14 @@ namespace Core.Services.LodgingDomain
             if (newCountry == null)
                 return new NotFoundResult<bool>(Errors.COUNTRY_NOT_FOUND);
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
-            if (!authenticationResult.Data)
-                return authenticationResult;
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(lodging.UserId, nameof(LodgingAddress)),
+                new Operation(Operation.Type.UPDATE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
+
+            if (!authorizationResult.Data)
+                return authorizationResult;
 
             bool exists = await _lodgingAddressRepository.AnyAsync(p =>
                  p.Id != lodging.Id &&
@@ -452,9 +500,14 @@ namespace Core.Services.LodgingDomain
             if (lodging == null)
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
-            if (!authenticationResult.Data)
-                return authenticationResult;
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(lodging.UserId, nameof(ReservationWindow)),
+                new Operation(Operation.Type.UPDATE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
+
+            if (!authorizationResult.Data)
+                return authorizationResult;
 
             if (newReservationWindow.To < newReservationWindow.From ||
                 newReservationWindow.From < DateTime.Now)
@@ -482,9 +535,14 @@ namespace Core.Services.LodgingDomain
             if (newCurrency == null)
                 return new NotFoundResult<bool>(Errors.CURRENCY_NOT_FOUND);
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(lodging.UserId, resourceAccessorId);
-            if (!authenticationResult.Data)
-                return authenticationResult;
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(lodging.UserId, nameof(Room)),
+                new Operation(Operation.Type.UPDATE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
+
+            if (!authorizationResult.Data)
+                return authorizationResult;
 
             updateThisRoom.Currency = null;
             updateThisRoom.CurrencyId = newCurrency.Id;

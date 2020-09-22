@@ -1,14 +1,16 @@
 ﻿using Core.Entities.LodgingEntities;
 using Core.Helpers.Results;
+using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Interfaces.LodgingDomain
+namespace Core.Interfaces.Authentication
 {
-    public interface IAuthenticationService
+    public interface IAuthentication
     {
         Task<Result<User>> AuthenticateAsync(string identifier, string password);
         Task<Result<bool>> LogoutAsync(string refreshToken);
         Task<Result<User>> RefreshAsync(string refreshToken);
-        Task<Result<bool>> IsAuthorized(int resourceOwnerId, int accessingUserId);
     }
 }

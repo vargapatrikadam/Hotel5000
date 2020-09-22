@@ -1,5 +1,5 @@
 ﻿using Core.Entities.LodgingEntities;
-using Core.Enums.Lodging;
+using Core.Enums.Authentication;
 using System.Collections.Generic;
 
 namespace Hotel5000_Api_Tests.UnitTests.Data
@@ -19,7 +19,7 @@ namespace Hotel5000_Api_Tests.UnitTests.Data
                 Role = new Role()
                 {
                     Id = 1,
-                    Name = Roles.ApprovedUser
+                    Name = RoleType.APPROVED_USER
                 },
                 RoleId = 1,
                 Contacts = new List<Contact>()

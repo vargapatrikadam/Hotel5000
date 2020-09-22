@@ -4,6 +4,14 @@ namespace Core.Entities.LodgingEntities
 {
     public class User : BaseEntity
     {
+        public User()
+        {
+
+        }
+        public User(int id)
+        {
+            this.Id = id;
+        }
         public string Username { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }

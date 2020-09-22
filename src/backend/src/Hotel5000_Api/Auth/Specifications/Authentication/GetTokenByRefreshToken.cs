@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Specifications.Authentication
+namespace Auth.Specifications.Authentication
 {
-    public class GetTokenByRefreshToken : Specification<Token>
+    class GetTokenByRefreshToken : Specification<Token>
     {
         public GetTokenByRefreshToken(string refreshToken)
         {

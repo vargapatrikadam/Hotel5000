@@ -1,4 +1,6 @@
-﻿using Core.Entities.LodgingEntities;
+﻿using Ardalis.Specification;
+using Auth.Implementations;
+using Core.Entities.LodgingEntities;
 using Core.Helpers.Results;
 using Core.Interfaces;
 using Core.Interfaces.PasswordHasher;

@@ -1,21 +1,21 @@
-﻿using Ardalis.Specification;
+﻿using Auth.Specifications.Authentication;
 using Core.Entities.LodgingEntities;
 using Core.Enums;
-using Core.Enums.Lodging;
 using Core.Helpers.Results;
 using Core.Interfaces;
-using Core.Interfaces.LodgingDomain;
+using Core.Interfaces.Authentication;
 using Core.Interfaces.PasswordHasher;
-using Core.Specifications;
-using Core.Specifications.Authentication;
+using Core.Services.LodgingDomain;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Services.LodgingDomain
+namespace Auth.Implementations
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService : IAuthentication
     {
         private readonly IAsyncRepository<User> _userRepository;
         private readonly IAsyncRepository<Token> _tokenRepository;
@@ -56,7 +56,7 @@ namespace Core.Services.LodgingDomain
             await _tokenRepository.AddAsync(newToken);
 
             specification = new GetUserByIdentifier(identifier, true);
-            
+
             var userWithToken = (await _userRepository.GetAsync
                     (specification))
                 .FirstOrDefault();
@@ -123,24 +123,6 @@ namespace Core.Services.LodgingDomain
                 .FirstOrDefault();
 
             return new SuccessfulResult<User>(userWithToken);
-        }
-
-        public async Task<Result<bool>> IsAuthorized(int resourceOwnerId, int accessingUserId)
-        {
-            var getResourceOwnerSpecification = new GetUserByIdWithRole(resourceOwnerId);
-            User resourceOwner = (await _userRepository.GetAsync(getResourceOwnerSpecification)).FirstOrDefault();
-            if (resourceOwner == null)
-                return new NotFoundResult<bool>(Errors.RESOURCE_OWNER_NOT_FOUND);
-
-            var getAccessingUserSpecification = new GetUserByIdWithRole(accessingUserId);
-            User accessingUser = (await _userRepository.GetAsync(getAccessingUserSpecification)).FirstOrDefault();
-            if (accessingUser == null)
-                return new NotFoundResult<bool>(Errors.ACCESSING_USER_NOT_FOUND);
-
-            if (accessingUser.Role.Name == Roles.Admin
-                || accessingUser.Id == resourceOwner.Id)
-                return new SuccessfulResult<bool>(true);
-            else return new UnauthorizedResult<bool>(Errors.UNAUTHORIZED);
         }
     }
 }

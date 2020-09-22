@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Specifications.Authentication
+namespace Auth.Specifications.Authentication
 {
-    public class GetUserByIdentifier : Specification<User>
+    class GetUserByIdentifier : Specification<User>
     {
         public GetUserByIdentifier(string identifier, bool getTokens = false)
         {

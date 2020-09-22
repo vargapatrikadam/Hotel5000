@@ -1,12 +1,13 @@
-﻿using Core.Entities.LodgingEntities;
+﻿using Core.Entities.Authentication;
+using Core.Entities.LodgingEntities;
 using Core.Enums;
-using Core.Enums.Lodging;
+using Core.Enums.Authentication;
 using Core.Helpers;
 using Core.Helpers.Results;
 using Core.Interfaces;
+using Core.Interfaces.Authentication;
 using Core.Interfaces.LodgingDomain;
 using Core.Interfaces.PasswordHasher;
-using Core.Specifications;
 using Core.Specifications.UserManagement;
 using System;
 using System.Collections.Generic;
@@ -22,13 +23,13 @@ namespace Core.Services.LodgingDomain
         private readonly IAsyncRepository<User> _userRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IAsyncRepository<Role> _roleRepository;
-        private readonly IAuthenticationService _authenticationService;
+        private readonly IAuthorization _authenticationService;
         public UserManagementService(IAsyncRepository<Contact> contactRepository,
             IAsyncRepository<ApprovingData> approvingDataRepository,
             IAsyncRepository<User> userRepository,
             IPasswordHasher passwordHasher,
             IAsyncRepository<Role> roleRepository,
-            IAuthenticationService authenticationService)
+            IAuthorization authenticationService)
         {
             _contactRepository = contactRepository;
             _approvingDataRepository = approvingDataRepository;
@@ -41,9 +42,14 @@ namespace Core.Services.LodgingDomain
         public async Task<Result<bool>> AddApprovingData(ApprovingData newApprovingData,
             int resourceAccessorId)
         {
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(newApprovingData.UserId, resourceAccessorId);
-            if (!authenticationResult.Data)
-                return authenticationResult;
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(newApprovingData.UserId, nameof(ApprovingData)),
+                new Operation(Operation.Type.CREATE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authenticationService.Authorize(authorizeAction);
+
+            if (!authorizationResult.Data)
+                return authorizationResult;
 
             if (await _approvingDataRepository.AnyAsync(p => p.UserId == newApprovingData.UserId))
                 return new ConflictResult<bool>(Errors.APPROVING_DATA_ALREADY_EXISTS);
@@ -60,9 +66,14 @@ namespace Core.Services.LodgingDomain
         public async Task<Result<bool>> AddContact(Contact contact,
             int resourceAccessorId)
         {
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(contact.UserId, resourceAccessorId);
-            if (!authenticationResult.Data)
-                return authenticationResult;
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(contact.UserId, nameof(Contact)),
+                new Operation(Operation.Type.CREATE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authenticationService.Authorize(authorizeAction);
+
+            if (!authorizationResult.Data)
+                return authorizationResult;
 
             if (await _contactRepository.AnyAsync(p => p.MobileNumber == contact.MobileNumber))
                 return new ConflictResult<bool>(Errors.CONTACT_NOT_UNIQUE);
@@ -87,7 +98,7 @@ namespace Core.Services.LodgingDomain
 
             user.Password = _passwordHasher.Hash(user.Password);
 
-            Roles roleAsEnum;
+            RoleType roleAsEnum;
             if (!Enum.TryParse(role, out roleAsEnum))
             {
                 return new InvalidResult<bool>(Errors.ROLE_NOT_EXISTS);
@@ -145,9 +156,14 @@ namespace Core.Services.LodgingDomain
         {
             ApprovingData approvingData = (await GetApprovingData(approvingDataOwnerId: approvingDataOwnerId)).Data.FirstOrDefault();
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(approvingData.UserId, resourceAccessorId);
-            if (!authenticationResult.Data)
-                return authenticationResult;
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(approvingDataOwnerId, nameof(ApprovingData)),
+                new Operation(Operation.Type.DELETE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authenticationService.Authorize(authorizeAction);
+
+            if (!authorizationResult.Data)
+                return authorizationResult;
 
             if (approvingData == null)
                 return new NotFoundResult<bool>(Errors.APPROVING_DATA_NOT_FOUND);
@@ -161,9 +177,14 @@ namespace Core.Services.LodgingDomain
         {
             User user = (await GetUsers(id: contactOwnerId)).Data.FirstOrDefault();
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(user.Id, resourceAccessorId);
-            if (!authenticationResult.Data)
-                return authenticationResult;
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(contactOwnerId, nameof(Contact)),
+                new Operation(Operation.Type.DELETE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authenticationService.Authorize(authorizeAction);
+
+            if (!authorizationResult.Data)
+                return authorizationResult;
 
             Contact contact = user.Contacts.Where(p => p.Id == contactId).FirstOrDefault();
 
@@ -179,9 +200,14 @@ namespace Core.Services.LodgingDomain
         {
             User user = (await GetUsers(id: userId)).Data.FirstOrDefault();
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(user.Id, resourceAccessorId);
-            if (!authenticationResult.Data)
-                return authenticationResult;
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(userId, nameof(User)),
+                new Operation(Operation.Type.DELETE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authenticationService.Authorize(authorizeAction);
+
+            if (!authorizationResult.Data)
+                return authorizationResult;
 
             if (user == null)
                 return new NotFoundResult<bool>(Errors.USER_NOT_FOUND);
@@ -196,9 +222,14 @@ namespace Core.Services.LodgingDomain
         {
             ApprovingData updateThisApprovingData = (await GetApprovingData(approvingDataId: approvingDataId)).Data.FirstOrDefault();
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(updateThisApprovingData.UserId, resourceAccessorId);
-            if (!authenticationResult.Data)
-                return authenticationResult;
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(updateThisApprovingData.UserId, nameof(ApprovingData)),
+                new Operation(Operation.Type.UPDATE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authenticationService.Authorize(authorizeAction);
+
+            if (!authorizationResult.Data)
+                return authorizationResult;
 
             if (updateThisApprovingData == null)
                 return new NotFoundResult<bool>(Errors.APPROVING_DATA_NOT_FOUND);
@@ -226,9 +257,14 @@ namespace Core.Services.LodgingDomain
         {
             Contact updateThisContact = (await GetContacts(id: contactId)).Data.FirstOrDefault();
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(updateThisContact.UserId, resourceAccessorId);
-            if (!authenticationResult.Data)
-                return authenticationResult;
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(updateThisContact.UserId, nameof(Contact)),
+                new Operation(Operation.Type.UPDATE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authenticationService.Authorize(authorizeAction);
+
+            if (!authorizationResult.Data)
+                return authorizationResult;
 
             if (updateThisContact == null)
                 return new NotFoundResult<bool>(Errors.CONTACT_NOT_FOUND);
@@ -250,9 +286,14 @@ namespace Core.Services.LodgingDomain
         {
             User updateThisUser = (await GetUsers(id: userId)).Data.FirstOrDefault();
 
-            Result<bool> authenticationResult = await _authenticationService.IsAuthorized(updateThisUser.Id, resourceAccessorId);
-            if (!authenticationResult.Data)
-                return authenticationResult;
+            AuthorizeAction authorizeAction = new AuthorizeAction(
+                new Entity(updateThisUser.Id, nameof(User)),
+                new Operation(Operation.Type.UPDATE),
+                new User(resourceAccessorId));
+            Result<bool> authorizationResult = await _authenticationService.Authorize(authorizeAction);
+
+            if (!authorizationResult.Data)
+                return authorizationResult;
 
             if (updateThisUser == null)
                 return new NotFoundResult<bool>(Errors.USER_NOT_FOUND);

@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Hotel5000_Api\Auth\Auth.csproj" />
     <ProjectReference Include="..\..\src\Hotel5000_Api\Core\Core.csproj" />
     <ProjectReference Include="..\..\src\Hotel5000_Api\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\Hotel5000_Api\Web\Web.csproj" />

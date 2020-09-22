@@ -2,6 +2,7 @@
 using Core.Entities.LodgingEntities;
 using Core.Helpers.Results;
 using Core.Interfaces;
+using Core.Interfaces.Authentication;
 using Core.Interfaces.LodgingDomain;
 using Core.Interfaces.LodgingDomain.UserManagementService;
 using Core.Services.LodgingDomain;
@@ -23,12 +24,12 @@ namespace Web.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly IAuthenticationService _authenticationService;
+        private readonly IAuthentication _authenticationService;
         private readonly IUserService _userService;
         private readonly AuthenticationOptions _options;
         private readonly IMapper _mapper;
 
-        public AuthenticationController(IAuthenticationService authenticationService,
+        public AuthenticationController(IAuthentication authenticationService,
             ISetting<AuthenticationOptions> settings,
             IMapper mapper,
             IUserService userService)
