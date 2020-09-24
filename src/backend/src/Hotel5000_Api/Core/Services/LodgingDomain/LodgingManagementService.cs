@@ -49,12 +49,12 @@ namespace Core.Services.LodgingDomain
             _currencyRepository = currecyRepository;
         }
         #region add
-        public async Task<Result<bool>> AddLodging(Lodging lodging, string lodgingType, int resourceAccessorId)
+        public async Task<Result<bool>> AddLodging(Lodging lodging, string lodgingType)
         {
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(lodging.UserId, nameof(Lodging)),
+                new Entity(nameof(Lodging)),
                 new Operation(Operation.Type.CREATE),
-                new User(resourceAccessorId));
+                new EntityOwner(lodging.UserId));
             Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -73,7 +73,7 @@ namespace Core.Services.LodgingDomain
             lodging.LodgingTypeId = lodgingTypeEntity.Id;
 
 
-            ApprovingData userData = (await _userManagementService.GetApprovingData(approvingDataOwnerId: resourceAccessorId)).Data.FirstOrDefault();
+            ApprovingData userData = (await _userManagementService.GetApprovingData(approvingDataOwnerId: lodging.UserId)).Data.FirstOrDefault();
             if (userData == null ||
                 (lodgingTypeAsEnum == LodgingTypes.Company &&
                 userData.RegistrationNumber == null) ||
@@ -96,21 +96,21 @@ namespace Core.Services.LodgingDomain
 
             foreach (LodgingAddress address in lodgingAddresses)
             {
-                var result = await AddLodgingAddress(address, address.Country.Code, resourceAccessorId);
+                var result = await AddLodgingAddress(address, address.Country.Code);
                 if (result.ResultType != ResultType.Ok)
                     return result;
             }
 
             foreach (Room room in rooms)
             {
-                var result = await AddRoom(room, room.Currency.Name, resourceAccessorId);
+                var result = await AddRoom(room, room.Currency.Name);
                 if (result.ResultType != ResultType.Ok)
                     return result;
             }
 
             foreach (ReservationWindow reservationWindow in reservationWindows)
             { 
-                var result = await AddReservationWindow(reservationWindow, resourceAccessorId);
+                var result = await AddReservationWindow(reservationWindow);
                 if (result.ResultType != ResultType.Ok)
                     return result;
             }
@@ -118,7 +118,7 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> AddLodgingAddress(LodgingAddress lodgingAddress, string countryCode, int resourceAccessorId)
+        public async Task<Result<bool>> AddLodgingAddress(LodgingAddress lodgingAddress, string countryCode)
         {
             Lodging lodging = ((await GetLodging(id: lodgingAddress.LodgingId)).Data).FirstOrDefault();
 
@@ -126,9 +126,9 @@ namespace Core.Services.LodgingDomain
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(lodging.UserId, nameof(LodgingAddress)),
+                new Entity(nameof(LodgingAddress)),
                 new Operation(Operation.Type.CREATE),
-                new User(resourceAccessorId));
+                new EntityOwner(lodging.UserId));
             Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -173,7 +173,7 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> AddReservationWindow(ReservationWindow reservationWindow, int resourceAccessorId)
+        public async Task<Result<bool>> AddReservationWindow(ReservationWindow reservationWindow)
         {
             Lodging lodging = ((await GetLodging(id: reservationWindow.LodgingId)).Data).FirstOrDefault();
 
@@ -181,9 +181,9 @@ namespace Core.Services.LodgingDomain
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(lodging.UserId, nameof(ReservationWindow)),
+                new Entity(nameof(ReservationWindow)),
                 new Operation(Operation.Type.CREATE),
-                new User(resourceAccessorId));
+                new EntityOwner(lodging.UserId));
             Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -201,7 +201,7 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> AddRoom(Room room, string currencyName, int resourceAccessorId)
+        public async Task<Result<bool>> AddRoom(Room room, string currencyName)
         {
             Lodging lodging = ((await GetLodging(id: room.LodgingId)).Data).FirstOrDefault();
 
@@ -213,9 +213,9 @@ namespace Core.Services.LodgingDomain
                 return new NotFoundResult<bool>(Errors.CURRENCY_NOT_FOUND);
 
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(lodging.UserId, nameof(Room)),
+                new Entity(nameof(Room)),
                 new Operation(Operation.Type.CREATE),
-                new User(resourceAccessorId));
+                new EntityOwner(lodging.UserId));
             Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -327,16 +327,16 @@ namespace Core.Services.LodgingDomain
         }
         #endregion
         #region remove
-        public async Task<Result<bool>> RemoveLodging(int lodgingId, int resourceAccessorId)
+        public async Task<Result<bool>> RemoveLodging(int lodgingId)
         {
             Lodging removeThisLodging = (await GetLodging(id: lodgingId)).Data.FirstOrDefault();
             if (removeThisLodging == null)
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(removeThisLodging.UserId, nameof(Lodging)),
+                new Entity(nameof(Lodging)),
                 new Operation(Operation.Type.DELETE),
-                new User(resourceAccessorId));
+                new EntityOwner(removeThisLodging.UserId));
             Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -346,7 +346,7 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> RemoveLodgingAddress(int lodgingAddressId, int resourceAccessorId)
+        public async Task<Result<bool>> RemoveLodgingAddress(int lodgingAddressId)
         {
             LodgingAddress removeThisLodgingAddress = (await GetLodgingAddress(id: lodgingAddressId)).Data.FirstOrDefault();
             if (removeThisLodgingAddress == null)
@@ -357,9 +357,9 @@ namespace Core.Services.LodgingDomain
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(lodging.UserId, nameof(LodgingAddress)),
+                new Entity(nameof(LodgingAddress)),
                 new Operation(Operation.Type.DELETE),
-                new User(resourceAccessorId));
+                new EntityOwner(lodging.UserId));
             Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -369,7 +369,7 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> RemoveReservationWindow(int reservationWindowId, int resourceAccessorId)
+        public async Task<Result<bool>> RemoveReservationWindow(int reservationWindowId)
         {
             ReservationWindow removeThisReservationWindow = (await GetReservationWindow(id: reservationWindowId)).Data.FirstOrDefault();
             if (removeThisReservationWindow == null)
@@ -380,9 +380,9 @@ namespace Core.Services.LodgingDomain
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(lodging.UserId, nameof(ReservationWindow)),
+                new Entity(nameof(ReservationWindow)),
                 new Operation(Operation.Type.DELETE),
-                new User(resourceAccessorId));
+                new EntityOwner(lodging.UserId));
             Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -392,7 +392,7 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> RemoveRoom(int roomId, int resourceAccessorId)
+        public async Task<Result<bool>> RemoveRoom(int roomId)
         {
             Room removeThisRoom = (await GetRoom(id: roomId)).Data.FirstOrDefault();
             if (removeThisRoom == null)
@@ -403,9 +403,9 @@ namespace Core.Services.LodgingDomain
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(lodging.UserId, nameof(Room)),
+                new Entity(nameof(Room)),
                 new Operation(Operation.Type.DELETE),
-                new User(resourceAccessorId));
+                new EntityOwner(lodging.UserId));
             Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -416,16 +416,16 @@ namespace Core.Services.LodgingDomain
         }
         #endregion
         #region update
-        public async Task<Result<bool>> UpdateLodging(Lodging newLodging, int oldLodgingId, int resourceAccessorId)
+        public async Task<Result<bool>> UpdateLodging(Lodging newLodging, int oldLodgingId)
         {
             Lodging updateThisLodging = (await GetLodging(id: oldLodgingId)).Data.FirstOrDefault();
             if (updateThisLodging == null)
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(updateThisLodging.UserId, nameof(Lodging)),
+                new Entity(nameof(Lodging)),
                 new Operation(Operation.Type.UPDATE),
-                new User(resourceAccessorId));
+                new EntityOwner(updateThisLodging.UserId));
             Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -438,7 +438,7 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> UpdateLodgingAddress(LodgingAddress newLodgingAddress, int oldLodgingAddressId, int resourceAccessorId)
+        public async Task<Result<bool>> UpdateLodgingAddress(LodgingAddress newLodgingAddress, int oldLodgingAddressId)
         {
             LodgingAddress updateThisLodgingAddress = (await GetLodgingAddress(id: oldLodgingAddressId)).Data.FirstOrDefault();
             if (updateThisLodgingAddress == null)
@@ -453,9 +453,9 @@ namespace Core.Services.LodgingDomain
                 return new NotFoundResult<bool>(Errors.COUNTRY_NOT_FOUND);
 
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(lodging.UserId, nameof(LodgingAddress)),
+                new Entity(nameof(LodgingAddress)),
                 new Operation(Operation.Type.UPDATE),
-                new User(resourceAccessorId));
+                new EntityOwner(lodging.UserId));
             Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -490,7 +490,7 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> UpdateReservationWindow(ReservationWindow newReservationWindow, int oldReservationWindowId, int resourceAccessorId)
+        public async Task<Result<bool>> UpdateReservationWindow(ReservationWindow newReservationWindow, int oldReservationWindowId)
         {
             ReservationWindow updateThisReservationWindow = (await GetReservationWindow(id: oldReservationWindowId)).Data.FirstOrDefault();
             if (updateThisReservationWindow == null)
@@ -501,9 +501,9 @@ namespace Core.Services.LodgingDomain
                 return new NotFoundResult<bool>(Errors.LODGING_NOT_FOUND);
 
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(lodging.UserId, nameof(ReservationWindow)),
+                new Entity(nameof(ReservationWindow)),
                 new Operation(Operation.Type.UPDATE),
-                new User(resourceAccessorId));
+                new EntityOwner(lodging.UserId));
             Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -521,7 +521,7 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> UpdateRoom(Room newRoom, int oldRoomId, int resourceAccessorId)
+        public async Task<Result<bool>> UpdateRoom(Room newRoom, int oldRoomId)
         {
             Room updateThisRoom = (await GetRoom(id: oldRoomId)).Data.FirstOrDefault();
             if (updateThisRoom == null)
@@ -536,9 +536,9 @@ namespace Core.Services.LodgingDomain
                 return new NotFoundResult<bool>(Errors.CURRENCY_NOT_FOUND);
 
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(lodging.UserId, nameof(Room)),
+                new Entity(nameof(Room)),
                 new Operation(Operation.Type.UPDATE),
-                new User(resourceAccessorId));
+                new EntityOwner(lodging.UserId));
             Result<bool> authorizationResult = await _authorizationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)

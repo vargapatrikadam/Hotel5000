@@ -20,12 +20,10 @@ namespace Core.Interfaces.LodgingDomain.LodgingManagementService
             int? take = null);
 
         Task<Result<bool>> UpdateLodging(Lodging newLodging,
-            int oldLodgingId,
-            int resourceAccessorId);
+            int oldLodgingId);
 
-        Task<Result<bool>> RemoveLodging(int lodgingId,
-            int resourceAccessorId);
+        Task<Result<bool>> RemoveLodging(int lodgingId);
 
-        Task<Result<bool>> AddLodging(Lodging lodging, string lodgingType, int resourceAccessorId);
+        Task<Result<bool>> AddLodging(Lodging lodging, string lodgingType);
     }
 }

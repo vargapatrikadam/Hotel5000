@@ -10,9 +10,8 @@ namespace Core.Entities.Authentication
         {
 
         }
-        public Entity(int id, string name)
+        public Entity(string name)
         {
-            this.Id = id;
             this.Name = name;
         }
         public string Name { get; set; }

@@ -28,16 +28,19 @@ namespace Web.Controllers
         private readonly IUserService _userService;
         private readonly AuthenticationOptions _options;
         private readonly IMapper _mapper;
+        private readonly IAuthorization _authorizationService;
 
         public AuthenticationController(IAuthentication authenticationService,
             ISetting<AuthenticationOptions> settings,
             IMapper mapper,
-            IUserService userService)
+            IUserService userService,
+            IAuthorization authorizationService)
         {
             _authenticationService = authenticationService;
             _options = settings.Option;
             _mapper = mapper;
             _userService = userService;
+            _authorizationService = authorizationService;
         }
 
         private string GenerateToken(User user)

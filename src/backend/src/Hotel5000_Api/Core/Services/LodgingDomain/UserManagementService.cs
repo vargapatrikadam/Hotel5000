@@ -39,13 +39,12 @@ namespace Core.Services.LodgingDomain
             _authenticationService = authenticationService;
         }
 
-        public async Task<Result<bool>> AddApprovingData(ApprovingData newApprovingData,
-            int resourceAccessorId)
+        public async Task<Result<bool>> AddApprovingData(ApprovingData newApprovingData)
         {
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(newApprovingData.UserId, nameof(ApprovingData)),
+                new Entity(nameof(ApprovingData)),
                 new Operation(Operation.Type.CREATE),
-                new User(resourceAccessorId));
+                new EntityOwner(newApprovingData.UserId));
             Result<bool> authorizationResult = await _authenticationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -63,13 +62,12 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> AddContact(Contact contact,
-            int resourceAccessorId)
+        public async Task<Result<bool>> AddContact(Contact contact)
         {
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(contact.UserId, nameof(Contact)),
+                new Entity(nameof(Contact)),
                 new Operation(Operation.Type.CREATE),
-                new User(resourceAccessorId));
+                new EntityOwner(contact.UserId));
             Result<bool> authorizationResult = await _authenticationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -82,8 +80,7 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> AddUser(User user,
-            string role)
+        public async Task<Result<bool>> AddUser(User user, string role)
         {
             if (await _userRepository.AnyAsync(p => p.Email == user.Email))
                 return new ConflictResult<bool>(Errors.EMAIL_NOT_UNIQUE);
@@ -151,15 +148,14 @@ namespace Core.Services.LodgingDomain
 
             return new SuccessfulResult<IReadOnlyList<Contact>>(await _contactRepository.GetAsync(specification));
         }
-        public async Task<Result<bool>> RemoveApprovingData(int approvingDataOwnerId,
-            int resourceAccessorId)
+        public async Task<Result<bool>> RemoveApprovingData(int approvingDataOwnerId)
         {
             ApprovingData approvingData = (await GetApprovingData(approvingDataOwnerId: approvingDataOwnerId)).Data.FirstOrDefault();
 
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(approvingDataOwnerId, nameof(ApprovingData)),
+                new Entity(nameof(ApprovingData)),
                 new Operation(Operation.Type.DELETE),
-                new User(resourceAccessorId));
+                new EntityOwner(approvingData.UserId));
             Result<bool> authorizationResult = await _authenticationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -171,16 +167,14 @@ namespace Core.Services.LodgingDomain
             await _approvingDataRepository.DeleteAsync(approvingData);
             return new SuccessfulResult<bool>(true);
         }
-        public async Task<Result<bool>> RemoveContact(int contactOwnerId,
-            int contactId,
-            int resourceAccessorId)
+        public async Task<Result<bool>> RemoveContact(int contactOwnerId, int contactId)
         {
             User user = (await GetUsers(id: contactOwnerId)).Data.FirstOrDefault();
 
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(contactOwnerId, nameof(Contact)),
+                new Entity(nameof(Contact)),
                 new Operation(Operation.Type.DELETE),
-                new User(resourceAccessorId));
+                new EntityOwner(user.Id));
             Result<bool> authorizationResult = await _authenticationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -195,15 +189,14 @@ namespace Core.Services.LodgingDomain
             return new SuccessfulResult<bool>(true);
         }
 
-        public async Task<Result<bool>> RemoveUser(int userId,
-            int resourceAccessorId)
+        public async Task<Result<bool>> RemoveUser(int userId)
         {
             User user = (await GetUsers(id: userId)).Data.FirstOrDefault();
 
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(userId, nameof(User)),
+                new Entity(nameof(User)),
                 new Operation(Operation.Type.DELETE),
-                new User(resourceAccessorId));
+                new EntityOwner(user.Id));
             Result<bool> authorizationResult = await _authenticationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -217,15 +210,14 @@ namespace Core.Services.LodgingDomain
         }
 
         public async Task<Result<bool>> UpdateApprovingData(ApprovingData newApprovingData,
-            int approvingDataId,
-            int resourceAccessorId)
+            int approvingDataId)
         {
             ApprovingData updateThisApprovingData = (await GetApprovingData(approvingDataId: approvingDataId)).Data.FirstOrDefault();
 
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(updateThisApprovingData.UserId, nameof(ApprovingData)),
+                new Entity(nameof(ApprovingData)),
                 new Operation(Operation.Type.UPDATE),
-                new User(resourceAccessorId));
+                new EntityOwner(updateThisApprovingData.UserId));
             Result<bool> authorizationResult = await _authenticationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -252,15 +244,14 @@ namespace Core.Services.LodgingDomain
         }
 
         public async Task<Result<bool>> UpdateContact(Contact newContact,
-            int contactId,
-            int resourceAccessorId)
+            int contactId)
         {
             Contact updateThisContact = (await GetContacts(id: contactId)).Data.FirstOrDefault();
 
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(updateThisContact.UserId, nameof(Contact)),
+                new Entity(nameof(Contact)),
                 new Operation(Operation.Type.UPDATE),
-                new User(resourceAccessorId));
+                new EntityOwner(updateThisContact.UserId));
             Result<bool> authorizationResult = await _authenticationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)
@@ -281,15 +272,14 @@ namespace Core.Services.LodgingDomain
         }
 
         public async Task<Result<bool>> UpdateUser(User newUser,
-            int userId,
-            int resourceAccessorId)
+            int userId)
         {
             User updateThisUser = (await GetUsers(id: userId)).Data.FirstOrDefault();
 
             AuthorizeAction authorizeAction = new AuthorizeAction(
-                new Entity(updateThisUser.Id, nameof(User)),
+                new Entity(nameof(User)),
                 new Operation(Operation.Type.UPDATE),
-                new User(resourceAccessorId));
+                new EntityOwner(updateThisUser.Id));
             Result<bool> authorizationResult = await _authenticationService.Authorize(authorizeAction);
 
             if (!authorizationResult.Data)

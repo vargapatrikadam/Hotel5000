@@ -185,6 +185,9 @@ namespace Web.Helpers
 
             services.AddSingleton<ISetting<AuthenticationOptions>>(new Setting<AuthenticationOptions>
                 (authenticationOptions));
+
+            services.AddScoped<IAuthentication, AuthenticationService>();
+            services.AddScoped<IAuthorization, AuthorizationService>();
         }
     }
 }

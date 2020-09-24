@@ -121,7 +121,7 @@ namespace Web.Controllers
         [AuthorizeRoles]
         public async Task<IActionResult> DeleteUser(int userId)
         {
-            var result = await _userManagementService.RemoveUser(userId, int.Parse(User.Identity.Name));
+            var result = await _userManagementService.RemoveUser(userId);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -145,7 +145,7 @@ namespace Web.Controllers
         [AuthorizeRoles]
         public async Task<IActionResult> DeleteApprovingData(int userId)
         {
-            var result = await _userManagementService.RemoveApprovingData(userId, int.Parse(User.Identity.Name));
+            var result = await _userManagementService.RemoveApprovingData(userId);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -170,7 +170,7 @@ namespace Web.Controllers
         [AuthorizeRoles]
         public async Task<IActionResult> DeleteContact(int userId, int contactId)
         {
-            var result = await _userManagementService.RemoveContact(userId, contactId, int.Parse(User.Identity.Name));
+            var result = await _userManagementService.RemoveContact(userId, contactId);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -199,7 +199,7 @@ namespace Web.Controllers
         [AuthorizeRoles]
         public async Task<IActionResult> UpdateContact([FromBody] ContactDto updatedContact, int contactId)
         {
-            var result = await _userManagementService.UpdateContact(_mapper.Map<Contact>(updatedContact), contactId, int.Parse(User.Identity.Name));
+            var result = await _userManagementService.UpdateContact(_mapper.Map<Contact>(updatedContact), contactId);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -230,7 +230,7 @@ namespace Web.Controllers
         [AuthorizeRoles]
         public async Task<IActionResult> UpdateApprovingData([FromBody] ApprovingDataDto updatedApprovingData, int approvingDataId)
         {
-            var result = await _userManagementService.UpdateApprovingData(_mapper.Map<ApprovingData>(updatedApprovingData), approvingDataId, int.Parse(User.Identity.Name));
+            var result = await _userManagementService.UpdateApprovingData(_mapper.Map<ApprovingData>(updatedApprovingData), approvingDataId);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -262,7 +262,7 @@ namespace Web.Controllers
         [AuthorizeRoles]
         public async Task<IActionResult> UpdateUser([FromBody] UserDto updatedUser, int userId)
         {
-            var result = await _userManagementService.UpdateUser(_mapper.Map<User>(updatedUser), userId, int.Parse(User.Identity.Name));
+            var result = await _userManagementService.UpdateUser(_mapper.Map<User>(updatedUser), userId);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -293,7 +293,7 @@ namespace Web.Controllers
         {
             var newContact = _mapper.Map<Contact>(newContactDto);
             newContact.UserId = userId;
-            var result = await _userManagementService.AddContact(newContact, int.Parse(User.Identity.Name));
+            var result = await _userManagementService.AddContact(newContact);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -326,7 +326,7 @@ namespace Web.Controllers
         {
             var newApprovingData = _mapper.Map<ApprovingData>(newApprovingDataDto);
             newApprovingData.UserId = userId;
-            var result = await _userManagementService.AddApprovingData(newApprovingData, int.Parse(User.Identity.Name));
+            var result = await _userManagementService.AddApprovingData(newApprovingData);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);

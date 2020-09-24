@@ -13,10 +13,8 @@ namespace Core.Interfaces.LodgingDomain.UserManagementService
             int? skip = null,
             int? take = null);
         Task<Result<bool>> UpdateUser(User newUser,
-            int userId,
-            int resourceAccessorId);
-        Task<Result<bool>> RemoveUser(int userId,
-            int resourceAccessorId);
+            int userId);
+        Task<Result<bool>> RemoveUser(int userId);
         Task<Result<bool>> AddUser(User newUser,
             string role);
         Task<Result<bool>> ChangePassword(int userId,

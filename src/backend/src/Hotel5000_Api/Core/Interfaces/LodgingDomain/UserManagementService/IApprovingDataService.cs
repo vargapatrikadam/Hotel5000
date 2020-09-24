@@ -7,9 +7,9 @@ namespace Core.Interfaces.LodgingDomain.UserManagementService
 {
     public interface IApprovingDataService
     {
-        Task<Result<bool>> AddApprovingData(ApprovingData newApprovingData, int resourceAccessorId);
-        Task<Result<bool>> RemoveApprovingData(int approvingDataOwnerId, int resourceAccessorId);
-        Task<Result<bool>> UpdateApprovingData(ApprovingData newApprovingData, int approvingDataId, int resourceAccessorId);
+        Task<Result<bool>> AddApprovingData(ApprovingData newApprovingData);
+        Task<Result<bool>> RemoveApprovingData(int approvingDataOwnerId);
+        Task<Result<bool>> UpdateApprovingData(ApprovingData newApprovingData, int approvingDataId);
         Task<Result<IReadOnlyList<ApprovingData>>> GetApprovingData(int? approvingDataOwnerId = null,
             int? approvingDataId = null,
             string username = null,

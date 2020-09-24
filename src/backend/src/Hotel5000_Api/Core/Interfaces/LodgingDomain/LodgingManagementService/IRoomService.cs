@@ -15,13 +15,11 @@ namespace Core.Interfaces.LodgingDomain.LodgingManagementService
             double? priceMax = null);
 
         Task<Result<bool>> UpdateRoom(Room newRoom,
-            int oldRoomId,
-            int resourceAccessorId);
+            int oldRoomId);
 
-        Task<Result<bool>> RemoveRoom(int roomId,
-            int resourceAccessorId);
+        Task<Result<bool>> RemoveRoom(int roomId);
 
-        Task<Result<bool>> AddRoom(Room room, string currencyName, int resourceAccessorId);
+        Task<Result<bool>> AddRoom(Room room, string currencyName);
 
         Task<Result<IReadOnlyList<Currency>>> GetCurrency(int? id = null,
             string name = null);

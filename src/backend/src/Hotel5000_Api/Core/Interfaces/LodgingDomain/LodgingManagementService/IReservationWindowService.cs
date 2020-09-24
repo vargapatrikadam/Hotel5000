@@ -13,12 +13,10 @@ namespace Core.Interfaces.LodgingDomain.LodgingManagementService
             DateTime? isAfter = null,
             DateTime? isBefore = null);
         Task<Result<bool>> UpdateReservationWindow(ReservationWindow newReservationWindow,
-        int oldReservationWindowId,
-        int resourceAccessorId);
+        int oldReservationWindowId);
 
-        Task<Result<bool>> RemoveReservationWindow(int reservationWindowId,
-            int resourceAccessorId);
+        Task<Result<bool>> RemoveReservationWindow(int reservationWindowId);
 
-        Task<Result<bool>> AddReservationWindow(ReservationWindow reservationWindow, int resourceAccessorId);
+        Task<Result<bool>> AddReservationWindow(ReservationWindow reservationWindow);
     }
 }

@@ -17,13 +17,11 @@ namespace Core.Interfaces.LodgingDomain.LodgingManagementService
             string lodgingName = null);
 
         Task<Result<bool>> UpdateLodgingAddress(LodgingAddress newLodgingAddress,
-            int oldLodgingAddressId,
-            int resourceAccessorId);
+            int oldLodgingAddressId);
 
-        Task<Result<bool>> RemoveLodgingAddress(int lodgingAddressId,
-            int resourceAccessorId);
+        Task<Result<bool>> RemoveLodgingAddress(int lodgingAddressId);
 
-        Task<Result<bool>> AddLodgingAddress(LodgingAddress lodgingAddress, string countryCode, int resourceAccessorId);
+        Task<Result<bool>> AddLodgingAddress(LodgingAddress lodgingAddress, string countryCode);
 
         Task<Result<IReadOnlyList<Country>>> GetCountry(int? id = null,
             string name = null,

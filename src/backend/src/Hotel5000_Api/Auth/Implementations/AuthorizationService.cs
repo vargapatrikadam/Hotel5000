@@ -23,17 +23,20 @@ namespace Auth.Implementations
         private readonly IAsyncRepository<Operation> _operationRepository;
         private readonly IAsyncRepository<Entity> _entityRepository;
         private readonly IAsyncRepository<Rule> _ruleRepository;
+        private readonly IUserIdentity _userIdentity;
         public AuthorizationService(IAsyncRepository<User> userRepository,
             IAsyncRepository<BaseRole> baseRoleRepository,
             IAsyncRepository<Operation> operationRepository,
             IAsyncRepository<Entity> entityRepository,
-            IAsyncRepository<Rule> ruleRepository)
+            IAsyncRepository<Rule> ruleRepository,
+            IUserIdentity userIdentity)
         {
             _userRepository = userRepository;
             _baseRoleRepository = baseRoleRepository;
             _operationRepository = operationRepository;
             _entityRepository = entityRepository;
             _ruleRepository = ruleRepository;
+            _userIdentity = userIdentity;
         }
         private async Task<Result<bool>> CanModify(int resourceOwnerId, int accessingUserId)
         {
@@ -55,9 +58,9 @@ namespace Auth.Implementations
 
         public async Task<Result<bool>> Authorize(AuthorizeAction action)
         {
-            var getAccessingUserSpecification = new GetUserByIdWithRole(action.EntityAccessorId);
+            var getAccessingUserSpecification = new GetUserByIdWithRole(int.Parse(_userIdentity.Username));
             User accessingUser = (await _userRepository.GetAsync(getAccessingUserSpecification)).FirstOrDefault();
-            if (action.IsAnonymous && accessingUser == null)
+            if (_userIdentity.Role != RoleType.ANONYMOUS && accessingUser == null)
                 return new NotFoundResult<bool>(Errors.ACCESSING_USER_NOT_FOUND);
 
             var getRoleSpecification = new GetRoleByName(accessingUser.Role.Name);
@@ -87,7 +90,7 @@ namespace Auth.Implementations
             if (!isAuthorized)
                 return new UnauthorizedResult<bool>(Errors.UNAUTHORIZED);
 
-            Result<bool> canModify = await CanModify(action.EntityAccessorId, action.UserId);
+            Result<bool> canModify = await CanModify(action.ResourceOwnerId, int.Parse(_userIdentity.Username));
             if (!canModify.Data)
                 return canModify;
 
