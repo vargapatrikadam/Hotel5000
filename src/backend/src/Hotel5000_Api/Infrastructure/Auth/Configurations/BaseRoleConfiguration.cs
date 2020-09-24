@@ -16,6 +16,9 @@ namespace Infrastructure.Auth.Configurations
 
             builder.EnableSoftDeletion();
 
+            builder.Property(p => p.CanEditOthers)
+                .IsRequired();
+
             builder.Property(p => p.Name)
                 .IsRequired()
                 .HasConversion<string>();

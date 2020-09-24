@@ -38,7 +38,7 @@ namespace Auth.Implementations
             _ruleRepository = ruleRepository;
             _userIdentity = userIdentity;
         }
-        private async Task<Result<bool>> CanModify(int resourceOwnerId, int accessingUserId)
+        private async Task<Result<bool>> CanModify(int resourceOwnerId, int accessingUserId, BaseRole initiatingRole)
         {
             var getResourceOwnerSpecification = new GetUserByIdWithRole(resourceOwnerId);
             User resourceOwner = (await _userRepository.GetAsync(getResourceOwnerSpecification)).FirstOrDefault();
@@ -50,7 +50,7 @@ namespace Auth.Implementations
             if (accessingUser == null)
                 return new NotFoundResult<bool>(Errors.ACCESSING_USER_NOT_FOUND);
 
-            if (accessingUser.Role.Name == RoleType.ADMIN
+            if (initiatingRole.CanEditOthers
                 || accessingUser.Id == resourceOwner.Id)
                 return new SuccessfulResult<bool>(true);
             else return new UnauthorizedResult<bool>(Errors.UNAUTHORIZED);
@@ -84,13 +84,14 @@ namespace Auth.Implementations
                 initiatedOperation.Id,
                 initiatedOnEntity.Id);
 
-            bool isAuthorized = 
-                (await _ruleRepository.GetAsync(getRuleSpecification)).FirstOrDefault() == null ? false : true;
+            Rule rule = (await _ruleRepository.GetAsync(getRuleSpecification)).FirstOrDefault();
+            bool isAuthorized =
+                rule != null ? rule.IsAllowed : false;
 
             if (!isAuthorized)
                 return new UnauthorizedResult<bool>(Errors.UNAUTHORIZED);
 
-            Result<bool> canModify = await CanModify(action.ResourceOwnerId, int.Parse(_userIdentity.Username));
+            Result<bool> canModify = await CanModify(action.ResourceOwnerId, int.Parse(_userIdentity.Username), initiatingRole);
             if (!canModify.Data)
                 return canModify;
 

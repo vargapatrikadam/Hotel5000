@@ -16,6 +16,9 @@ namespace Infrastructure.Auth.Configurations
 
             builder.EnableSoftDeletion();
 
+            builder.Property(p => p.IsAllowed)
+                .IsRequired();
+
             builder.HasOne(p => p.Entity)
                 .WithMany(p => p.Rules)
                 .IsRequired()
