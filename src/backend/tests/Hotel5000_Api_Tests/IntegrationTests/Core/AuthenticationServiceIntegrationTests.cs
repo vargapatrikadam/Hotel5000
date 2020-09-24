@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Core.Entities.LodgingEntities;
-using Core.Helpers.Results;
-using Core.Interfaces;
-using Core.Interfaces.LodgingDomain;
-using Core.Services.LodgingDomain;
+using Core.Entities.Domain;
+using Core.Results;
+using Core.Interfaces.Authentication;
 using Hotel5000_Api_Tests.IntegrationTests.Core.Helpers;
 using Hotel5000_Api_Tests.IntegrationTests.Core.Helpers.Authentication;
 using Hotel5000_Api_Tests.UnitTests.Data;
 using Xunit;
+using Auth.Services.Authentication;
 
 namespace Hotel5000_Api_Tests.IntegrationTests.Core
 {
@@ -22,7 +21,7 @@ namespace Hotel5000_Api_Tests.IntegrationTests.Core
             string dbName = "invalid";
             var userRepo = RepositoryHelpers.GetTestUserRepository(dbName);
             var tokenRepo = RepositoryHelpers.GetTestTokenRepository(dbName);
-            IAuthenticationService service = new AuthenticationService(
+            IAuthentication service = new AuthenticationService(
                 userRepo,
                 tokenRepo,
                 AuthentiationDependencies.GetPasswordHasher(),
@@ -44,7 +43,7 @@ namespace Hotel5000_Api_Tests.IntegrationTests.Core
             testUser.Password = passwordHasher.Hash(testUser.Password);
             await userRepo.AddAsync(testUser);
 
-            IAuthenticationService service = new AuthenticationService(
+            IAuthentication service = new AuthenticationService(
                 userRepo,
                 tokenRepo,
                 passwordHasher,
@@ -67,7 +66,7 @@ namespace Hotel5000_Api_Tests.IntegrationTests.Core
             testUser.Password = passwordHasher.Hash(testUser.Password);
             await userRepo.AddAsync(testUser);
 
-            IAuthenticationService service = new AuthenticationService(
+            IAuthentication service = new AuthenticationService(
                 userRepo,
                 tokenRepo,
                 passwordHasher,

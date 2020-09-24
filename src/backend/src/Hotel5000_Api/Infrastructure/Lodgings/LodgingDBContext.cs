@@ -1,4 +1,4 @@
-﻿using Core.Entities.LodgingEntities;
+﻿using Core.Entities.Domain;
 using Infrastructure.Helpers;
 using Infrastructure.Lodgings.Configurations;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +33,7 @@ namespace Infrastructure.Lodgings
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsDerivedFromInterface<ILodgingConfigurationAggregate>();
-            modelBuilder.ApplyConfigurationsFromAssembly(System.Reflection.Assembly.GetExecutingAssembly());
+            //modelBuilder.ApplyConfigurationsFromAssembly(System.Reflection.Assembly.GetExecutingAssembly());
         }
 
         public override int SaveChanges()

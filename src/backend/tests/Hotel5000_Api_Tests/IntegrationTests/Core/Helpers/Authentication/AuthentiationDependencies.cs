@@ -1,8 +1,9 @@
-﻿using Core.Helpers;
+﻿using Auth.Options;
+using Core.Helpers;
+using Core.Helpers.PasswordHasher;
 using Core.Interfaces;
 using Core.Interfaces.PasswordHasher;
-using Core.Services.LodgingDomain;
-using Core.Services.PasswordHasher;
+using Domain.Services.PasswordHasher;
 using System;
 using System.Collections.Generic;
 using System.Text;

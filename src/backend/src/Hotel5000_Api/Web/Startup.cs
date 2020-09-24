@@ -1,6 +1,11 @@
+using Auth.Identity;
 using AutoMapper;
+using Core.Entities.Domain;
+using Core.Enums.Authentication;
+using Core.Interfaces.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,8 +13,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Web.DTOs;
@@ -41,6 +49,27 @@ namespace Web
 
             //if (!_env.IsEnvironment("TESTING"))
             //    services.RegisterDbContexts(Configuration);
+
+            services.AddHttpContextAccessor();
+
+            services.AddTransient<IUserIdentity>(provider =>
+                {
+                    HttpContext httpContext = provider.GetService<IHttpContextAccessor>().HttpContext;
+
+                    ClaimsIdentity claimsIdentity = httpContext.User.Identity as ClaimsIdentity;
+
+                    Claim role = claimsIdentity.FindFirst(ClaimTypes.Role);
+                    Claim username = claimsIdentity.FindFirst(ClaimTypes.Name);
+                    Claim email = claimsIdentity.FindFirst(ClaimTypes.Email);
+
+                    IUserIdentity userIdentity = new UserIdentity(role != null ? role.Value : string.Empty,
+                                                                  username != null ? username.Value : string.Empty,
+                                                                  email != null ? email.Value : string.Empty);
+
+                    return userIdentity;
+                }
+            );
+
             services.RegisterInMemoryDbContexts();
 
             services.RegisterRepositories();

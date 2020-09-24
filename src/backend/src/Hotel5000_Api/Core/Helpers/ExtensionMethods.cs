@@ -1,4 +1,4 @@
-﻿using Core.Entities.LodgingEntities;
+﻿using Core.Entities.Domain;
 using Core.Enums;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

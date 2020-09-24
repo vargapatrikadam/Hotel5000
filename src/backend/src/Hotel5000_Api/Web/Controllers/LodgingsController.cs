@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Core.Entities.LodgingEntities;
-using Core.Helpers.Results;
-using Core.Interfaces.LodgingDomain;
+using Core.Entities.Domain;
+using Core.Results;
+using Core.Interfaces.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -178,7 +178,7 @@ namespace Web.Controllers
         {
             newLodgingDto.UserId = int.Parse(User.Identity.Name);
             var newLodging = _mapper.Map<Lodging>(newLodgingDto);
-            var result = await _lodgingManagementService.AddLodging(newLodging, newLodgingDto.LodgingType, int.Parse(User.Identity.Name));
+            var result = await _lodgingManagementService.AddLodging(newLodging, newLodgingDto.LodgingType);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -212,7 +212,7 @@ namespace Web.Controllers
         public async Task<IActionResult> AddLodgingAddress([FromBody] LodgingAddressDto newLodgingAddressDto)
         {
             var newLodgingAddress = _mapper.Map<LodgingAddress>(newLodgingAddressDto);
-            var result = await _lodgingManagementService.AddLodgingAddress(newLodgingAddress, newLodgingAddressDto.CountryCode, int.Parse(User.Identity.Name));
+            var result = await _lodgingManagementService.AddLodgingAddress(newLodgingAddress, newLodgingAddressDto.CountryCode);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -242,7 +242,7 @@ namespace Web.Controllers
         public async Task<IActionResult> AddReservationWindow([FromBody] ReservationWindowDto newReservationWindowDto)
         {
             var newReservationWindow = _mapper.Map<ReservationWindow>(newReservationWindowDto);
-            var result = await _lodgingManagementService.AddReservationWindow(newReservationWindow, int.Parse(User.Identity.Name));
+            var result = await _lodgingManagementService.AddReservationWindow(newReservationWindow);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -274,7 +274,7 @@ namespace Web.Controllers
         public async Task<IActionResult> AddRoom([FromBody] RoomDto newRoomDto)
         {
             var newRoom = _mapper.Map<Room>(newRoomDto);
-            var result = await _lodgingManagementService.AddRoom(newRoom, newRoomDto.Currency,int.Parse(User.Identity.Name));
+            var result = await _lodgingManagementService.AddRoom(newRoom, newRoomDto.Currency);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -300,7 +300,7 @@ namespace Web.Controllers
         [AuthorizeRoles]
         public async Task<IActionResult> DeleteRoom(int roomId)
         {
-            var result = await _lodgingManagementService.RemoveRoom(roomId, int.Parse(User.Identity.Name));
+            var result = await _lodgingManagementService.RemoveRoom(roomId);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -324,7 +324,7 @@ namespace Web.Controllers
         [AuthorizeRoles]
         public async Task<IActionResult> DeleteLodging(int lodgingId)
         {
-            var result = await _lodgingManagementService.RemoveLodging(lodgingId, int.Parse(User.Identity.Name));
+            var result = await _lodgingManagementService.RemoveLodging(lodgingId);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -350,7 +350,7 @@ namespace Web.Controllers
         [AuthorizeRoles]
         public async Task<IActionResult> DeleteLodgingAddress(int lodgingAddressId)
         {
-            var result = await _lodgingManagementService.RemoveLodgingAddress(lodgingAddressId, int.Parse(User.Identity.Name));
+            var result = await _lodgingManagementService.RemoveLodgingAddress(lodgingAddressId);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -374,7 +374,7 @@ namespace Web.Controllers
         [AuthorizeRoles]
         public async Task<IActionResult> DeleteReservationWindow(int reservationWindowId)
         {
-            var result = await _lodgingManagementService.RemoveReservationWindow(reservationWindowId, int.Parse(User.Identity.Name));
+            var result = await _lodgingManagementService.RemoveReservationWindow(reservationWindowId);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -406,7 +406,7 @@ namespace Web.Controllers
         {
             var newLodgingData = _mapper.Map<Lodging>(newLodgingDataDto);
 
-            var result = await _lodgingManagementService.UpdateLodging(newLodgingData, updateThisLodging, int.Parse(User.Identity.Name));
+            var result = await _lodgingManagementService.UpdateLodging(newLodgingData, updateThisLodging);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -439,7 +439,7 @@ namespace Web.Controllers
         {
             var newRoomData = _mapper.Map<Room>(newRoomDataDto);
 
-            var result = await _lodgingManagementService.UpdateRoom(newRoomData, updateThisRoom, int.Parse(User.Identity.Name));
+            var result = await _lodgingManagementService.UpdateRoom(newRoomData, updateThisRoom);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -470,7 +470,7 @@ namespace Web.Controllers
         {
             var newReservationWindowData = _mapper.Map<ReservationWindow>(newReservationWindowDataDto);
 
-            var result = await _lodgingManagementService.UpdateReservationWindow(newReservationWindowData, updateThisReservationWindow, int.Parse(User.Identity.Name));
+            var result = await _lodgingManagementService.UpdateReservationWindow(newReservationWindowData, updateThisReservationWindow);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
@@ -507,7 +507,7 @@ namespace Web.Controllers
         {
             var newLodgingAddressData = _mapper.Map<LodgingAddress>(newLodgingAddressDataDto);
 
-            var result = await _lodgingManagementService.UpdateLodgingAddress(newLodgingAddressData, updateThisAddress, int.Parse(User.Identity.Name));
+            var result = await _lodgingManagementService.UpdateLodgingAddress(newLodgingAddressData, updateThisAddress);
 
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);

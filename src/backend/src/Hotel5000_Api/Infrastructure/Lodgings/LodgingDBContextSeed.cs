@@ -1,4 +1,5 @@
-﻿using Core.Entities.LodgingEntities;
+﻿using Core.Entities.Domain;
+using Core.Enums.Authentication;
 using Core.Enums.Lodging;
 using Core.Interfaces.PasswordHasher;
 using Microsoft.EntityFrameworkCore;
@@ -146,9 +147,10 @@ namespace Infrastructure.Lodgings
         {
             return new List<Role>()
             {
-                new Role() {Name = Roles.ApprovedUser},
-                new Role() {Name = Roles.Company},
-                new Role() {Name = Roles.Admin}
+                new Role() {Name = RoleType.APPROVED_USER},
+                new Role() {Name = RoleType.COMPANY},
+                new Role() {Name = RoleType.ADMIN },
+                new Role() {Name = RoleType.ANONYMOUS }
             };
         }
 

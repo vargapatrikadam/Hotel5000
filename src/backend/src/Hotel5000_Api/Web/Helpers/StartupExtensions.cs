@@ -1,17 +1,24 @@
-﻿using Core.Entities.LodgingEntities;
-using Core.Entities.LoggingEntities;
+﻿using Auth.Options;
+using Auth.Services.Authentication;
+using Auth.Services.Authorization;
+using Core.Entities.Authentication;
+using Core.Entities.Domain;
+using Core.Entities.Logging;
 using Core.Helpers;
+using Core.Helpers.PasswordHasher;
 using Core.Interfaces;
-using Core.Interfaces.LodgingDomain;
-using Core.Interfaces.LodgingDomain.LodgingManagementService;
-using Core.Interfaces.LodgingDomain.UserManagementService;
+using Core.Interfaces.Authentication;
+using Core.Interfaces.Domain;
+using Core.Interfaces.Domain.LodgingManagementService;
+using Core.Interfaces.Domain.UserManagementService;
 using Core.Interfaces.Logging;
 using Core.Interfaces.PasswordHasher;
-using Core.Services.LodgingDomain;
-using Core.Services.Logging;
-using Core.Services.PasswordHasher;
+using Domain.Services;
+using Domain.Services.PasswordHasher;
+using Infrastructure.Auth;
 using Infrastructure.Lodgings;
 using Infrastructure.Logging;
+using Logging.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -47,11 +54,16 @@ namespace Web.Helpers
                 options.UseSqlServer(configuration.GetConnectionString("LodgingDb")));
             services.AddDbContext<LoggingDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("LoggingDb")), ServiceLifetime.Singleton);
+            services.AddDbContext<AuthDbContext>(options => 
+                options.UseSqlServer(configuration.GetConnectionString("AuthDb")), ServiceLifetime.Singleton);
         }
         public static void RegisterInMemoryDbContexts(this IServiceCollection services)
         {
             services.AddDbContext<LoggingDbContext>(options =>
                 options.UseInMemoryDatabase("LoggingDb"), ServiceLifetime.Singleton);
+
+            services.AddDbContext<AuthDbContext>(options =>
+                options.UseInMemoryDatabase("AuthDb"), ServiceLifetime.Singleton);
 
             services.AddDbContext<LodgingDbContext>(options =>
                 options.UseInMemoryDatabase("LodgingDb"));
@@ -75,6 +87,11 @@ namespace Web.Helpers
             services.AddScoped<IAsyncRepository<PaymentType>, LodgingDbRepository<PaymentType>>();
             services.AddScoped<IAsyncRepository<Reservation>, LodgingDbRepository<Reservation>>();
             services.AddScoped<IAsyncRepository<ReservationItem>, LodgingDbRepository<ReservationItem>>();
+
+            services.AddScoped<IAsyncRepository<BaseRole>, AuthDbRepository<BaseRole>>();
+            services.AddScoped<IAsyncRepository<Operation>, AuthDbRepository<Operation>>();
+            services.AddScoped<IAsyncRepository<Entity>, AuthDbRepository<Entity>>();
+            services.AddScoped<IAsyncRepository<Rule>, AuthDbRepository<Rule>>();
         }
         public static void SetupSwagger(this IServiceCollection services)
         {
@@ -156,6 +173,7 @@ namespace Web.Helpers
 
             services.AddSingleton<ILoggingService, LoggingService>();
 
+            services.AddScoped<IAuthentication, AuthenticationService>();
             services.AddScoped<IUserManagementService, UserManagementService>();
             services.AddScoped<IContactService, UserManagementService>();
             services.AddScoped<IApprovingDataService, UserManagementService>();
@@ -170,7 +188,9 @@ namespace Web.Helpers
 
             services.AddSingleton<ISetting<AuthenticationOptions>>(new Setting<AuthenticationOptions>
                 (authenticationOptions));
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+            services.AddScoped<IAuthentication, AuthenticationService>();
+            services.AddScoped<IAuthorization, AuthorizationService>();
         }
     }
 }

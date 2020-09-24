@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Core.Entities.LodgingEntities;
+using Core.Entities.Domain;
 using System.Globalization;
 using Web.DTOs;
 

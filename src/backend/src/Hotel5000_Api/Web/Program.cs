@@ -1,4 +1,5 @@
 using Core.Interfaces.PasswordHasher;
+using Infrastructure.Auth;
 using Infrastructure.Lodgings;
 using Infrastructure.Logging;
 using Microsoft.AspNetCore.Hosting;
@@ -30,7 +31,10 @@ namespace Web
                 await LodgingDbContextSeed.SeedAsync(lodgingContext, hasher, environment.IsProduction() ? true : false);
 
                 var loggingContext = services.GetRequiredService<LoggingDbContext>();
-                LoggingDBContextSeed.Seed(loggingContext, environment.IsProduction() ? true : false);
+                LoggingDBContextSeed.Seed(loggingContext, environment.IsProduction());
+
+                var authContext = services.GetRequiredService<AuthDbContext>();
+                await AuthDbContextSeed.SeedAsync(authContext, environment.IsProduction());
             }
 
             host.Run();

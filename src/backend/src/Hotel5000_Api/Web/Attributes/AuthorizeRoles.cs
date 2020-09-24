@@ -1,4 +1,4 @@
-﻿using Core.Enums.Lodging;
+﻿using Core.Enums.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using System;
@@ -8,14 +8,16 @@ namespace Web.Attributes
 {
     public class AuthorizeRoles : AuthorizeAttribute
     {
-        public AuthorizeRoles() : this(new Roles[] { Core.Enums.Lodging.Roles.Company, Core.Enums.Lodging.Roles.ApprovedUser, Core.Enums.Lodging.Roles.Admin })
+        private static RoleType[] RolesWithoutAnonymous = new RoleType[] { RoleType.ADMIN, RoleType.APPROVED_USER, RoleType.COMPANY };
+        private static RoleType[] RolesWithAnonymous = new RoleType[] { RoleType.ADMIN, RoleType.APPROVED_USER, RoleType.COMPANY, RoleType.ANONYMOUS };
+        public AuthorizeRoles(bool allowAnonymous = false) : this(allowAnonymous ? RolesWithAnonymous : RolesWithoutAnonymous)
         {
 
         }
-        public AuthorizeRoles(params Roles[] allowedRoles)
+        public AuthorizeRoles(params RoleType[] allowedRoles)
         {
             AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme;
-            var allowedRolesAsStrings = allowedRoles.Select(x => Enum.GetName(typeof(Roles), x));
+            var allowedRolesAsStrings = allowedRoles.Select(x => Enum.GetName(typeof(RoleType), x));
             Roles = string.Join(",", allowedRolesAsStrings);
         }
     }

@@ -1,4 +1,4 @@
-﻿using Core.Services.LodgingDomain;
+﻿using Auth.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
