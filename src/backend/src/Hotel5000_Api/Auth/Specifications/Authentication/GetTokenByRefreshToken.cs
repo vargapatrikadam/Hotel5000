@@ -1,5 +1,5 @@
 ﻿using Ardalis.Specification;
-using Core.Entities.LodgingEntities;
+using Core.Entities.Domain;
 using System;
 using System.Collections.Generic;
 using System.Text;

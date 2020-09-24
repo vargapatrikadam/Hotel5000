@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
-using Core.Entities.LodgingEntities;
-using Core.Helpers.Results;
+using Core.Entities.Domain;
+using Core.Results;
 using Core.Interfaces;
 using Core.Interfaces.Authentication;
-using Core.Interfaces.LodgingDomain;
-using Core.Interfaces.LodgingDomain.UserManagementService;
-using Core.Services.LodgingDomain;
+using Core.Interfaces.Domain.UserManagementService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -17,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Web.DTOs;
 using Web.Helpers;
+using Auth.Options;
 
 namespace Web.Controllers
 {
@@ -28,7 +27,6 @@ namespace Web.Controllers
         private readonly IUserService _userService;
         private readonly AuthenticationOptions _options;
         private readonly IMapper _mapper;
-        private readonly IAuthorization _authorizationService;
 
         public AuthenticationController(IAuthentication authenticationService,
             ISetting<AuthenticationOptions> settings,
@@ -40,7 +38,6 @@ namespace Web.Controllers
             _options = settings.Option;
             _mapper = mapper;
             _userService = userService;
-            _authorizationService = authorizationService;
         }
 
         private string GenerateToken(User user)

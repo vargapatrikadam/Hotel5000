@@ -1,4 +1,4 @@
-﻿using Core.Entities.LodgingEntities;
+﻿using Core.Entities.Domain;
 using Core.Enums.Authentication;
 using System;
 using System.Collections.Generic;

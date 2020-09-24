@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Auth.Implementations;
-using Core.Entities.LodgingEntities;
-using Core.Helpers.Results;
-using Core.Interfaces;
+using Core.Entities.Domain;
+using Core.Results;
 using Core.Interfaces.Authentication;
-using Core.Interfaces.LodgingDomain;
-using Core.Services.LodgingDomain;
 using Hotel5000_Api_Tests.IntegrationTests.Core.Helpers;
 using Hotel5000_Api_Tests.IntegrationTests.Core.Helpers.Authentication;
 using Hotel5000_Api_Tests.UnitTests.Data;
 using Xunit;
+using Auth.Services.Authentication;
 
 namespace Hotel5000_Api_Tests.IntegrationTests.Core
 {

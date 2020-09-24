@@ -1,4 +1,4 @@
-﻿using Core.Helpers.Results;
+﻿using Core.Results;
 using Microsoft.AspNetCore.Mvc;
 using Web.DTOs;
 

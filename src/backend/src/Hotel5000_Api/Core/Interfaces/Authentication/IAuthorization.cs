@@ -1,5 +1,5 @@
 ﻿using Core.Entities.Authentication;
-using Core.Helpers.Results;
+using Core.Results;
 using System;
 using System.Collections.Generic;
 using System.Text;

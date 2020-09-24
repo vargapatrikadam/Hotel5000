@@ -1,4 +1,4 @@
-﻿using Core.Entities.LoggingEntities;
+﻿using Core.Entities.Logging;
 using Core.Enums.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;

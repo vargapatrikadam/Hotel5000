@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using Core.Entities.LodgingEntities;
+using Core.Entities.Domain;
 using Core.Helpers;
-using Core.Helpers.Results;
-using Core.Interfaces.LodgingDomain;
+using Core.Interfaces.Domain;
+using Core.Results;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;

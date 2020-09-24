@@ -1,4 +1,4 @@
-﻿using Core.Entities.LodgingEntities;
+﻿using Core.Entities.Domain;
 using Core.Enums.Authentication;
 using Core.Enums.Lodging;
 using Core.Interfaces.PasswordHasher;

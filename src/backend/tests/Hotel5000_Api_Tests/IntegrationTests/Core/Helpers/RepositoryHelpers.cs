@@ -1,4 +1,4 @@
-﻿using Core.Entities.LodgingEntities;
+﻿using Core.Entities.Domain;
 using Core.Interfaces;
 using Infrastructure.Lodgings;
 using Microsoft.EntityFrameworkCore;

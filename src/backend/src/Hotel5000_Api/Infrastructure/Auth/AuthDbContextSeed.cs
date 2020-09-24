@@ -1,5 +1,5 @@
 ﻿using Core.Entities.Authentication;
-using Core.Entities.LodgingEntities;
+using Core.Entities.Domain;
 using Core.Enums.Authentication;
 using Microsoft.EntityFrameworkCore;
 using System;

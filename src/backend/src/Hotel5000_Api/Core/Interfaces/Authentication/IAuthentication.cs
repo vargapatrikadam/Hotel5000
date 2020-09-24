@@ -1,5 +1,5 @@
-﻿using Core.Entities.LodgingEntities;
-using Core.Helpers.Results;
+﻿using Core.Entities.Domain;
+using Core.Results;
 using System;
 using System.Collections.Generic;
 using System.Text;

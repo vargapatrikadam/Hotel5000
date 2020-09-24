@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Core.Entities.LodgingEntities;
-using Core.Helpers.Results;
-using Core.Interfaces.LodgingDomain;
+using Core.Entities.Domain;
+using Core.Results;
+using Core.Interfaces.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;

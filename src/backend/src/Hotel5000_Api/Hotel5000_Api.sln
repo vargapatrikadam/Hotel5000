@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWebApp", "BlazorWebAp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Auth", "Auth\Auth.csproj", "{037BAC1F-799D-40F2-8F4A-9FEF4F3EB7B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{A22E4106-ABA7-47CA-96AF-D65C47AFA97C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logging", "Logging\Logging.csproj", "{1A97DB07-8C26-46B9-83A1-8A982034A3D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{037BAC1F-799D-40F2-8F4A-9FEF4F3EB7B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{037BAC1F-799D-40F2-8F4A-9FEF4F3EB7B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{037BAC1F-799D-40F2-8F4A-9FEF4F3EB7B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A22E4106-ABA7-47CA-96AF-D65C47AFA97C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A22E4106-ABA7-47CA-96AF-D65C47AFA97C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A22E4106-ABA7-47CA-96AF-D65C47AFA97C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A22E4106-ABA7-47CA-96AF-D65C47AFA97C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A97DB07-8C26-46B9-83A1-8A982034A3D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A97DB07-8C26-46B9-83A1-8A982034A3D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A97DB07-8C26-46B9-83A1-8A982034A3D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A97DB07-8C26-46B9-83A1-8A982034A3D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,6 @@
-using Auth.Implementations;
+using Auth.Identity;
 using AutoMapper;
-using Core.Entities.LodgingEntities;
+using Core.Entities.Domain;
 using Core.Enums.Authentication;
 using Core.Interfaces.Authentication;
 using Microsoft.AspNetCore.Builder;
