@@ -1,15 +1,12 @@
-using System;
-using System.Net.Http;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Text;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using BlazorStrap;
 using BlazorWebApp.Helpers;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace BlazorWebApp
 {

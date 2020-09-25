@@ -1,17 +1,16 @@
 ﻿using Ardalis.Specification;
-using Auth.Identity;
+using Auth.Options;
+using Auth.Services.Authentication;
 using Core.Entities.Domain;
-using Core.Results;
 using Core.Interfaces;
 using Core.Interfaces.PasswordHasher;
+using Core.Results;
 using Hotel5000_Api_Tests.UnitTests.Data;
 using Hotel5000_Api_Tests.UnitTests.Helpers;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
-using Auth.Options;
-using Auth.Services.Authentication;
 
 namespace Hotel5000_Api_Tests.UnitTests.Core
 {

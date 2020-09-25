@@ -1,10 +1,4 @@
-﻿using Core.Entities.Domain;
-using Core.Enums.Authentication;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Core.Entities.Authentication
+﻿namespace Core.Entities.Authentication
 {
     public class AuthorizeAction
     {

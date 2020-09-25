@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Auth.Services.Authentication;
 using Core.Entities.Domain;
-using Core.Results;
 using Core.Interfaces.Authentication;
+using Core.Results;
 using Hotel5000_Api_Tests.IntegrationTests.Core.Helpers;
 using Hotel5000_Api_Tests.IntegrationTests.Core.Helpers.Authentication;
 using Hotel5000_Api_Tests.UnitTests.Data;
+using System.Threading.Tasks;
 using Xunit;
-using Auth.Services.Authentication;
 
 namespace Hotel5000_Api_Tests.IntegrationTests.Core
 {
@@ -30,7 +27,7 @@ namespace Hotel5000_Api_Tests.IntegrationTests.Core
             var result = await service.AuthenticateAsync("non existent user", "non existent user password");
 
             Assert.IsType<UnauthorizedResult<User>>(result);
-        } 
+        }
         [Fact]
         public async Task Authenticate_BadPassword()
         {

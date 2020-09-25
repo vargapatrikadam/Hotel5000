@@ -1,14 +1,13 @@
 ﻿using Core.Entities.Domain;
 using Core.Enums;
 using Core.Enums.Lodging;
-using Core.Results;
 using Core.Interfaces;
 using Core.Interfaces.Domain;
+using Core.Results;
 using Domain.Specifications.Reservation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.Services

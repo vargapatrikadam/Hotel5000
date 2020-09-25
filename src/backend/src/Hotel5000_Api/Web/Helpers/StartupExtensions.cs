@@ -26,9 +26,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,7 +52,7 @@ namespace Web.Helpers
                 options.UseSqlServer(configuration.GetConnectionString("LodgingDb")));
             services.AddDbContext<LoggingDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("LoggingDb")), ServiceLifetime.Singleton);
-            services.AddDbContext<AuthDbContext>(options => 
+            services.AddDbContext<AuthDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("AuthDb")), ServiceLifetime.Singleton);
         }
         public static void RegisterInMemoryDbContexts(this IServiceCollection services)
@@ -130,8 +128,8 @@ namespace Web.Helpers
             var authenticationOptions = configuration.GetSection("AuthenticationOptions").Get<AuthenticationOptions>();
 
             var key = Encoding.ASCII.GetBytes(authenticationOptions.Secret);
-            
-            
+
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

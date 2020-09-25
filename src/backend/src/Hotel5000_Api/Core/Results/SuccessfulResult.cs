@@ -1,5 +1,4 @@
-﻿using Core.Enums;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Core.Results
 {

@@ -2,7 +2,6 @@
 using Ardalis.Specification.EntityFrameworkCore;
 using Core.Entities;
 using Core.Interfaces;
-using Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

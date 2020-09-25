@@ -2,9 +2,6 @@
 using Core.Interfaces;
 using Infrastructure.Lodgings;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Hotel5000_Api_Tests.IntegrationTests.Core.Helpers
 {

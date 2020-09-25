@@ -1,8 +1,5 @@
 ﻿using Ardalis.Specification;
 using Core.Entities.Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Auth.Specifications.Authentication
 {

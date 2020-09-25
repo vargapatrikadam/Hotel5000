@@ -1,8 +1,5 @@
 ﻿using Ardalis.Specification;
 using Core.Entities.Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.Specifications.Reservation
 {
@@ -12,7 +9,7 @@ namespace Domain.Specifications.Reservation
         {
             Query
                 .Where(existing => (existing.RoomId == newReservationItem.RoomId) &&
-                                   (existing.ReservedFrom < newReservationItem.ReservedTo && 
+                                   (existing.ReservedFrom < newReservationItem.ReservedTo &&
                                        newReservationItem.ReservedFrom < existing.ReservedTo));
         }
     }

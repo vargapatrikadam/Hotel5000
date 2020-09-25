@@ -1,7 +1,4 @@
 ﻿using Auth.Options;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Hotel5000_Api_Tests.UnitTests.Helpers
 {

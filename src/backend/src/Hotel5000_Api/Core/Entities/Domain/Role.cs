@@ -1,8 +1,5 @@
-﻿using Core.Entities.Domain;
-using Core.Enums.Authentication;
-using System;
+﻿using Core.Enums.Authentication;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Core.Entities.Domain
 {

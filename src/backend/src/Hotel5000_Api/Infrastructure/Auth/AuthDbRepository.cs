@@ -1,8 +1,5 @@
 ﻿using Core.Entities;
 using Infrastructure.Abstracts;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Infrastructure.Auth
 {
