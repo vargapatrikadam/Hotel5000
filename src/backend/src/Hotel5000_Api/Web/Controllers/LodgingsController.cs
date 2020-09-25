@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using Core.Entities.Domain;
-using Core.Results;
 using Core.Interfaces.Domain;
-using Microsoft.AspNetCore.Authorization;
+using Core.Results;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -27,14 +26,14 @@ namespace Web.Controllers
         }
         #region get
         [HttpGet("currencies")]
-        [ProducesResponseType(typeof(ICollection<CurrencyDto>),200)]
+        [ProducesResponseType(typeof(ICollection<CurrencyDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetAvailableCurrencies()
         {
             return Ok(_mapper.Map<ICollection<CurrencyDto>>((await _lodgingManagementService.GetCurrency()).Data));
         }
         [HttpGet()]
-        [ProducesResponseType(typeof(ICollection<LodgingDto>),200)]
+        [ProducesResponseType(typeof(ICollection<LodgingDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetLodgings([FromQuery] int? id = null,
             [FromQuery] string name = null,
@@ -59,7 +58,7 @@ namespace Web.Controllers
             return Ok(_mapper.Map<ICollection<LodgingDto>>(result.Data));
         }
         [HttpGet("{lodgingId}/addresses")]
-        [ProducesResponseType(typeof(ICollection<LodgingAddressDto>),200)]
+        [ProducesResponseType(typeof(ICollection<LodgingAddressDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetAddressesForLodging(int lodgingId,
             [FromQuery] int? id = null,
@@ -329,7 +328,7 @@ namespace Web.Controllers
             if (result.ResultType != ResultType.Ok)
                 return this.GetError(result);
 
-            
+
 
             return Ok();
         }

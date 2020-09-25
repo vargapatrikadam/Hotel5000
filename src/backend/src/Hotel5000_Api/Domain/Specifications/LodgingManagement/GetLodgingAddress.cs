@@ -1,20 +1,17 @@
 ﻿using Ardalis.Specification;
 using Core.Entities.Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.Specifications.LodgingManagement
 {
     public class GetLodgingAddress : Specification<LodgingAddress>
     {
-        public GetLodgingAddress(int? id = null, 
-            int? lodgingId = null, 
-            string countryCode = null, 
-            string countryName = null, 
-            string county = null, 
-            string city = null, 
-            string postalCode = null, 
+        public GetLodgingAddress(int? id = null,
+            int? lodgingId = null,
+            string countryCode = null,
+            string countryName = null,
+            string county = null,
+            string city = null,
+            string postalCode = null,
             string lodgingName = null)
         {
             Query

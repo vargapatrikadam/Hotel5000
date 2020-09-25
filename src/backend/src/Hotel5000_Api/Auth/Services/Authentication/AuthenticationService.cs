@@ -1,17 +1,15 @@
-﻿using Auth.Specifications.Authentication;
+﻿using Auth.Options;
+using Auth.Specifications.Authentication;
 using Core.Entities.Domain;
 using Core.Enums;
-using Core.Results;
 using Core.Interfaces;
 using Core.Interfaces.Authentication;
 using Core.Interfaces.PasswordHasher;
+using Core.Results;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
-using Auth.Options;
 
 namespace Auth.Services.Authentication
 {

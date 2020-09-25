@@ -4,9 +4,6 @@ using Core.Helpers.PasswordHasher;
 using Core.Interfaces;
 using Core.Interfaces.PasswordHasher;
 using Domain.Services.PasswordHasher;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Hotel5000_Api_Tests.IntegrationTests.Core.Helpers.Authentication
 {
@@ -21,7 +18,7 @@ namespace Hotel5000_Api_Tests.IntegrationTests.Core.Helpers.Authentication
                 SaltSize = 16
             });
         }
-        public static IPasswordHasher GetPasswordHasher() 
+        public static IPasswordHasher GetPasswordHasher()
         {
             return new PasswordHasher(GetHashingOptions());
         }

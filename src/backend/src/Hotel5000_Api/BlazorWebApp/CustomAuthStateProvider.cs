@@ -1,8 +1,6 @@
 ﻿using BlazorWebApp.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -47,7 +45,7 @@ namespace BlazorWebApp
         private async Task<ClaimsPrincipal> RefreshToken()
         {
             UserInfo user = null;
-           
+
             user = await _httpClient.GetFromJsonAsync<UserInfo>("api/auth/refresh");
 
             if (user == null || !user.IsAuthenticated)

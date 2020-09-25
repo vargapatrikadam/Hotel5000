@@ -6,7 +6,7 @@ namespace Core.Results
 {
     public class UnexpectedResult<T> : Result<T>
     {
-        public UnexpectedResult(params string[] messages) :base(messages)
+        public UnexpectedResult(params string[] messages) : base(messages)
         { }
         public UnexpectedResult(params Errors[] messages) : base(messages)
         { }

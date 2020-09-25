@@ -4,13 +4,10 @@ using Core.Entities.Authentication;
 using Core.Entities.Domain;
 using Core.Enums;
 using Core.Enums.Authentication;
-using Core.Results;
 using Core.Interfaces;
 using Core.Interfaces.Authentication;
-using System;
-using System.Collections.Generic;
+using Core.Results;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Auth.Services.Authorization

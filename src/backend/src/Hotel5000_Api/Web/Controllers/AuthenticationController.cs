@@ -1,9 +1,10 @@
-﻿using AutoMapper;
+﻿using Auth.Options;
+using AutoMapper;
 using Core.Entities.Domain;
-using Core.Results;
 using Core.Interfaces;
 using Core.Interfaces.Authentication;
 using Core.Interfaces.Domain.UserManagementService;
+using Core.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -15,7 +16,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Web.DTOs;
 using Web.Helpers;
-using Auth.Options;
 
 namespace Web.Controllers
 {
