@@ -31,8 +31,7 @@ namespace Web.Controllers
         public AuthenticationController(IAuthentication authenticationService,
             ISetting<AuthenticationOptions> settings,
             IMapper mapper,
-            IUserService userService,
-            IAuthorization authorizationService)
+            IUserService userService)
         {
             _authenticationService = authenticationService;
             _options = settings.Option;

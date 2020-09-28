@@ -19,28 +19,28 @@ namespace Web.Controllers
         }
         [ApiExplorerSettings(IgnoreApi = true)]
         [Route("/api/error")]
-        public async Task<IActionResult> Error()
+        public IActionResult Error()
         {
             var context = HttpContext.Features.Get<IExceptionHandlerFeature>();
             Exception ex = context.Error;
 
             //handle internal server errors
 
-            await _logger.Log(ex.StackTrace, LogLevel.Critical);
+            _logger.Log(ex.StackTrace, LogLevel.Critical);
             while (ex.InnerException != null)
                 ex = ex.InnerException;
-            await _logger.Log(ex.Message, LogLevel.Critical);
+            _logger.Log(ex.Message, LogLevel.Critical);
 
             return Problem();
         }
         [ApiExplorerSettings(IgnoreApi = true)]
         [Route("/api/error-local-development")]
-        public async Task<IActionResult> ErrorLocalDevelopment([FromServices] IWebHostEnvironment webHostEnvironment)
+        public IActionResult ErrorLocalDevelopment([FromServices] IWebHostEnvironment webHostEnvironment)
         {
             if (webHostEnvironment.EnvironmentName != "Development")
             {
                 string msg = "This shouldn't be invoked in non-development environments.";
-                await _logger.Log(msg, LogLevel.Critical);
+                _logger.Log(msg, LogLevel.Critical);
                 throw new InvalidOperationException(msg);
             }
 
@@ -48,10 +48,10 @@ namespace Web.Controllers
 
             Exception ex = context.Error;
 
-            await _logger.Log(ex.StackTrace, LogLevel.Critical);
+            _logger.Log(ex.StackTrace, LogLevel.Critical);
             while (ex.InnerException != null)
                 ex = ex.InnerException;
-            await _logger.Log(ex.Message, LogLevel.Critical);
+            _logger.Log(ex.Message, LogLevel.Critical);
 
             return Problem(
                 detail: context.Error.StackTrace,

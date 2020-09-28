@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Core.Entities.Domain;
 using Core.Interfaces.Domain;
+using Core.Interfaces.Logging;
 using Core.Results;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using Web.Attributes;
 using Web.DTOs;
 using Web.Helpers;
+using Core.Enums.Logging;
 
 namespace Web.Controllers
 {
@@ -18,11 +20,14 @@ namespace Web.Controllers
     {
         private readonly ILodgingManagementService _lodgingManagementService;
         private readonly IMapper _mapper;
+        private readonly ILoggingService _logger;
         public LodgingsController(ILodgingManagementService lodgingManagementService,
-            IMapper mapper)
+            IMapper mapper,
+            ILoggingService logger)
         {
             _lodgingManagementService = lodgingManagementService;
             _mapper = mapper;
+            _logger = logger;
         }
         #region get
         [HttpGet("currencies")]
@@ -45,6 +50,7 @@ namespace Web.Controllers
             [FromQuery] int? pageNumber = null,
             [FromQuery] int? resultPerPage = null)
         {
+            _logger.Log("Getting lodgings...", LogLevel.Information);
             var result = await _lodgingManagementService.GetLodging(id,
                 name,
                 lodgingType,
@@ -54,7 +60,7 @@ namespace Web.Controllers
                 owner,
                 (pageNumber.HasValue && pageNumber.Value > 0) ? ((pageNumber.Value - 1) * resultPerPage) : null,
                 resultPerPage);
-
+            _logger.Log("Returning lodgings...", LogLevel.Information);
             return Ok(_mapper.Map<ICollection<LodgingDto>>(result.Data));
         }
         [HttpGet("{lodgingId}/addresses")]
@@ -69,7 +75,8 @@ namespace Web.Controllers
             [FromQuery] string postalCode = null,
             [FromQuery] string lodgingName = null)
         {
-            return Ok(_mapper.Map<ICollection<LodgingAddressDto>>((await _lodgingManagementService.GetLodgingAddress(id, lodgingId, countryCode, countryName, county, city, postalCode, lodgingName)).Data));
+            _logger.Log("Getting lodgings addresses...", LogLevel.Information);
+            return   Ok(_mapper.Map<ICollection<LodgingAddressDto>>((await _lodgingManagementService.GetLodgingAddress(id, lodgingId, countryCode, countryName, county, city, postalCode, lodgingName)).Data));
         }
         [HttpGet("{lodgingId}/reservationwindows")]
         [ProducesResponseType(typeof(ICollection<ReservationWindowDto>), 200)]

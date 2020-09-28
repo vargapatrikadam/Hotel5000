@@ -4,7 +4,10 @@ using Core.Interfaces;
 using Core.Interfaces.Logging;
 using Logging.Specifications;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Logging.Services
@@ -12,10 +15,15 @@ namespace Logging.Services
     public class LoggingService : ILoggingService
     {
         private readonly IAsyncRepository<Log> _logRepository;
-
+        private readonly ConcurrentQueue<Log> _logs;
+        private readonly BackgroundWorker _writer;
         public LoggingService(IAsyncRepository<Log> logRepository)
         {
             _logRepository = logRepository;
+            _logs = new ConcurrentQueue<Log>();
+            _writer = new BackgroundWorker();
+            _writer.WorkerSupportsCancellation = false;
+            _writer.DoWork += new DoWorkEventHandler(WriteToRepository);
         }
 
         public async Task<IReadOnlyList<Log>> GetAllLogs()
@@ -28,15 +36,31 @@ namespace Logging.Services
             var specification = new GetLogsByLevel(type);
             return await _logRepository.GetAsync(specification);
         }
-
-        public async Task Log(Log log)
+        public void Log(Log log)
         {
-            await _logRepository.AddAsync(log);
+            _logs.Enqueue(log);
+            if (!_writer.IsBusy)
+                _writer.RunWorkerAsync();
         }
-
-        public async Task Log(string message, LogLevel type)
+        public void Log(string message, LogLevel type)
         {
-            await _logRepository.AddAsync(new Log() { Message = message, Timestamp = DateTime.Now, Type = type });
+            Log log = new Log()
+            {
+                Message = message,
+                Type = type
+            };
+            Log(log);
+        }
+        private void WriteToRepository(object sender, DoWorkEventArgs e)
+        {
+            while (true)
+            {
+                Log log = null;
+                if (!_logs.TryDequeue(out log))
+                    return;
+                else
+                    Task.Run(async () => await _logRepository.AddAsync(log));
+            }
         }
     }
 }

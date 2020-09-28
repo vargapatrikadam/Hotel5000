@@ -7,8 +7,8 @@ namespace Core.Interfaces.Logging
 {
     public interface ILoggingService
     {
-        Task Log(Log log);
-        Task Log(string message, LogLevel type);
+        void Log(Log log);
+        void Log(string message, LogLevel type);
         Task<IReadOnlyList<Log>> GetAllLogs();
         Task<IReadOnlyList<Log>> GetLogsByLevel(LogLevel type);
     }
