@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using System.Reflection;
 using System.Security.Claims;
 using Web.Helpers;
+using Web.Middlewares;
 
 namespace Web
 {
@@ -75,7 +76,10 @@ namespace Web
         public void Configure(IApplicationBuilder app)
         {
             if (_env.IsDevelopment())
+            {
                 app.UseExceptionHandler("/api/error-local-development");
+                app.UseMiddleware<ResponseTimeMiddleware>();
+            }
             else
                 app.UseExceptionHandler("/api/error");
 
