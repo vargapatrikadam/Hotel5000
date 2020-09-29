@@ -189,6 +189,8 @@ namespace Web.Helpers
 
             services.AddScoped<IAuthentication, AuthenticationService>();
             services.AddScoped<IAuthorization, AuthorizationService>();
+
+            services.AddMemoryCache();
         }
     }
 }

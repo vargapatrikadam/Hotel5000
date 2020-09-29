@@ -11,19 +11,21 @@ using Web.Attributes;
 using Web.DTOs;
 using Web.Helpers;
 using Core.Enums.Logging;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Web.Controllers
 {
     [Route("api/lodgings")]
     [ApiController]
-    public class LodgingsController : ControllerBase
+    public class LodgingsController : CachingController
     {
         private readonly ILodgingManagementService _lodgingManagementService;
         private readonly IMapper _mapper;
         private readonly ILoggingService _logger;
         public LodgingsController(ILodgingManagementService lodgingManagementService,
             IMapper mapper,
-            ILoggingService logger)
+            ILoggingService logger, 
+            IMemoryCache cache) : base(cache)
         {
             _lodgingManagementService = lodgingManagementService;
             _mapper = mapper;
@@ -35,7 +37,13 @@ namespace Web.Controllers
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetAvailableCurrencies()
         {
-            return Ok(_mapper.Map<ICollection<CurrencyDto>>((await _lodgingManagementService.GetCurrency()).Data));
+            var data = await Cache.GetOrCreateAsync(GetKey("Currency"), async entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromSeconds(3);
+                return (await _lodgingManagementService.GetCurrency()).Data;
+            });
+
+            return Ok(_mapper.Map<ICollection<CurrencyDto>>(data));
         }
         [HttpGet()]
         [ProducesResponseType(typeof(ICollection<LodgingDto>), 200)]
@@ -51,17 +59,22 @@ namespace Web.Controllers
             [FromQuery] int? resultPerPage = null)
         {
             _logger.Log("Getting lodgings...", LogLevel.Information);
-            var result = await _lodgingManagementService.GetLodging(id,
-                name,
-                lodgingType,
-                reservableFrom,
-                reservableTo,
-                address,
-                owner,
-                (pageNumber.HasValue && pageNumber.Value > 0) ? ((pageNumber.Value - 1) * resultPerPage) : null,
-                resultPerPage);
+            
+            var data = await Cache.GetOrCreateAsync(GetKey(id, name, lodgingType, reservableFrom, reservableTo, address, owner, pageNumber, resultPerPage), async entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromSeconds(3);
+                return (await _lodgingManagementService.GetLodging(id,
+                        name,
+                        lodgingType,
+                        reservableFrom,
+                        reservableTo,
+                        address,
+                        owner,
+                        (pageNumber.HasValue && pageNumber.Value > 0) ? ((pageNumber.Value - 1) * resultPerPage) : null,
+                        resultPerPage)).Data;
+            });
             _logger.Log("Returning lodgings...", LogLevel.Information);
-            return Ok(_mapper.Map<ICollection<LodgingDto>>(result.Data));
+            return Ok(_mapper.Map<ICollection<LodgingDto>>(data));
         }
         [HttpGet("{lodgingId}/addresses")]
         [ProducesResponseType(typeof(ICollection<LodgingAddressDto>), 200)]
@@ -76,7 +89,12 @@ namespace Web.Controllers
             [FromQuery] string lodgingName = null)
         {
             _logger.Log("Getting lodgings addresses...", LogLevel.Information);
-            return   Ok(_mapper.Map<ICollection<LodgingAddressDto>>((await _lodgingManagementService.GetLodgingAddress(id, lodgingId, countryCode, countryName, county, city, postalCode, lodgingName)).Data));
+            var data = await Cache.GetOrCreateAsync(GetKey(id, lodgingId, countryCode, countryName, county, city, postalCode, lodgingName), async entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromSeconds(3);
+                return (await _lodgingManagementService.GetLodgingAddress(id, lodgingId, countryCode, countryName, county, city, postalCode, lodgingName)).Data;
+            });
+            return Ok(_mapper.Map<ICollection<LodgingAddressDto>>(data));
         }
         [HttpGet("{lodgingId}/reservationwindows")]
         [ProducesResponseType(typeof(ICollection<ReservationWindowDto>), 200)]
