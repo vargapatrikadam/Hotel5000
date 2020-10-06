@@ -6,9 +6,11 @@ namespace Infrastructure.Logging
     {
         public static void Seed(LoggingDbContext context, bool isProduction)
         {
-            if (isProduction)
-                context.Database.Migrate();
+            //if (isProduction)
+            //    context.Database.Migrate();
             //context.Database.Migrate();
+            if (context.Database.IsSqlServer())
+                context.Database.Migrate();
             context.SaveChanges();
         }
     }
