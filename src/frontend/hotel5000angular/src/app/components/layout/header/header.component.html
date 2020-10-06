@@ -1,0 +1,28 @@
+<div>
+  <nav id="mainNavbar" class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <button class="navbar-toggler" 
+      type="button" 
+      data-toggle="collapse" 
+      data-target="#navbarSupportedContent" 
+      aria-controls="navbarTogglerDemo01" 
+      aria-expanded="false" 
+      aria-label="Toggle navigation"
+      (click)="toggleNavbarCollapse()">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div [ngClass]="toggleNavbarCollapse()" id="navbarSupportedContent">
+      <a class="navbar-brand" routerLink="home">Hotel5000</a>
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="home">Home</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="about">About</a>
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="lodgings">Lodgings</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>
