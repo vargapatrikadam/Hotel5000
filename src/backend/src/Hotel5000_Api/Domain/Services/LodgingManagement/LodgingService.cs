@@ -119,8 +119,9 @@ namespace Domain.Services.LodgingManagement
             int? skip = null,
             int? take = null)
         {
-            LodgingTypes lodgingTypeAsEnum;
-            Enum.TryParse(lodgingType, out lodgingTypeAsEnum);
+            LodgingTypes? lodgingTypeAsEnum = null;
+            if (lodgingType != null && Enum.TryParse(lodgingType, out LodgingTypes parsedLodgingType))
+                lodgingTypeAsEnum = parsedLodgingType;
 
             Country country = null;
             if (address != null)
@@ -138,6 +139,13 @@ namespace Domain.Services.LodgingManagement
                 take);
 
             var data = await _lodgingRepository.GetAsync(specification);
+
+            if(skip != null && take != null)
+            {
+                int pageCount = data.Count;
+                int allCount = await _lodgingRepository.CountAsync();
+                return new SuccessfulResult<IReadOnlyList<Lodging>>(data, pageCount, allCount);
+            }
 
             return new SuccessfulResult<IReadOnlyList<Lodging>>(data);
         }
