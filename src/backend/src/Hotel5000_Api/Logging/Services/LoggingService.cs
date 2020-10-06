@@ -59,7 +59,7 @@ namespace Logging.Services
                 if (!_logs.TryDequeue(out log))
                     return;
                 else
-                    Task.Run(async () => await _logRepository.AddAsync(log));
+                    Task.WaitAll(Task.Run(async () => await _logRepository.AddAsync(log)));
             }
         }
     }
