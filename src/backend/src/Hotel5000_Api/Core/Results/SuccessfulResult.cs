@@ -7,6 +7,9 @@ namespace Core.Results
         public SuccessfulResult(T data) : base(data)
         {
         }
+        public SuccessfulResult(T data, int pageCount, int allCount) : base(data, pageCount, allCount)
+        {
+        }
         public override ResultType ResultType => ResultType.Ok;
         public override List<string> Errors => null;
         public override T Data => _data;

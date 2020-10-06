@@ -5,11 +5,23 @@ namespace Core.Results
 {
     public abstract class Result<T>
     {
+        protected readonly int _pageCount;
+        protected readonly int _allCount;
+        protected readonly bool _isPaginated;
         protected readonly T _data;
         protected readonly string[] _messages;
         public Result(T data)
         {
+            _pageCount = 0;
+            _allCount = 0;
+            _isPaginated = false;
             _data = data;
+        }
+        public Result(T data, int pageCount, int allCount) : this(data)
+        {
+            _pageCount = pageCount;
+            _allCount = allCount;
+            _isPaginated = true;
         }
         protected Result(params Errors[] messages)
         {
@@ -38,5 +50,26 @@ namespace Core.Results
         public abstract ResultType ResultType { get; }
         public abstract List<string> Errors { get; }
         public abstract T Data { get; }
+        public bool IsPaginated
+        {
+            get
+            {
+                return _isPaginated;
+            }
+        }
+        public int PageCount
+        {
+            get
+            {
+                return _pageCount;
+            }
+        }
+        public int AllCount
+        {
+            get
+            {
+                return _allCount;
+            }
+        }
     }
 }
