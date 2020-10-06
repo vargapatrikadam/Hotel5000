@@ -37,13 +37,17 @@ namespace Web.Controllers
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetAvailableCurrencies()
         {
-            var data = await Cache.GetOrCreateAsync(GetKey("Currency"), async entry =>
+            var serviceResult = await Cache.GetOrCreateAsync(GetKey("Currency"), async entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromSeconds(3);
-                return (await _lodgingManagementService.GetCurrency()).Data;
+                return (await _lodgingManagementService.GetCurrency());
             });
 
-            return Ok(_mapper.Map<ICollection<CurrencyDto>>(data));
+            ResultDto<ICollection<CurrencyDto>> result = 
+                new ResultDto<ICollection<CurrencyDto>>(
+                    _mapper.Map<ICollection<CurrencyDto>>(serviceResult.Data), serviceResult.PageCount, serviceResult.AllCount, serviceResult.IsPaginated);
+
+            return Ok(result);
         }
         [HttpGet()]
         [ProducesResponseType(typeof(ICollection<LodgingDto>), 200)]
@@ -60,7 +64,7 @@ namespace Web.Controllers
         {
             _logger.Log("Getting lodgings...", LogLevel.Information);
             
-            var data = await Cache.GetOrCreateAsync(GetKey(id, name, lodgingType, reservableFrom, reservableTo, address, owner, pageNumber, resultPerPage), async entry =>
+            var serviceResult = await Cache.GetOrCreateAsync(GetKey(id, name, lodgingType, reservableFrom, reservableTo, address, owner, pageNumber, resultPerPage), async entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromSeconds(3);
                 return (await _lodgingManagementService.GetLodging(id,
@@ -71,10 +75,15 @@ namespace Web.Controllers
                         address,
                         owner,
                         (pageNumber.HasValue && pageNumber.Value > 0) ? ((pageNumber.Value - 1) * resultPerPage) : null,
-                        resultPerPage)).Data;
+                        resultPerPage));
             });
             _logger.Log("Returning lodgings...", LogLevel.Information);
-            return Ok(_mapper.Map<ICollection<LodgingDto>>(data));
+
+            ResultDto<ICollection<LodgingDto>> result = 
+                new ResultDto<ICollection<LodgingDto>>(
+                    _mapper.Map<ICollection<LodgingDto>>(serviceResult.Data), serviceResult.PageCount, serviceResult.AllCount, serviceResult.IsPaginated);
+
+            return Ok(result);
         }
         [HttpGet("{lodgingId}/addresses")]
         [ProducesResponseType(typeof(ICollection<LodgingAddressDto>), 200)]
@@ -89,19 +98,30 @@ namespace Web.Controllers
             [FromQuery] string lodgingName = null)
         {
             _logger.Log("Getting lodgings addresses...", LogLevel.Information);
-            var data = await Cache.GetOrCreateAsync(GetKey(id, lodgingId, countryCode, countryName, county, city, postalCode, lodgingName), async entry =>
+            var serviceResult = await Cache.GetOrCreateAsync(GetKey(id, lodgingId, countryCode, countryName, county, city, postalCode, lodgingName), async entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromSeconds(3);
-                return (await _lodgingManagementService.GetLodgingAddress(id, lodgingId, countryCode, countryName, county, city, postalCode, lodgingName)).Data;
+                return (await _lodgingManagementService.GetLodgingAddress(id, lodgingId, countryCode, countryName, county, city, postalCode, lodgingName));
             });
-            return Ok(_mapper.Map<ICollection<LodgingAddressDto>>(data));
+
+            ResultDto<ICollection<LodgingAddressDto>> result =
+                new ResultDto<ICollection<LodgingAddressDto>>(
+                    _mapper.Map<ICollection<LodgingAddressDto>>(serviceResult.Data), serviceResult.PageCount, serviceResult.AllCount, serviceResult.IsPaginated);
+
+            return Ok(result);
         }
         [HttpGet("{lodgingId}/reservationwindows")]
         [ProducesResponseType(typeof(ICollection<ReservationWindowDto>), 200)]
         [ProducesErrorResponseType(typeof(ErrorDto))]
         public async Task<IActionResult> GetActiveReservationWindowForLodging(int lodgingId)
         {
-            return Ok(_mapper.Map<ICollection<ReservationWindowDto>>((await _lodgingManagementService.GetReservationWindow(isAfter: DateTime.Now, lodgingId: lodgingId)).Data));
+            var serviceResult = await _lodgingManagementService.GetReservationWindow(isAfter: DateTime.Now, lodgingId: lodgingId);
+
+            ResultDto<ICollection<ReservationWindowDto>> result =
+                new ResultDto<ICollection<ReservationWindowDto>>(
+                    _mapper.Map<ICollection<ReservationWindowDto>>(serviceResult.Data), serviceResult.PageCount, serviceResult.AllCount, serviceResult.IsPaginated);
+
+            return Ok(result);
         }
         [HttpGet("reservationwindows")]
         [ProducesResponseType(typeof(ICollection<ReservationWindowDto>), 200)]
@@ -111,7 +131,13 @@ namespace Web.Controllers
             [FromQuery] DateTime? isBefore = null,
             [FromQuery] DateTime? isAfter = null)
         {
-            return Ok(_mapper.Map<ICollection<ReservationWindowDto>>((await _lodgingManagementService.GetReservationWindow(id, lodgingId, isAfter == null ? DateTime.Now : isAfter, isBefore)).Data));
+            var serviceResult = await _lodgingManagementService.GetReservationWindow(id, lodgingId, isAfter == null ? DateTime.Now : isAfter, isBefore);
+
+            ResultDto<ICollection<ReservationWindowDto>> result =
+                new ResultDto<ICollection<ReservationWindowDto>>(
+                    _mapper.Map<ICollection<ReservationWindowDto>>(serviceResult.Data), serviceResult.PageCount, serviceResult.AllCount, serviceResult.IsPaginated);
+
+            return Ok(result);
         }
         [HttpGet("rooms")]
         [ProducesResponseType(typeof(ICollection<RoomDto>), 200)]
@@ -123,7 +149,13 @@ namespace Web.Controllers
             [FromQuery] double? priceMin = null,
             [FromQuery] double? priceMax = null)
         {
-            return Ok(_mapper.Map<ICollection<RoomDto>>((await _lodgingManagementService.GetRoom(id, lodgingId, adultCapacity, childrenCapacity, priceMin, priceMax)).Data));
+            var serviceResult = await _lodgingManagementService.GetRoom(id, lodgingId, adultCapacity, childrenCapacity, priceMin, priceMax);
+
+            ResultDto<ICollection<RoomDto>> result =
+                new ResultDto<ICollection<RoomDto>>(
+                    _mapper.Map<ICollection<RoomDto>>(serviceResult.Data), serviceResult.PageCount, serviceResult.AllCount, serviceResult.IsPaginated);
+
+            return Ok(result);
         }
         [HttpGet("{lodgingId}/rooms")]
         [ProducesResponseType(typeof(ICollection<RoomDto>), 200)]
@@ -135,7 +167,13 @@ namespace Web.Controllers
             [FromQuery] double? priceMin = null,
             [FromQuery] double? priceMax = null)
         {
-            return Ok(_mapper.Map<ICollection<RoomDto>>((await _lodgingManagementService.GetRoom(id, lodgingId, adultCapacity, childrenCapacity, priceMin, priceMax)).Data));
+            var serviceResult = await _lodgingManagementService.GetRoom(id, lodgingId, adultCapacity, childrenCapacity, priceMin, priceMax);
+
+            ResultDto<ICollection<RoomDto>> result =
+                new ResultDto<ICollection<RoomDto>>(
+                    _mapper.Map<ICollection<RoomDto>>(serviceResult.Data), serviceResult.PageCount, serviceResult.AllCount, serviceResult.IsPaginated);
+
+            return Ok(result);
         }
         #endregion
         #region post
