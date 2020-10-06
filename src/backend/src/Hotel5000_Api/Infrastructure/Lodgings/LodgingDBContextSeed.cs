@@ -16,9 +16,11 @@ namespace Infrastructure.Lodgings
         {
             //context.Database.Migrate();
             //Only run this if using a real database
-            if (isProduction)
-                context.Database.Migrate();
+            //if (isProduction)
+            //    context.Database.Migrate();
             //context.Database.Migrate();
+            if (context.Database.IsSqlServer())
+                context.Database.Migrate();
 
             context.SaveChanges();
 
@@ -287,25 +289,25 @@ namespace Infrastructure.Lodgings
                 {
                     Name = "Test lodging 2 for preuser1 approved user",
                     UserId = 3,
-                    LodgingTypeId = 2
+                    LodgingTypeId = 1
                 },
                 new Lodging()
                 {
                     Name = "Test lodging 3 for preuser1 approved user",
                     UserId = 3,
-                    LodgingTypeId = 2
+                    LodgingTypeId = 1
                 },
                 new Lodging()
                 {
                     Name = "Test lodging 4 for preuser1 approved user",
                     UserId = 3,
-                    LodgingTypeId = 2
+                    LodgingTypeId = 1
                 },
                 new Lodging()
                 {
                     Name = "Test lodging 4 for preuser1 approved user",
                     UserId = 3,
-                    LodgingTypeId = 2
+                    LodgingTypeId = 1
                 },
                 new Lodging()
                 {
