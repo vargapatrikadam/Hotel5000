@@ -2,6 +2,8 @@
 using Infrastructure.Auth.Configurations;
 using Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Auth
 {
@@ -18,6 +20,20 @@ namespace Infrastructure.Auth
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsDerivedFromInterface<IAuthConfigurationAggregate>();
+        }
+        public override int SaveChanges()
+        {
+            this.UpdateSoftDeleteStatuses();
+            this.UpdateBaseEntityDateColumns();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
+            CancellationToken cancellationToken = default)
+        {
+            this.UpdateSoftDeleteStatuses();
+            this.UpdateBaseEntityDateColumns();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
     }
 }

@@ -8,9 +8,9 @@ namespace Auth.Specifications.Authorization
         public GetRuleByIds(int roleId, int operationId, int entityId)
         {
             Query
-                .Where(p => p.Role_Id == roleId &&
-                            p.Operation_Id == operationId &&
-                            p.Entity_Id == entityId);
+                .Where(p => p.RoleId == roleId &&
+                            p.OperationId == operationId &&
+                            p.EntityId == entityId);
         }
     }
 }
