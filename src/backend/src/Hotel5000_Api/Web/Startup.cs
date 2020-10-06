@@ -59,7 +59,8 @@ namespace Web
                 }
             );
 
-            services.RegisterInMemoryDbContexts();
+            //services.RegisterInMemoryDbContexts();
+            services.RegisterDbContexts(Configuration);
 
             services.RegisterRepositories();
 
